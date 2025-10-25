@@ -1,4 +1,4 @@
-# Word Wonderland 🌟
+Luoevanescence# Word Wonderland 🌟
 
 一个现代化的英语学习平台，包含单词管理、短语、句子、句型和主题学习功能。
 
@@ -15,11 +15,13 @@ bread-dog-recite-words/
 ## 🚀 技术栈
 
 ### 后端
+
 - **Node.js** + **Express** - RESTful API
 - **文件存储** - JSON数据持久化
 - **Swagger** - API文档
 
 ### 前端
+
 - **React 18** - UI框架
 - **Vite** - 构建工具
 - **React Router** - 路由管理
@@ -28,6 +30,7 @@ bread-dog-recite-words/
 ## 📋 功能特性
 
 ### 管理员后台
+
 - ✅ 单词管理（支持多个词性定义）
 - ✅ 词性管理
 - ✅ 短语管理
@@ -39,6 +42,7 @@ bread-dog-recite-words/
 - ✅ 移动端适配
 
 ### 学生端应用
+
 - ✅ 随机学习单词/短语/句子
 - ✅ 响应式设计
 
@@ -112,12 +116,14 @@ http://192.168.1.xxx:5174  # 学生端应用
 ## 🎨 界面预览
 
 ### 管理员后台
+
 - 现代化的紫色渐变主题
 - 卡片式布局
 - 流畅的动画效果
 - 自定义对话框和Toast通知
 
 ### 学生端应用
+
 - 简洁清爽的学习界面
 - 随机学习功能
 - 主题分类学习
@@ -136,7 +142,7 @@ word-wonderland-backend/
 └── config.js          # 配置文件
 ```
 
-**端口**: 3000  
+**端口**: 3000
 **数据存储**: JSON文件（`data/`目录）
 
 ### 管理员后台 (word-wonderland-admin)
@@ -152,7 +158,7 @@ word-wonderland-admin/
 └── vite.config.js     # Vite配置
 ```
 
-**端口**: 5173  
+**端口**: 5173
 **主要功能**: CRUD操作、批量管理、数据展示
 
 ### 学生端应用 (word-wonderland-app)
@@ -167,19 +173,20 @@ word-wonderland-app/
 └── vite.config.js
 ```
 
-**端口**: 5174  
+**端口**: 5174
 **主要功能**: 学习、练习、进度跟踪
 
 ## 🔧 开发指南
 
 ### 添加新功能
 
-1. **后端**: 
+1. **后端**:
+
    - 在 `controllers/` 添加控制器
    - 在 `routes/` 添加路由
    - 在 `data/` 添加数据文件
-
 2. **前端**:
+
    - 在 `pages/` 添加页面组件
    - 在 `services/api.js` 添加API调用
    - 在路由中注册新页面
@@ -194,38 +201,30 @@ word-wonderland-app/
 ## 🐛 常见问题
 
 ### Q: 前端无法连接后端？
+
 A: 确保后端已启动并运行在3000端口，检查proxy配置。
 
 ### Q: 手机端无法访问？
+
 A: 确保手机和电脑在同一局域网，使用电脑的IP地址访问。
 
 ### Q: 数据丢失了？
+
 A: 数据保存在 `backend/data/` 目录下的JSON文件中，定期备份。
 
 ## 📈 未来计划
 
-- [ ] 用户认证和授权
-- [ ] 数据库支持（MongoDB/PostgreSQL）
-- [ ] 学习统计和分析
-- [ ] 单词卡片记忆功能
-- [ ] 发音功能
-- [ ] 导入导出Excel
-- [ ] Docker部署支持
+- [X]  用户认证和授权
+- [ ]  数据库支持（MongoDB/PostgreSQL）
+- [ ]  学习统计和分析
+- [ ]  单词卡片记忆功能
+- [ ]  发音功能
+- [ ]  导入导出Excel
+- [ ]  Docker部署支持
 
 ## 🤝 贡献
 
-我们非常欢迎各种形式的贡献！无论是报告 Bug、提出新功能建议，还是提交代码。
-
-贡献方式：
-- 🐛 报告问题和 Bug
-- 💡 提出新功能建议  
-- 💻 提交代码和修复
-- 📝 改进文档
-- ⭐ Star 和分享项目
-
-详细的贡献指南请查看：[CONTRIBUTING.md](CONTRIBUTING.md)
-
-感谢所有为这个项目做出贡献的开发者！🎉
+欢迎提交 Issue 和 Pull Request！
 
 ## 📄 开源协议
 
@@ -233,7 +232,7 @@ A: 数据保存在 `backend/data/` 目录下的JSON文件中，定期备份。
 
 ## 👨‍💻 作者
 
-Luoevanescence
+[Luoevanescence](https://github.com/Luoevanescence)
 
 ## 🙏 致谢
 
