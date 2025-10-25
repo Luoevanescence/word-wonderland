@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # 后端 API 服务
+  backend:
+    build:
+      context: ./word-wonderland-backend
+      dockerfile: Dockerfile
+    container_name: word-wonderland-backend
+    ports:
+      - "3000:3000"
+    volumes:
+      # 挂载数据目录以持久化数据
+      - ./word-wonderland-backend/data:/app/data
+    restart: unless-stopped
+    networks:
+      - word-wonderland-network
+
+  # 管理员后台
+  admin:
+    build:
+      context: ./word-wonderland-admin
+      dockerfile: Dockerfile
+    container_name: word-wonderland-admin
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - word-wonderland-network
+
+  # 学生端应用
+  app:
+    build:
+      context: ./word-wonderland-app
+      dockerfile: Dockerfile
+    container_name: word-wonderland-app
+    ports:
+      - "5174:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - word-wonderland-network
+
+networks:
+  word-wonderland-network:
+    driver: bridge
+

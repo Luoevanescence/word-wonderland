@@ -10,5 +10,17 @@
     ],
     "createdAt": "2025-10-25T04:50:21.976Z",
     "updatedAt": "2025-10-25T04:50:21.976Z"
+  },
+  {
+    "id": "314b425e-9256-4016-8212-b5e5e77b5431",
+    "word": "ddd",
+    "definitions": [
+      {
+        "partOfSpeech": "pron.",
+        "meaning": "ddd"
+      }
+    ],
+    "createdAt": "2025-10-25T14:07:19.465Z",
+    "updatedAt": "2025-10-25T14:07:19.465Z"
   }
 ]
