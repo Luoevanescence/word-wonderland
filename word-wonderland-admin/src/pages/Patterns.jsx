@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { patternsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
+import ExportButton from '../components/ExportButton';
+import { downloadJSONWithMeta } from '../utils/exportUtils';
 
 function Patterns() {
   const [patterns, setPatterns] = useState([]);
@@ -63,6 +65,16 @@ function Patterns() {
     }
   };
 
+  // 导出功能
+  const handleExportAll = () => {
+    const success = downloadJSONWithMeta(patterns, 'patterns');
+    if (success) {
+      alert('导出成功！');
+    } else {
+      alert('导出失败，请重试');
+    }
+  };
+
   const handleEdit = (pattern) => {
     setEditingPattern(pattern);
     setFormData({
@@ -93,10 +105,16 @@ function Patterns() {
 
       <div className="page-content">
         <div className="actions">
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-          + 添加新句型
-        </button>
-      </div>
+          <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+            + 添加新句型
+          </button>
+          
+          <ExportButton
+            onExport={handleExportAll}
+            disabled={loading || patterns.length === 0}
+            label="导出句型"
+          />
+        </div>
 
       {loading ? (
         <div className="loading">加载中...</div>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { phrasesAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
+import ExportButton from '../components/ExportButton';
+import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 
 function Phrases() {
   const [phrases, setPhrases] = useState([]);
@@ -60,6 +62,25 @@ function Phrases() {
     } catch (error) {
       console.error('Error deleting phrase:', error);
       alert(error.response?.data?.message || '删除短语失败');
+    }
+  };
+
+  // 导出功能
+  const handleExportAll = () => {
+    const success = downloadJSONWithMeta(phrases, 'phrases');
+    if (success) {
+      alert('导出成功！');
+    } else {
+      alert('导出失败，请重试');
+    }
+  };
+
+  const handleExportSelected = () => {
+    const success = downloadSelectedJSON(phrases, selectedIds, 'phrases');
+    if (success) {
+      alert(`成功导出 ${selectedIds.length} 个短语！`);
+    } else {
+      alert('导出失败，请重试');
     }
   };
 
@@ -129,10 +150,27 @@ function Phrases() {
 
       <div className="page-content">
         <div className="actions">
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-          + 添加新短语
-        </button>
-      </div>
+          <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+            + 添加新短语
+          </button>
+          
+          <ExportButton
+            onExport={handleExportAll}
+            onExportSelected={handleExportSelected}
+            selectedCount={selectedIds.length}
+            disabled={loading || phrases.length === 0}
+            label="导出短语"
+          />
+          
+          {selectedIds.length > 0 && (
+            <div className="bulk-actions">
+              <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
+              <button className="btn btn-danger btn-small" onClick={handleBulkDelete}>
+                批量删除
+              </button>
+            </div>
+          )}
+        </div>
 
       {loading ? (
         <div className="loading">加载中...</div>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { partsOfSpeechAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
+import ExportButton from '../components/ExportButton';
+import { downloadJSONWithMeta } from '../utils/exportUtils';
 
 function PartsOfSpeech() {
   const [partsOfSpeech, setPartsOfSpeech] = useState([]);
@@ -66,6 +68,16 @@ function PartsOfSpeech() {
     } catch (error) {
       console.error('Error deleting part of speech:', error);
       alert(error.response?.data?.message || '删除词性失败');
+    }
+  };
+
+  // 导出功能
+  const handleExportAll = () => {
+    const success = downloadJSONWithMeta(partsOfSpeech, 'partsOfSpeech');
+    if (success) {
+      alert('导出成功！');
+    } else {
+      alert('导出失败，请重试');
     }
   };
 
@@ -138,6 +150,13 @@ function PartsOfSpeech() {
           <button className="btn btn-primary" onClick={() => setShowModal(true)}>
             + 添加新词性
           </button>
+          
+          <ExportButton
+            onExport={handleExportAll}
+            disabled={loading || partsOfSpeech.length === 0}
+            label="导出词性"
+          />
+          
           {selectedIds.length > 0 && (
             <div className="bulk-actions">
               <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { topicsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
+import ExportButton from '../components/ExportButton';
+import { downloadJSONWithMeta } from '../utils/exportUtils';
 
 function Topics() {
   const [topics, setTopics] = useState([]);
@@ -61,6 +63,16 @@ function Topics() {
     }
   };
 
+  // 导出功能
+  const handleExportAll = () => {
+    const success = downloadJSONWithMeta(topics, 'topics');
+    if (success) {
+      alert('导出成功！');
+    } else {
+      alert('导出失败，请重试');
+    }
+  };
+
   const handleEdit = (topic) => {
     setEditingTopic(topic);
     setFormData({
@@ -87,10 +99,16 @@ function Topics() {
 
       <div className="page-content">
         <div className="actions">
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-          + 添加新主题
-        </button>
-      </div>
+          <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+            + 添加新主题
+          </button>
+          
+          <ExportButton
+            onExport={handleExportAll}
+            disabled={loading || topics.length === 0}
+            label="导出主题"
+          />
+        </div>
 
       {loading ? (
         <div className="loading">加载中...</div>
