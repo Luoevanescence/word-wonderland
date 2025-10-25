@@ -1,6 +1,6 @@
 version: '3.8'
 
-# 从 GitHub 直接构建部署配置
+# 从 GitHub 直接构建部署配置(windows docker desktop 不支持)
 # 使用方法：docker-compose -f docker-compose.github.yml up -d
 # 注意：请将 YOUR_GITHUB_USERNAME 替换为你的 GitHub 用户名
 
@@ -15,8 +15,10 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      # 挂载数据目录以持久化数据（需要在宿主机创建）
-      - ./data:/app/data
+      # 使用命名存储卷持久化数据（推荐用于生产环境）
+      - words-data:/app/data
+      # 或使用绑定挂载（便于直接访问文件）：
+      # - ./data:/app/data
     restart: unless-stopped
     networks:
       - word-wonderland-network
@@ -52,4 +54,9 @@ services:
 networks:
   word-wonderland-network:
     driver: bridge
+
+volumes:
+  # 命名存储卷 - 用于持久化后端数据
+  words-data:
+    driver: local
 

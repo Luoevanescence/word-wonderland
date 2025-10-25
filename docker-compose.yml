@@ -10,8 +10,10 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      # 挂载数据目录以持久化数据
-      - ./word-wonderland-backend/data:/app/data
+      # 使用命名存储卷持久化数据（推荐用于生产环境）
+      - backend-data:/app/data
+      # 或使用绑定挂载（便于直接访问文件）：
+      # - ./word-wonderland-backend/data:/app/data
     restart: unless-stopped
     networks:
       - word-wonderland-network
@@ -47,4 +49,9 @@ services:
 networks:
   word-wonderland-network:
     driver: bridge
+
+volumes:
+  # 命名存储卷 - 用于持久化后端数据
+  backend-data:
+    driver: local
 

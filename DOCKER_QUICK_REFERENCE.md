@@ -1,11 +1,8 @@
-# Docker 部署快速参考 🚀
+# Docker 快速命令参考 🚀
 
-快速查阅 Docker 部署命令，包含本地部署和从 GitHub 直接部署两种方式。
+常用 Docker 命令速查表。
 
-## 📖 完整文档
-
-- [本地部署完整指南](DOCKER_DEPLOYMENT.md)
-- [GitHub 部署完整指南](DOCKER_DEPLOYMENT_FROM_GITHUB.md)
+📖 **完整文档**: [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md)
 
 ---
 
@@ -379,35 +376,80 @@ docker history word-wonderland-backend:latest
 
 ---
 
-## 💾 数据备份
+## 💾 数据备份与恢复
 
-### 备份数据
+### 方式一：命名存储卷（默认配置）
 
 ```bash
-# 备份后端数据目录
+# 查看卷信息
+docker volume ls | grep backend-data
+docker volume inspect backend-data
+
+# 备份命名卷数据
+docker run --rm \
+  -v backend-data:/source \
+  -v $(pwd):/backup \
+  alpine tar czf /backup/backend-data-$(date +%Y%m%d).tar.gz -C /source .
+
+# 恢复命名卷数据
+docker stop word-wonderland-backend
+docker run --rm \
+  -v backend-data:/target \
+  -v $(pwd):/backup \
+  alpine tar xzf /backup/backend-data-20241025.tar.gz -C /target
+docker start word-wonderland-backend
+```
+
+### 方式二：绑定挂载（如果使用此配置）
+
+```bash
+# 备份绑定挂载的数据
 docker cp word-wonderland-backend:/app/data ./backup/data-$(date +%Y%m%d)
 
-# 或直接复制本地挂载的目录
+# 或直接复制本地目录
 cp -r ./word-wonderland-backend/data ./backup/data-$(date +%Y%m%d)
 
 # 压缩备份
 tar -czf backup-$(date +%Y%m%d).tar.gz ./word-wonderland-backend/data
-```
-
-### 恢复数据
-
-```bash
-# 停止后端容器
-docker stop word-wonderland-backend
 
 # 恢复数据
+docker stop word-wonderland-backend
 docker cp ./backup/data word-wonderland-backend:/app/
-
-# 或恢复到本地挂载目录
+# 或
 cp -r ./backup/data ./word-wonderland-backend/
-
-# 重启容器
 docker start word-wonderland-backend
+```
+
+### 自动备份脚本
+
+创建 `backup.sh`：
+
+```bash
+#!/bin/bash
+# 自动备份命名存储卷
+
+BACKUP_DIR="./backups"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="backend-data-${TIMESTAMP}.tar.gz"
+
+mkdir -p ${BACKUP_DIR}
+
+echo "开始备份..."
+docker run --rm \
+  -v backend-data:/source \
+  -v ${BACKUP_DIR}:/backup \
+  alpine tar czf /backup/${BACKUP_FILE} -C /source .
+
+echo "备份完成: ${BACKUP_DIR}/${BACKUP_FILE}"
+
+# 可选：保留最近 7 天的备份
+find ${BACKUP_DIR} -name "backend-data-*.tar.gz" -mtime +7 -delete
+```
+
+使用：
+```bash
+chmod +x backup.sh
+./backup.sh
 ```
 
 ---

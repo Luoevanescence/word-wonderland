@@ -56,3 +56,7 @@ word-wonderland-backend/data/*.json.backup
 word-wonderland-admin/.vite
 word-wonderland-app/.vite
 
+# Docker 相关
+data/                    # Docker 绑定挂载的数据目录
+backups/                 # 数据备份目录
+

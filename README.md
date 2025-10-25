@@ -214,52 +214,23 @@ A: 数据保存在 `backend/data/` 目录下的JSON文件中，定期备份。
 
 ## 🐳 Docker 部署
 
-项目已支持 Docker 部署！提供两种部署方式：
+项目已支持 Docker 部署，快速启动所有服务。
 
 📚 **部署文档**：
-- [从本地代码部署](DOCKER_DEPLOYMENT.md) - 适合开发和本地测试
-- [从 GitHub 直接部署](DOCKER_DEPLOYMENT_FROM_GITHUB.md) - 适合生产环境，无需克隆代码
+- [Docker 部署指南](DOCKER_DEPLOYMENT.md) - 完整部署教程（本地/GitHub）
+- [快速命令参考](DOCKER_QUICK_REFERENCE.md) - 常用命令速查表
 
-### 方式一：从本地快速启动
+### 快速开始
 
 ```bash
-# 使用 Docker Compose 一键部署
+# 1. 构建并启动所有服务
 docker-compose up -d
-```
 
-### 方式二：从 GitHub 直接构建（无需克隆代码）
+# 2. 查看运行状态
+docker-compose ps
 
-```bash
-# 1. 下载配置文件
-mkdir word-wonderland && cd word-wonderland
-curl -O https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/bread-dog-recite-words/main/docker-compose.github.yml
-
-# 2. 修改配置文件中的 YOUR_GITHUB_USERNAME 为你的 GitHub 用户名
-
-# 3. 创建数据目录
-mkdir -p data
-
-# 4. 构建并启动
-docker-compose -f docker-compose.github.yml up -d
-```
-
-或使用 Docker 命令直接构建：
-
-```bash
-# 创建网络
-docker network create word-wonderland-network
-
-# 从 GitHub 构建镜像（替换 YOUR_GITHUB_USERNAME）
-docker build -t word-wonderland-backend:latest \
-  https://github.com/YOUR_GITHUB_USERNAME/bread-dog-recite-words.git#main:word-wonderland-backend
-
-docker build -t word-wonderland-admin:latest \
-  https://github.com/YOUR_GITHUB_USERNAME/bread-dog-recite-words.git#main:word-wonderland-admin
-
-docker build -t word-wonderland-app:latest \
-  https://github.com/YOUR_GITHUB_USERNAME/bread-dog-recite-words.git#main:word-wonderland-app
-
-# 运行容器（完整命令见文档）
+# 3. 查看日志
+docker-compose logs -f
 ```
 
 ### 访问服务
@@ -269,17 +240,20 @@ docker build -t word-wonderland-app:latest \
 - 管理后台: http://localhost:5173
 - 学生端应用: http://localhost:5174
 
-### 停止服务
+### 常用命令
 
 ```bash
-# 本地部署
+# 停止服务
 docker-compose down
 
-# GitHub 部署
-docker-compose -f docker-compose.github.yml down
+# 重启服务
+docker-compose restart
+
+# 更新代码后重新构建
+docker-compose up -d --build
 ```
 
-更多详细命令和故障排查，请参考部署文档
+📖 更多命令和故障排查，请查看 [Docker 部署指南](DOCKER_DEPLOYMENT.md)
 
 ## 📈 未来计划
 

@@ -1,411 +1,346 @@
 # Docker 部署指南 🐳
 
-本文档提供 Word Wonderland 项目的 Docker 手动部署命令步骤。
+Word Wonderland 项目的 Docker 部署指南，包含本地和 GitHub 两种部署方式。
 
 ## 📋 前置要求
 
 - Docker 已安装 (建议版本 20.10+)
 - Docker Compose 已安装 (建议版本 2.0+)
 
-验证安装：
 ```bash
 docker --version
 docker-compose --version
 ```
 
-## 🚀 方式一：使用 Docker Compose（推荐）
+---
 
-### 1. 构建所有镜像
+## 🚀 快速开始
+
+### 方式一：本地部署（推荐）
 
 在项目根目录执行：
 
 ```bash
-docker-compose build
-```
-
-如果想单独构建某个服务：
-```bash
-# 只构建后端
-docker-compose build backend
-
-# 只构建管理后台
-docker-compose build admin
-
-# 只构建学生端
-docker-compose build app
-```
-
-### 2. 启动所有服务
-
-```bash
+# 1. 构建并启动
 docker-compose up -d
-```
 
-参数说明：
-- `-d`: 后台运行（detached mode）
-- 去掉 `-d` 可以看到实时日志
-
-### 3. 查看运行状态
-
-```bash
-# 查看所有容器状态
+# 2. 查看状态
 docker-compose ps
 
-# 查看实时日志
+# 3. 查看日志
 docker-compose logs -f
-
-# 查看特定服务日志
-docker-compose logs -f backend
-docker-compose logs -f admin
-docker-compose logs -f app
 ```
 
-### 4. 访问服务
+### 方式二：从 GitHub 部署
 
-- 后端 API: http://localhost:3000
-- API 文档: http://localhost:3000/api-docs
-- 管理后台: http://localhost:5173
-- 学生端应用: http://localhost:5174
-
-### 5. 停止服务
+**注意**: Windows Docker Desktop 不支持从 URL 构建，Linux/Mac 可用。
 
 ```bash
-# 停止但不删除容器
-docker-compose stop
+# 使用 GitHub 配置文件
+docker-compose -f docker-compose.github.yml up -d
+```
 
-# 停止并删除容器
+---
+
+## 🌐 访问服务
+
+- **后端 API**: http://localhost:3000
+- **API 文档**: http://localhost:3000/api-docs  
+- **管理后台**: http://localhost:5173
+- **学生端应用**: http://localhost:5174
+
+---
+
+## 🔧 常用命令
+
+### 基本操作
+
+```bash
+# 启动服务
+docker-compose up -d
+
+# 停止服务
 docker-compose down
 
-# 停止、删除容器和网络
-docker-compose down --volumes
-```
-
-### 6. 重启服务
-
-```bash
-# 重启所有服务
+# 重启服务
 docker-compose restart
 
-# 重启特定服务
-docker-compose restart backend
+# 查看日志
+docker-compose logs -f
+
+# 查看状态
+docker-compose ps
 ```
 
-### 7. 更新服务
-
-当代码有更新时：
+### 更新代码
 
 ```bash
 # 重新构建并启动
 docker-compose up -d --build
 
-# 或者分步执行
-docker-compose build
+# 或分步执行
+docker-compose build --no-cache
 docker-compose up -d
 ```
 
----
-
-## 🔧 方式二：手动使用 Docker 命令
-
-如果不想使用 Docker Compose，可以手动执行以下命令。
-
-### 1. 创建 Docker 网络
+### 管理数据卷
 
 ```bash
-docker network create word-wonderland-network
-```
+# 查看卷
+docker volume ls
 
-### 2. 构建镜像
+# 备份数据
+docker run --rm \
+  -v words-data:/source \
+  -v $(pwd):/backup \
+  alpine tar czf /backup/backup.tar.gz -C /source .
 
-```bash
-# 构建后端镜像
-cd word-wonderland-backend
-docker build -t word-wonderland-backend:latest .
-cd ..
-
-# 构建管理后台镜像
-cd word-wonderland-admin
-docker build -t word-wonderland-admin:latest .
-cd ..
-
-# 构建学生端镜像
-cd word-wonderland-app
-docker build -t word-wonderland-app:latest .
-cd ..
-```
-
-### 3. 运行容器
-
-```bash
-# 运行后端
-docker run -d \
-  --name word-wonderland-backend \
-  --network word-wonderland-network \
-  -p 3000:3000 \
-  -v "${PWD}/word-wonderland-backend/data:/app/data" \
-  --restart unless-stopped \
-  word-wonderland-backend:latest
-
-# 运行管理后台
-docker run -d \
-  --name word-wonderland-admin \
-  --network word-wonderland-network \
-  -p 5173:80 \
-  --restart unless-stopped \
-  word-wonderland-admin:latest
-
-# 运行学生端应用
-docker run -d \
-  --name word-wonderland-app \
-  --network word-wonderland-network \
-  -p 5174:80 \
-  --restart unless-stopped \
-  word-wonderland-app:latest
-```
-
-**注意**: Windows PowerShell 用户请将 `${PWD}` 替换为当前目录的绝对路径，例如：
-```powershell
--v "E:\03_Development\Projects\bread-dog-recite-words\word-wonderland-backend\data:/app/data"
-```
-
-### 4. 查看运行状态
-
-```bash
-# 查看所有运行的容器
-docker ps
-
-# 查看容器日志
-docker logs word-wonderland-backend
-docker logs word-wonderland-admin
-docker logs word-wonderland-app
-
-# 实时查看日志
-docker logs -f word-wonderland-backend
-```
-
-### 5. 停止和删除容器
-
-```bash
-# 停止容器
-docker stop word-wonderland-backend word-wonderland-admin word-wonderland-app
-
-# 删除容器
-docker rm word-wonderland-backend word-wonderland-admin word-wonderland-app
-
-# 删除网络
-docker network rm word-wonderland-network
-```
-
-### 6. 重启容器
-
-```bash
-docker restart word-wonderland-backend
-docker restart word-wonderland-admin
-docker restart word-wonderland-app
+# 恢复数据
+docker stop word-wonderland-backend
+docker run --rm \
+  -v words-data:/target \
+  -v $(pwd):/backup \
+  alpine tar xzf /backup/backup.tar.gz -C /target
+docker start word-wonderland-backend
 ```
 
 ---
 
-## 🔍 常用管理命令
+## 💾 数据持久化
 
-### 查看镜像
+项目使用**命名存储卷** `words-data` 保存数据，由 Docker 自动管理。
 
-```bash
-# 列出所有镜像
-docker images
+优点：
+- ✅ 跨平台兼容
+- ✅ 自动管理和备份
+- ✅ 独立于容器生命周期
 
-# 搜索项目相关镜像
-docker images | grep word-wonderland
-```
+**切换为绑定挂载**（如需直接访问文件）：
 
-### 删除镜像
+编辑 `docker-compose.yml`：
 
-```bash
-docker rmi word-wonderland-backend:latest
-docker rmi word-wonderland-admin:latest
-docker rmi word-wonderland-app:latest
-```
-
-### 进入容器
-
-```bash
-# 进入后端容器
-docker exec -it word-wonderland-backend sh
-
-# 进入管理后台容器
-docker exec -it word-wonderland-admin sh
-
-# 进入学生端容器
-docker exec -it word-wonderland-app sh
-```
-
-### 查看资源使用
-
-```bash
-# 查看容器资源使用情况
-docker stats
-
-# 查看特定容器
-docker stats word-wonderland-backend
-```
-
-### 清理系统
-
-```bash
-# 清理未使用的容器
-docker container prune
-
-# 清理未使用的镜像
-docker image prune
-
-# 清理未使用的网络
-docker network prune
-
-# 一键清理所有未使用资源
-docker system prune -a
+```yaml
+backend:
+  volumes:
+    # 注释命名卷
+    # - words-data:/app/data
+    
+    # 使用绑定挂载
+    - ./word-wonderland-backend/data:/app/data
 ```
 
 ---
 
 ## 📱 内网访问
 
-如果需要在局域网内的其他设备访问：
-
-1. 获取服务器IP地址：
 ```bash
-# Windows
-ipconfig
+# 获取本机 IP
+ipconfig          # Windows
+ifconfig          # Linux/Mac
 
-# Linux/Mac
-ifconfig
+# 使用 IP 访问
+http://192.168.x.x:3000   # 后端
+http://192.168.x.x:5173   # 管理后台
+http://192.168.x.x:5174   # 学生端
 ```
 
-2. 确保防火墙开放了对应端口（3000, 5173, 5174）
-
-3. 使用服务器IP访问：
-```
-http://192.168.x.x:3000    # 后端
-http://192.168.x.x:5173    # 管理后台
-http://192.168.x.x:5174    # 学生端
-```
+确保防火墙开放了对应端口（3000, 5173, 5174）。
 
 ---
 
 ## 🐛 故障排查
 
-### 问题1: 端口已被占用
+### 端口被占用
 
 ```bash
-# Windows - 查看端口占用
+# Windows
 netstat -ano | findstr :3000
 
-# 停止占用端口的进程或修改 docker-compose.yml 中的端口映射
+# Linux/Mac
+lsof -i :3000
+
+# 修改 docker-compose.yml 中的端口映射
+ports:
+  - "3001:3000"  # 改用其他端口
 ```
 
-### 问题2: 前端无法连接后端
-
-检查：
-1. 后端容器是否正常运行：`docker ps`
-2. 后端日志是否有错误：`docker logs word-wonderland-backend`
-3. nginx 配置中的 backend 地址是否正确
-
-### 问题3: 数据丢失
-
-确保后端的 data 目录已正确挂载：
-```bash
-docker inspect word-wonderland-backend | grep Mounts -A 10
-```
-
-### 问题4: 构建失败
+### 前端无法连接后端
 
 ```bash
-# 清除构建缓存重新构建
-docker-compose build --no-cache
+# 检查后端是否运行
+docker ps | grep backend
 
-# 或手动清除
-docker builder prune
-```
-
-### 问题5: 容器无法启动
-
-```bash
-# 查看详细错误信息
+# 查看后端日志
 docker logs word-wonderland-backend
 
-# 检查容器状态
-docker inspect word-wonderland-backend
+# 检查网络
+docker network inspect word-wonderland-network
+```
+
+### 构建失败
+
+```bash
+# 清除缓存重新构建
+docker-compose build --no-cache
+
+# 查看详细日志
+docker-compose up --build
+```
+
+### pnpm-lock.yaml 找不到
+
+**原因**: `.gitignore` 忽略了 lock 文件。
+
+**解决**: Dockerfile 已配置自动检测，会使用 npm 作为替代。如仍有问题：
+
+```bash
+docker builder prune
+docker-compose build --no-cache
 ```
 
 ---
 
 ## 📦 生产环境建议
 
-1. **使用环境变量管理配置**
-   - 创建 `.env` 文件
-   - 在 docker-compose.yml 中引用
+### 1. 定期备份
 
-2. **数据备份**
-   ```bash
-   # 备份后端数据
-   docker cp word-wonderland-backend:/app/data ./backup/data-$(date +%Y%m%d)
-   ```
+创建 `backup.sh`：
 
-3. **使用特定版本标签**
-   ```bash
-   docker build -t word-wonderland-backend:v1.0.0 .
-   ```
+```bash
+#!/bin/bash
+BACKUP_DIR="./backups"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
-4. **设置资源限制**
-   在 docker-compose.yml 中添加：
-   ```yaml
-   services:
-     backend:
-       deploy:
-         resources:
-           limits:
-             cpus: '1'
-             memory: 512M
-   ```
+mkdir -p ${BACKUP_DIR}
 
-5. **配置日志轮转**
-   ```yaml
-   services:
-     backend:
-       logging:
-         driver: "json-file"
-         options:
-           max-size: "10m"
-           max-file: "3"
-   ```
+docker run --rm \
+  -v words-data:/source \
+  -v ${BACKUP_DIR}:/backup \
+  alpine tar czf /backup/backup-${TIMESTAMP}.tar.gz -C /source .
+
+echo "备份完成: ${BACKUP_DIR}/backup-${TIMESTAMP}.tar.gz"
+
+# 保留最近 7 天的备份
+find ${BACKUP_DIR} -name "backup-*.tar.gz" -mtime +7 -delete
+```
+
+设置定时任务：
+```bash
+# Linux crontab
+0 2 * * * /path/to/backup.sh
+
+# Windows 计划任务
+schtasks /create /tn "Docker Backup" /tr "C:\path\to\backup.bat" /sc daily /st 02:00
+```
+
+### 2. 使用环境变量
+
+创建 `.env` 文件：
+
+```env
+# 端口配置
+BACKEND_PORT=3000
+ADMIN_PORT=5173
+APP_PORT=5174
+
+# 环境
+NODE_ENV=production
+```
+
+在 `docker-compose.yml` 中引用：
+
+```yaml
+services:
+  backend:
+    ports:
+      - "${BACKEND_PORT}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+```
+
+### 3. 配置资源限制
+
+```yaml
+services:
+  backend:
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+```
+
+### 4. 配置日志轮转
+
+```yaml
+services:
+  backend:
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+```
+
+---
+
+## 🧹 清理资源
+
+```bash
+# 停止并删除容器
+docker-compose down
+
+# 删除容器和卷（会删除数据！）
+docker-compose down -v
+
+# 删除镜像
+docker rmi word-wonderland-backend:latest
+docker rmi word-wonderland-admin:latest
+docker rmi word-wonderland-app:latest
+
+# 清理未使用的资源
+docker system prune -a
+```
+
+---
+
+## 📚 配置文件说明
+
+### docker-compose.yml
+本地部署配置，从本地代码构建。
+
+### docker-compose.github.yml  
+从 GitHub 仓库构建，无需克隆代码（Windows Docker Desktop 不支持）。
+
+需要修改仓库地址：
+```yaml
+context: https://github.com/YOUR_USERNAME/word-wonderland.git#main:word-wonderland-backend
+```
 
 ---
 
 ## ✅ 验证部署
 
-部署完成后，验证各服务是否正常：
-
 ```bash
-# 1. 检查所有容器状态
+# 1. 检查容器状态
 docker-compose ps
 
 # 2. 测试后端 API
 curl http://localhost:3000/api/words
 
-# 3. 访问 API 文档
-# 浏览器打开: http://localhost:3000/api-docs
-
-# 4. 访问管理后台
-# 浏览器打开: http://localhost:5173
-
-# 5. 访问学生端
-# 浏览器打开: http://localhost:5174
+# 3. 浏览器访问
+# http://localhost:3000/api-docs
+# http://localhost:5173
+# http://localhost:5174
 ```
 
 ---
 
-## 🎉 完成！
+## 📖 更多参考
 
-现在你的 Word Wonderland 应用已经通过 Docker 成功部署了！
+- [快速命令参考](DOCKER_QUICK_REFERENCE.md) - 常用命令速查表
+- [Docker 官方文档](https://docs.docker.com/)
 
-如有问题，请查看日志或提交 Issue。
+---
 
+需要帮助？请查看日志或提交 Issue。
