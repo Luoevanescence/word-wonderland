@@ -1,0 +1,150 @@
+.card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  animation: slideIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-header {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.pattern-title {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-content {
+  line-height: 1.8;
+}
+
+/* Word Card Styles */
+.definition {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.part-of-speech {
+  font-weight: 700;
+  color: #667eea;
+  min-width: 50px;
+  font-size: 16px;
+}
+
+.meaning {
+  color: #555;
+  font-size: 16px;
+  flex: 1;
+}
+
+/* Phrase & Sentence Card Styles */
+.meaning-text {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.sentence-text {
+  font-size: 18px;
+  color: #333;
+  font-style: italic;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.translation-text {
+  font-size: 16px;
+  color: #666;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.example-text {
+  font-size: 15px;
+  color: #666;
+  font-style: italic;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.note-text {
+  font-size: 14px;
+  color: #888;
+  margin-top: 10px;
+  padding: 10px;
+  background: #fffbf0;
+  border-left: 3px solid #ffc107;
+  border-radius: 4px;
+}
+
+.description-text {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.example-section {
+  margin-top: 15px;
+}
+
+/* Topic Card Styles */
+.topic-card {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+}
+
+.topic-card:hover {
+  border-color: rgba(102, 126, 234, 0.6);
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 20px;
+  }
+  
+  .card-title {
+    font-size: 20px;
+  }
+  
+  .sentence-text,
+  .meaning-text {
+    font-size: 16px;
+  }
+}
+

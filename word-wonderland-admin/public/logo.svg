@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e7ff;stop-opacity:1" />
+    </linearGradient>
+    
+    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#c7d2fe;stop-opacity:0" />
+    </radialGradient>
+    
+    <linearGradient id="sparkleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.9" />
+    </linearGradient>
+    
+    <linearGradient id="wGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <circle cx="32" cy="32" r="20" fill="url(#glowGradient)" opacity="0.6"/>
+  
+  <g>
+    <path d="M 12 18 Q 12 22 12 46 L 28 48 L 28 20 Q 22 18 12 18" 
+          fill="none" 
+          stroke="#ffffff" 
+          stroke-width="2.5" 
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          opacity="0.95"/>
+    
+    <path d="M 52 18 Q 52 22 52 46 L 36 48 L 36 20 Q 42 18 52 18" 
+          fill="none" 
+          stroke="#ffffff" 
+          stroke-width="2.5" 
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          opacity="0.95"/>
+    
+    <line x1="32" y1="19" x2="32" y2="47" 
+          stroke="#ffffff" 
+          stroke-width="3" 
+          stroke-linecap="round"
+          opacity="0.95"/>
+    
+    <path d="M 16 26 Q 20 26.5 26 27" 
+          stroke="#e0e7ff" 
+          stroke-width="1.5" 
+          stroke-linecap="round" 
+          opacity="0.7"/>
+    <path d="M 16 32 Q 20 32.5 26 33" 
+          stroke="#e0e7ff" 
+          stroke-width="1.5" 
+          stroke-linecap="round" 
+          opacity="0.6"/>
+    
+    <path d="M 38 27 Q 42 26.5 48 26" 
+          stroke="#e0e7ff" 
+          stroke-width="1.5" 
+          stroke-linecap="round" 
+          opacity="0.7"/>
+    <path d="M 38 33 Q 42 32.5 48 32" 
+          stroke="#e0e7ff" 
+          stroke-width="1.5" 
+          stroke-linecap="round" 
+          opacity="0.6"/>
+  </g>
+  
+  <g fill="url(#sparkleGradient)">
+    <circle cx="14" cy="12" r="1.2" opacity="0.9">
+      <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="20" cy="10" r="0.8" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="44" cy="10" r="0.8" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="50" cy="12" r="1.2" opacity="0.9">
+      <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2.3s" repeatCount="indefinite"/>
+    </circle>
+    
+    <circle cx="10" cy="52" r="1" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="54" cy="52" r="1" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.4s" repeatCount="indefinite"/>
+    </circle>
+    
+    <circle cx="8" cy="32" r="0.6" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="56" cy="32" r="0.6" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <text x="32" y="38" 
+        font-family="Arial, sans-serif" 
+        font-size="18" 
+        font-weight="900" 
+        fill="url(#wGradient)" 
+        text-anchor="middle"
+        letter-spacing="1">W</text>
+  
+  <g stroke="url(#sparkleGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.6">
+    <line x1="24" y1="28" x2="22" y2="26">
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="40" y1="28" x2="42" y2="26">
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="24" y1="38" x2="20" y2="38">
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.4s" repeatCount="indefinite"/>
+    </line>
+    <line x1="40" y1="38" x2="44" y2="38">
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.6s" repeatCount="indefinite"/>
+    </line>
+  </g>
+</svg>

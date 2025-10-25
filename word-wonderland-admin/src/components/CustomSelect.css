@@ -1,0 +1,199 @@
+.custom-select {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border: 2px solid #e8e8e8;
+  border-radius: 12px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 52px;
+}
+
+.custom-select-trigger:hover {
+  border-color: #d0d0d0;
+  background: white;
+}
+
+.custom-select-trigger.open {
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
+}
+
+.custom-select-value {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #667eea;
+  transition: color 0.3s;
+}
+
+.custom-select-trigger.placeholder .custom-select-value {
+  color: #999;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.custom-select-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
+  color: #667eea;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-select-trigger.open .custom-select-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-select-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: 2px solid #667eea;
+  overflow: hidden;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 320px;
+  overflow-y: auto;
+  /* 防止滚动条遮挡边框 */
+  padding-right: 4px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.custom-select-options {
+  padding: 8px 4px 8px 8px;
+}
+
+.custom-select-option {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  gap: 10px;
+}
+
+.custom-select-option:hover {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f1ff 100%);
+  transform: translateX(4px);
+}
+
+.custom-select-option.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+}
+
+.custom-select-option.selected:hover {
+  background: linear-gradient(135deg, #7c8ef5 0%, #8557b3 100%);
+  transform: translateX(4px);
+}
+
+.option-label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.custom-select-option.selected .option-label {
+  color: white;
+  font-weight: 600;
+}
+
+.option-description {
+  font-size: 12px;
+  color: #7f8c8d;
+  margin-left: 8px;
+}
+
+.custom-select-option.selected .option-description {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.option-check {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  margin-left: auto;
+  animation: checkIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes checkIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 滚动条样式 */
+.custom-select-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3px;
+  border: 1px solid white;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #7c8ef5 0%, #8557b3 100%);
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .custom-select-trigger {
+    padding: 12px 14px;
+    min-height: 48px;
+  }
+
+  .custom-select-value {
+    font-size: 14px;
+  }
+
+  .custom-select-dropdown {
+    max-height: 280px;
+  }
+
+  .custom-select-option {
+    padding: 14px 12px;
+  }
+}
+
