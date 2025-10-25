@@ -38,6 +38,7 @@ bread-dog-recite-words/
 - ✅ 句型管理
 - ✅ 主题管理
 - ✅ 批量删除功能
+- ✅ **数据导出功能**（JSON 格式）✨ 新增
 - ✅ 分页展示
 - ✅ 移动端适配
 
@@ -218,6 +219,7 @@ A: 数据保存在 `backend/data/` 目录下的JSON文件中，定期备份。
 
 📚 **部署文档**：
 - [Docker 部署指南](DOCKER_DEPLOYMENT.md) - 完整部署教程（本地/GitHub）
+- [数据导出指南](DOCKER_DATA_EXPORT.md) - 获取存储卷数据的多种方法
 - [快速命令参考](DOCKER_QUICK_REFERENCE.md) - 常用命令速查表
 
 ### 快速开始
@@ -255,6 +257,32 @@ docker-compose up -d --build
 
 📖 更多命令和故障排查，请查看 [Docker 部署指南](DOCKER_DEPLOYMENT.md)
 
+## 📱 移动端 APP
+
+项目可以打包成 Android/iOS APP！支持多种实现方案。
+
+📖 **详细指南**: [移动端 APP 开发指南](MOBILE_APP_GUIDE.md)
+
+### 三种方案对比
+
+| 方案 | 开发难度 | 推荐度 | 开发周期 |
+|------|---------|--------|---------|
+| PWA | ⭐ 简单 | ⭐⭐⭐⭐⭐ | 1-2天 |
+| Capacitor | ⭐⭐ 中等 | ⭐⭐⭐⭐⭐ | 3-5天 |
+| React Native | ⭐⭐⭐ 较难 | ⭐⭐⭐ | 1-2周 |
+
+### 快速开始（PWA）
+
+```bash
+cd word-wonderland-app
+npm install vite-plugin-pwa -D
+# 配置后访问应用，添加到手机主屏幕即可使用
+```
+
+📱 支持红米 Note14 等所有 Android 设备！
+
+---
+
 ## 📈 未来计划
 
 - [ ]  用户认证和授权
@@ -264,6 +292,7 @@ docker-compose up -d --build
 - [ ]  发音功能
 - [ ]  导入导出Excel
 - [x]  Docker部署支持
+- [ ]  移动端 APP（PWA/Capacitor）
 
 ## 🤝 贡献
 

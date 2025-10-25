@@ -8,3 +8,10 @@
   margin: 0 auto;
 }
 
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .app {
+    padding: 15px 10px;
+  }
+}
+

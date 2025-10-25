@@ -52,17 +52,35 @@
 
 @media (max-width: 768px) {
   .title {
-    font-size: 36px;
+    font-size: 28px; /* 文字小一点 */
   }
   .logo-icon {
-    width: 36px;
-    height: 36px;
+    width: 72px;  /* logo 大一点 */
+    height: 72px;
   }
   .subtitle {
-    font-size: 16px;
+    font-size: 14px; /* 副标题也小一点 */
   }
   .header-content {
-    padding: 30px 20px;
+    padding: 25px 20px;
+  }
+}
+
+/* 针对小屏手机（红米 Note14 等）的额外优化 */
+@media (max-width: 480px) {
+  .title {
+    font-size: 24px;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 64px;
+    height: 64px;
+  }
+  .subtitle {
+    font-size: 13px;
+  }
+  .header-content {
+    padding: 20px 15px;
   }
 }
 

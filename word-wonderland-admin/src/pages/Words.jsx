@@ -6,6 +6,8 @@ import CustomSelect from '../components/CustomSelect';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
 import { useConfirmDialog, useToast } from '../hooks/useDialog';
+import ExportButton from '../components/ExportButton';
+import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 
 function Words() {
   const [words, setWords] = useState([]);
@@ -93,6 +95,25 @@ function Words() {
         }
       }
     });
+  };
+
+  // 导出功能
+  const handleExportAll = () => {
+    const success = downloadJSONWithMeta(words, 'words');
+    if (success) {
+      showToast('导出成功！', 'success');
+    } else {
+      showToast('导出失败，请重试', 'error');
+    }
+  };
+
+  const handleExportSelected = () => {
+    const success = downloadSelectedJSON(words, selectedIds, 'words');
+    if (success) {
+      showToast(`成功导出 ${selectedIds.length} 个单词！`, 'success');
+    } else {
+      showToast('导出失败，请重试', 'error');
+    }
   };
 
   // 批量删除相关函数
@@ -200,6 +221,15 @@ function Words() {
           <button className="btn btn-primary" onClick={openAddModal}>
             + 添加新单词
           </button>
+          
+          <ExportButton
+            onExport={handleExportAll}
+            onExportSelected={handleExportSelected}
+            selectedCount={selectedIds.length}
+            disabled={loading || words.length === 0}
+            label="导出单词"
+          />
+          
           {selectedIds.length > 0 && (
             <div className="bulk-actions">
               <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>

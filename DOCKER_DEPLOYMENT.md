@@ -338,6 +338,7 @@ curl http://localhost:3000/api/words
 
 ## 📖 更多参考
 
+- [数据导出指南](DOCKER_DATA_EXPORT.md) - 获取存储卷数据的多种方法  
 - [快速命令参考](DOCKER_QUICK_REFERENCE.md) - 常用命令速查表
 - [Docker 官方文档](https://docs.docker.com/)
 

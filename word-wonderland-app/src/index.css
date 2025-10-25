@@ -15,6 +15,13 @@ body {
   min-height: 100vh;
 }
 
+/* 移动端优化 */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px; /* 防止 iOS 自动缩放 */
+  }
+}
+
 #root {
   min-height: 100vh;
 }
