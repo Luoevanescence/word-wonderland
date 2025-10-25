@@ -6,17 +6,27 @@ WORKDIR /app
 
 # 复制 package 文件
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
 
-# 安装 pnpm 和依赖
-RUN npm install -g pnpm && \
-    pnpm install --frozen-lockfile
+# 复制 lock 文件（如果存在）
+COPY pnpm-lock.yaml* ./
+
+# 安装依赖
+# 如果有 pnpm-lock.yaml 使用 pnpm，否则使用 npm
+RUN if [ -f pnpm-lock.yaml ]; then \
+      npm install -g pnpm && pnpm install --frozen-lockfile; \
+    else \
+      npm ci || npm install; \
+    fi
 
 # 复制应用代码
 COPY . .
 
 # 构建应用
-RUN pnpm run build
+RUN if [ -f pnpm-lock.yaml ]; then \
+      pnpm run build; \
+    else \
+      npm run build; \
+    fi
 
 # 生产环境
 FROM nginx:alpine

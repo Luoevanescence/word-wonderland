@@ -331,7 +331,27 @@ ping github.com
 2. 等待构建完成（首次较慢，后续会快）
 3. 或使用本地构建方式（见 DOCKER_DEPLOYMENT.md）
 
-### 问题3: 找不到分支或子目录
+### 问题3: pnpm-lock.yaml 或 package-lock.json 找不到
+
+**错误信息**: `"/pnpm-lock.yaml": not found`
+
+**原因**: 项目的 `.gitignore` 文件忽略了 lock 文件，从 GitHub 拉取时这些文件不存在。
+
+**解决方案**: Dockerfile 已经更新为自动处理这种情况，会自动检测：
+- 如果有 `pnpm-lock.yaml` 使用 pnpm
+- 否则使用 npm
+
+如果仍然有问题，可以：
+
+```bash
+# 1. 清除构建缓存
+docker builder prune
+
+# 2. 重新构建
+docker-compose -f docker-compose.github.yml build --no-cache
+```
+
+### 问题4: 找不到分支或子目录
 
 检查：
 1. GitHub 用户名是否正确
@@ -344,7 +364,7 @@ docker build --progress=plain -t test \
   https://github.com/YOUR_GITHUB_USERNAME/bread-dog-recite-words.git#main:word-wonderland-backend
 ```
 
-### 问题4: 数据持久化问题
+### 问题5: 数据持久化问题
 
 确保 data 目录已创建：
 ```bash
@@ -354,7 +374,7 @@ mkdir -p data
 docker inspect word-wonderland-backend | grep -A 10 Mounts
 ```
 
-### 问题5: 权限问题
+### 问题6: 权限问题
 
 Linux 用户可能需要 sudo：
 ```bash
