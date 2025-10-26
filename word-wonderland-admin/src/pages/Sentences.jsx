@@ -4,6 +4,7 @@ import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
+import DetailViewModal from '../components/DetailViewModal';
 
 function Sentences() {
   const [sentences, setSentences] = useState([]);
@@ -16,6 +17,7 @@ function Sentences() {
     note: ''
   });
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(sentences, 5);
@@ -147,12 +149,22 @@ function Sentences() {
               <tbody>
                 {currentData.map((sentence) => (
                   <tr key={sentence.id}>
-                    <td><strong>{sentence.sentence}</strong></td>
-                    <td>{sentence.translation}</td>
-                    <td style={{ color: '#666' }}>{sentence.note}</td>
+                    <td className="text-cell"><strong>{sentence.sentence}</strong></td>
+                    <td className="text-cell">{sentence.translation}</td>
+                    <td className="text-cell" style={{ color: '#666' }}>{sentence.note}</td>
                     <td>{new Date(sentence.createdAt).toLocaleDateString()}</td>
                     <td>
                       <div className="actions-cell">
+                        <button 
+                          className="btn-view-detail" 
+                          onClick={() => setDetailView({
+                            show: true,
+                            title: '句子详情',
+                            content: `句子：${sentence.sentence}\n\n翻译：${sentence.translation}\n\n备注：${sentence.note || '无'}`
+                          })}
+                        >
+                          详情
+                        </button>
                         <button className="btn btn-secondary btn-small" onClick={() => handleEdit(sentence)}>
                           编辑
                         </button>
@@ -262,6 +274,14 @@ function Sentences() {
           </div>
         </div>
       )}
+
+      {/* 详情查看弹窗 */}
+      <DetailViewModal
+        show={detailView.show}
+        title={detailView.title}
+        content={detailView.content}
+        onClose={() => setDetailView({ show: false, title: '', content: '' })}
+      />
     </div>
   );
 }

@@ -529,6 +529,7 @@ input[type="checkbox"] {
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* 固定表格布局，支持列宽调整 */
 }
 
 thead {
@@ -536,33 +537,69 @@ thead {
   position: relative;
 }
 
-thead::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  opacity: 0.3;
-}
-
 th {
   padding: 12px 16px; /* 减少内边距，更紧凑 */
+  position: relative;
   text-align: left;
   font-weight: 700;
   color: #667eea;
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 2px solid #667eea;
+}
+
+th:last-child {
+  border-right: none;
 }
 
 td {
   padding: 12px 16px; /* 减少内边距，更紧凑 */
   border-top: 1px solid #f5f5f5;
+  border-right: 1px solid #fafafa;
   color: #2c3e50;
   font-size: 14px;
   transition: all 0.2s;
+}
+
+td:last-child {
+  border-right: none;
+}
+
+/* 长文本单元格样式 - 单行显示，溢出隐藏 */
+td.text-cell {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.text-cell:hover {
+  overflow: visible;
+  white-space: normal;
+  position: relative;
+  z-index: 10;
+}
+
+/* 查看详情按钮 */
+.btn-view-detail {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #f0f1ff;
+  color: #667eea;
+  border: 1px solid #667eea;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.btn-view-detail:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 tbody tr {

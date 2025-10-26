@@ -4,6 +4,7 @@ import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
+import DetailViewModal from '../components/DetailViewModal';
 
 function Phrases() {
   const [phrases, setPhrases] = useState([]);
@@ -17,6 +18,7 @@ function Phrases() {
   });
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(phrases, 5);
@@ -207,11 +209,21 @@ function Phrases() {
                 {currentData.map((phrase) => (
                   <tr key={phrase.id}>
                     <td><strong>{phrase.phrase}</strong></td>
-                    <td>{phrase.meaning}</td>
-                    <td style={{ fontStyle: 'italic', color: '#666' }}>{phrase.example}</td>
+                    <td className="text-cell">{phrase.meaning}</td>
+                    <td className="text-cell" style={{ fontStyle: 'italic', color: '#666' }}>{phrase.example}</td>
                     <td>{new Date(phrase.createdAt).toLocaleDateString()}</td>
                     <td>
                       <div className="actions-cell">
+                        <button 
+                          className="btn-view-detail" 
+                          onClick={() => setDetailView({
+                            show: true,
+                            title: `短语详情：${phrase.phrase}`,
+                            content: `含义：${phrase.meaning}\n\n例句：${phrase.example || '无'}`
+                          })}
+                        >
+                          详情
+                        </button>
                         <button className="btn btn-secondary btn-small" onClick={() => handleEdit(phrase)}>
                           编辑
                         </button>
@@ -319,6 +331,14 @@ function Phrases() {
           </div>
         </div>
       )}
+
+      {/* 详情查看弹窗 */}
+      <DetailViewModal
+        show={detailView.show}
+        title={detailView.title}
+        content={detailView.content}
+        onClose={() => setDetailView({ show: false, title: '', content: '' })}
+      />
     </div>
   );
 }

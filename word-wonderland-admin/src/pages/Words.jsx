@@ -9,6 +9,7 @@ import { useConfirmDialog, useToast } from '../hooks/useDialog';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
+import DetailViewModal from '../components/DetailViewModal';
 
 function Words() {
   const [words, setWords] = useState([]);
@@ -22,6 +23,7 @@ function Words() {
   });
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除：选中的ID列表
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
@@ -305,7 +307,7 @@ function Words() {
                       />
                     </td>
                     <td><strong>{word.word}</strong></td>
-                    <td>
+                    <td className="text-cell">
                       {word.definitions.map((def, idx) => (
                         <div key={idx}>
                           <span style={{ fontWeight: 500, color: '#667eea' }}>
@@ -318,6 +320,19 @@ function Words() {
                   <td>{new Date(word.createdAt).toLocaleDateString()}</td>
                   <td>
                     <div className="actions-cell">
+                      <button 
+                        className="btn-view-detail" 
+                        onClick={() => setDetailView({
+                          show: true,
+                          title: `单词释义：${word.word}`,
+                          content: word.definitions.map((def, idx) => 
+                            `${def.partOfSpeech} ${def.meaning}`
+                          ).join('\n\n')
+                        })}
+                        onContextMenu={(e) => e.preventDefault()}
+                      >
+                        详情
+                      </button>
                       <button 
                         className="btn btn-secondary btn-small" 
                         onClick={() => handleEdit(word)}
@@ -481,6 +496,14 @@ function Words() {
         type={dialogState.type}
         onConfirm={dialogState.onConfirm}
         onCancel={closeDialog}
+      />
+
+      {/* 详情查看弹窗 */}
+      <DetailViewModal
+        show={detailView.show}
+        title={detailView.title}
+        content={detailView.content}
+        onClose={() => setDetailView({ show: false, title: '', content: '' })}
       />
 
       {/* Toast通知 */}

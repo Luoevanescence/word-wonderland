@@ -4,6 +4,7 @@ import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
+import DetailViewModal from '../components/DetailViewModal';
 
 function Patterns() {
   const [patterns, setPatterns] = useState([]);
@@ -17,6 +18,7 @@ function Patterns() {
     translation: ''
   });
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(patterns, 5);
@@ -151,8 +153,8 @@ function Patterns() {
                 {currentData.map((pattern) => (
                   <tr key={pattern.id}>
                     <td><strong style={{ color: '#667eea' }}>{pattern.pattern}</strong></td>
-                    <td>{pattern.description}</td>
-                    <td>
+                    <td className="text-cell">{pattern.description}</td>
+                    <td className="text-cell">
                       {pattern.example && (
                         <div>
                           <div style={{ fontStyle: 'italic' }}>{pattern.example}</div>
@@ -165,6 +167,16 @@ function Patterns() {
                     <td>{new Date(pattern.createdAt).toLocaleDateString()}</td>
                     <td>
                       <div className="actions-cell">
+                        <button 
+                          className="btn-view-detail" 
+                          onClick={() => setDetailView({
+                            show: true,
+                            title: `句型详情：${pattern.pattern}`,
+                            content: `描述：${pattern.description}\n\n例句：${pattern.example || '无'}\n\n翻译：${pattern.translation || '无'}`
+                          })}
+                        >
+                          详情
+                        </button>
                         <button className="btn btn-secondary btn-small" onClick={() => handleEdit(pattern)}>
                           编辑
                         </button>
@@ -289,6 +301,14 @@ function Patterns() {
           </div>
         </div>
       )}
+
+      {/* 详情查看弹窗 */}
+      <DetailViewModal
+        show={detailView.show}
+        title={detailView.title}
+        content={detailView.content}
+        onClose={() => setDetailView({ show: false, title: '', content: '' })}
+      />
     </div>
   );
 }
