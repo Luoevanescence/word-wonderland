@@ -14,6 +14,7 @@ function Sentences() {
     translation: '',
     note: ''
   });
+  const [submitting, setSubmitting] = useState(false); // 表单提交状态
 
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(sentences, 5);
@@ -37,6 +38,9 @@ function Sentences() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return; // 防止重复提交
+    
+    setSubmitting(true);
     try {
       if (editingSentence) {
         await sentencesAPI.update(editingSentence.id, formData);
@@ -49,6 +53,8 @@ function Sentences() {
     } catch (error) {
       console.error('Error saving sentence:', error);
       alert('保存句子失败');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -244,8 +250,8 @@ function Sentences() {
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowModal(false); resetForm(); }}>
                   取消
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingSentence ? '更新' : '创建'}
+                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                  {submitting ? '处理中...' : (editingSentence ? '更新' : '创建')}
                 </button>
               </div>
             </form>

@@ -20,6 +20,7 @@ function Words() {
     definitions: [{ partOfSpeech: '', meaning: '' }]
   });
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除：选中的ID列表
+  const [submitting, setSubmitting] = useState(false); // 表单提交状态
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
@@ -57,6 +58,9 @@ function Words() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return; // 防止重复提交
+    
+    setSubmitting(true);
     try {
       if (editingWord) {
         await wordsAPI.update(editingWord.id, formData);
@@ -70,6 +74,8 @@ function Words() {
     } catch (error) {
       console.error('Error saving word:', error);
       showToast(error.response?.data?.message || '保存单词失败', 'error');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -454,8 +460,8 @@ function Words() {
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowModal(false); resetForm(); }}>
                   取消
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingWord ? '更新' : '创建'}
+                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                  {submitting ? '处理中...' : (editingWord ? '更新' : '创建')}
                 </button>
               </div>
             </form>

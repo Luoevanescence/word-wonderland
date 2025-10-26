@@ -1,1 +1,58 @@
-[]
+ [
+    {
+      "id": "06992166-c10a-492e-8a9b-75005bc1b358",
+      "phrase": "associate A with B",
+      "meaning": "把 A 与 B 联系起来",
+      "example": "",
+      "createdAt": "2025-10-26T08:00:29.790Z",
+      "updatedAt": "2025-10-26T08:00:29.790Z"
+    },
+    {
+      "id": "9ffe50e5-892e-4e39-a181-e157fa881d40",
+      "phrase": "qssociate sb.",
+      "meaning": "与 ... 交往/打交道",
+      "example": "",
+      "createdAt": "2025-10-26T08:01:22.097Z",
+      "updatedAt": "2025-10-26T08:01:22.097Z"
+    },
+    {
+      "id": "c3c82996-64c4-4214-8e52-e2b9a9250785",
+      "phrase": "a worthy ideal to pursue with vigor",
+      "meaning": "一个值得充满活力去追求的理想",
+      "example": "",
+      "createdAt": "2025-10-26T08:25:41.876Z",
+      "updatedAt": "2025-10-26T08:25:48.869Z"
+    },
+    {
+      "id": "98c717e3-e313-4dd1-94fe-abc3e002edaf",
+      "phrase": "over a period of three weeks",
+      "meaning": "在三周的时间里",
+      "example": "",
+      "createdAt": "2025-10-26T08:26:51.767Z",
+      "updatedAt": "2025-10-26T08:26:51.767Z"
+    },
+    {
+      "id": "57bea04f-b427-43c7-b822-2c20e4b6a50b",
+      "phrase": "be drawn towards/to",
+      "meaning": "被...吸引；趋向于...",
+      "example": "",
+      "createdAt": "2025-10-26T08:29:43.380Z",
+      "updatedAt": "2025-10-26T08:29:43.380Z"
+    },
+    {
+      "id": "2beb7821-d83e-4771-9b01-3caa49e990ef",
+      "phrase": "step away from pain",
+      "meaning": "远离痛苦",
+      "example": "",
+      "createdAt": "2025-10-26T08:30:05.861Z",
+      "updatedAt": "2025-10-26T08:30:05.861Z"
+    },
+    {
+      "id": "d15c0965-28c4-4093-9738-0adf268d6beb",
+      "phrase": "out of state",
+      "meaning": "来自其他州的：指来自其他州的或与其他州有关的。",
+      "example": "",
+      "createdAt": "2025-10-26T08:35:16.816Z",
+      "updatedAt": "2025-10-26T08:35:16.816Z"
+    }
+  ]

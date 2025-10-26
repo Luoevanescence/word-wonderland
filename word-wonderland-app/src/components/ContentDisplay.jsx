@@ -55,6 +55,7 @@ function ContentDisplay({ category, count, setCount }) {
   };
 
   const handleRefresh = () => {
+    if (loading) return; // 防止重复点击
     setCount(inputCount);
     fetchItems();
   };

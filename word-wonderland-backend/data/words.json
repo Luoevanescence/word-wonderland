@@ -22,5 +22,89 @@
     ],
     "createdAt": "2025-10-25T16:55:46.349Z",
     "updatedAt": "2025-10-25T16:55:46.350Z"
+  },
+  {
+    "id": "99a1a622-4380-4e1a-b0ce-47c573661f54",
+    "word": "employees",
+    "definitions": [
+      {
+        "partOfSpeech": "n.",
+        "meaning": "员工"
+      }
+    ],
+    "createdAt": "2025-10-26T07:58:07.374Z",
+    "updatedAt": "2025-10-26T07:58:07.374Z"
+  },
+  {
+    "id": "378a6917-9b3d-4f11-8ac8-9dd1b23d6b5c",
+    "word": "pursuit",
+    "definitions": [
+      {
+        "partOfSpeech": "n.",
+        "meaning": "自尊"
+      }
+    ],
+    "createdAt": "2025-10-26T07:58:26.353Z",
+    "updatedAt": "2025-10-26T07:58:26.353Z"
+  },
+  {
+    "id": "dc032c3f-262a-4893-8de6-fa6187440b6b",
+    "word": "associate",
+    "definitions": [
+      {
+        "partOfSpeech": "n.",
+        "meaning": "伙伴，同事；关联，联系；社团，联盟；合作"
+      },
+      {
+        "partOfSpeech": "adj.",
+        "meaning": "副的，准的，非正式的"
+      },
+      {
+        "partOfSpeech": "vt.",
+        "meaning": "联系，联想；"
+      }
+    ],
+    "createdAt": "2025-10-26T08:03:02.720Z",
+    "updatedAt": "2025-10-26T08:12:42.877Z"
+  },
+  {
+    "id": "4b55444b-5935-4c74-97bb-c5b10c62b164",
+    "word": "poet",
+    "definitions": [
+      {
+        "partOfSpeech": "n.",
+        "meaning": "诗人"
+      }
+    ],
+    "createdAt": "2025-10-26T08:32:18.578Z",
+    "updatedAt": "2025-10-26T08:32:18.578Z"
+  },
+  {
+    "id": "40db7e69-bd2a-4d99-999d-4223988d145c",
+    "word": "residency",
+    "definitions": [
+      {
+        "partOfSpeech": "n.",
+        "meaning": "住处；住院医生实习期"
+      }
+    ],
+    "createdAt": "2025-10-26T08:33:41.272Z",
+    "updatedAt": "2025-10-26T08:39:05.364Z"
+  },
+  {
+    "id": "b95189ba-84f6-4734-ba95-82db7754e7fc",
+    "word": "confused",
+    "definitions": [
+      {
+        "partOfSpeech": "adj.",
+        "meaning": "困惑的，糊涂的；混乱的，难懂的"
+      },
+      {
+        "partOfSpeech": "v.",
+        "meaning": "使糊涂，使迷惑；混淆，弄错；使复杂化（confuse 的过去式和过去分词形式）"
+      }
+    ],
+    "createdAt": "2025-10-26T08:40:17.804Z",
+    "updatedAt": "2025-10-26T08:46:52.421Z"
   }
 ]

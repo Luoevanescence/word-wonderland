@@ -15,6 +15,7 @@ function PartsOfSpeech() {
     description: ''
   });
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
+  const [submitting, setSubmitting] = useState(false); // 表单提交状态
   
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(partsOfSpeech, 5);
@@ -38,6 +39,9 @@ function PartsOfSpeech() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return; // 防止重复提交
+    
+    setSubmitting(true);
     try {
       if (editingPos) {
         await partsOfSpeechAPI.update(editingPos.id, formData);
@@ -50,6 +54,8 @@ function PartsOfSpeech() {
     } catch (error) {
       console.error('Error saving part of speech:', error);
       alert(error.response?.data?.message || '保存词性失败');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -334,8 +340,8 @@ function PartsOfSpeech() {
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowModal(false); resetForm(); }}>
                   取消
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingPos ? '更新' : '创建'}
+                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                  {submitting ? '处理中...' : (editingPos ? '更新' : '创建')}
                 </button>
               </div>
             </form>

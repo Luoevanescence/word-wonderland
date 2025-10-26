@@ -10,7 +10,7 @@ function WordCard({ word, index }) {
       <div className="card-content">
         {word.definitions.map((def, idx) => (
           <div key={idx} className="definition">
-            <span className="part-of-speech">{def.partOfSpeech}.</span>
+            <span className="part-of-speech">{def.partOfSpeech}</span>
             <span className="meaning">{def.meaning}</span>
           </div>
         ))}

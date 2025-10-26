@@ -13,6 +13,7 @@ function Topics() {
     name: '',
     description: ''
   });
+  const [submitting, setSubmitting] = useState(false); // 表单提交状态
 
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(topics, 5);
@@ -36,6 +37,9 @@ function Topics() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return; // 防止重复提交
+    
+    setSubmitting(true);
     try {
       if (editingTopic) {
         await topicsAPI.update(editingTopic.id, formData);
@@ -48,6 +52,8 @@ function Topics() {
     } catch (error) {
       console.error('Error saving topic:', error);
       alert('保存主题失败');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -220,8 +226,8 @@ function Topics() {
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowModal(false); resetForm(); }}>
                   取消
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingTopic ? '更新' : '创建'}
+                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                  {submitting ? '处理中...' : (editingTopic ? '更新' : '创建')}
                 </button>
               </div>
             </form>

@@ -15,6 +15,7 @@ function Patterns() {
     example: '',
     translation: ''
   });
+  const [submitting, setSubmitting] = useState(false); // 表单提交状态
 
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(patterns, 5);
@@ -38,6 +39,9 @@ function Patterns() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return; // 防止重复提交
+    
+    setSubmitting(true);
     try {
       if (editingPattern) {
         await patternsAPI.update(editingPattern.id, formData);
@@ -50,6 +54,8 @@ function Patterns() {
     } catch (error) {
       console.error('Error saving pattern:', error);
       alert('保存句型失败');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -271,8 +277,8 @@ function Patterns() {
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowModal(false); resetForm(); }}>
                   取消
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingPattern ? '更新' : '创建'}
+                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                  {submitting ? '处理中...' : (editingPattern ? '更新' : '创建')}
                 </button>
               </div>
             </form>
