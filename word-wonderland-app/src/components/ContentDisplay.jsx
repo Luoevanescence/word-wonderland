@@ -19,6 +19,7 @@ function ContentDisplay({ category, count, setCount }) {
   const [inputCount, setInputCount] = useState(count);
 
   useEffect(() => {
+    setItems([]); // 立即清空旧数据，避免类型不匹配
     fetchItems();
   }, [category]);
 
