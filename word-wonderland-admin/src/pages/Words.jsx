@@ -419,10 +419,11 @@ function Words() {
                     {formData.definitions.length > 1 && (
                       <button
                         type="button"
-                        className="btn btn-danger btn-small"
+                        className="btn btn-danger btn-small remove-definition-btn"
                         onClick={() => removeDefinition(index)}
+                        title="移除此释义"
                       >
-                        移除
+                        ✕
                       </button>
                     )}
                     <div className="form-group">

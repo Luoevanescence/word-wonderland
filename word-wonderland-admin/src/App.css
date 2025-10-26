@@ -822,6 +822,20 @@ tbody tr:hover {
   right: 10px;
 }
 
+.remove-definition-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0;
+  min-width: auto;
+  line-height: 1;
+}
+
 .add-definition-btn {
   width: 100%;
   padding: 12px;
@@ -996,6 +1010,38 @@ tbody tr:hover {
 @media (max-width: 768px) {
   .pagination-container {
     display: none; /* 手机端不显示分页 */
+  }
+
+  /* 修复手机端释义项移除按钮溢出问题 */
+  .definition-item {
+    padding: 15px;
+    padding-top: 45px; /* 为移除按钮留出空间 */
+  }
+
+  .definition-item button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 12px;
+    padding: 6px 10px;
+    min-width: auto;
+  }
+
+  .remove-definition-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    top: 6px;
+    right: 6px;
+  }
+
+  /* 确保释义项在小屏幕上不会溢出 */
+  .definition-item .form-group {
+    margin-bottom: 15px;
+  }
+
+  .definition-item .form-group:last-child {
+    margin-bottom: 0;
   }
 }
 
