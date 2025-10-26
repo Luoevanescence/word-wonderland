@@ -3,6 +3,7 @@ import { topicsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
+import useGlobalModalClose from '../hooks/useGlobalModalClose';
 
 function Topics() {
   const [topics, setTopics] = useState([]);
@@ -21,6 +22,9 @@ function Topics() {
   useEffect(() => {
     fetchTopics();
   }, []);
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   const fetchTopics = async () => {
     try {

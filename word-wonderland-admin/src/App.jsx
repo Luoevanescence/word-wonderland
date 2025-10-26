@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import Words from './pages/Words';
 import Phrases from './pages/Phrases';
@@ -17,12 +17,27 @@ function App() {
     }
   };
 
+  // 全局关闭所有弹窗的函数
+  const closeAllModals = () => {
+    // 触发自定义事件来关闭所有弹窗
+    window.dispatchEvent(new CustomEvent('closeAllModals'));
+  };
+
+  // 处理移动端菜单按钮点击
+  const handleMobileMenuClick = () => {
+    setSidebarOpen(!sidebarOpen);
+    // 如果侧边栏要打开，先关闭所有弹窗
+    if (!sidebarOpen) {
+      closeAllModals();
+    }
+  };
+
   return (
     <Router>
       <div className="app">
         <button 
           className="mobile-menu-btn" 
-          onClick={() => setSidebarOpen(!sidebarOpen)}
+          onClick={handleMobileMenuClick}
           aria-label="菜单"
         >
           ☰

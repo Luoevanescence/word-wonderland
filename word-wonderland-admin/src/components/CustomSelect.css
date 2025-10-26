@@ -203,5 +203,9 @@
   .custom-select-option {
     padding: 14px 12px;
   }
+  /* 手机端不展示描述 */
+  .option-description {
+    display: none;
+  }
 }
 

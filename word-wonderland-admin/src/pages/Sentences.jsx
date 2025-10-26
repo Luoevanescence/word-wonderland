@@ -3,6 +3,7 @@ import { sentencesAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
+import useGlobalModalClose from '../hooks/useGlobalModalClose';
 
 function Sentences() {
   const [sentences, setSentences] = useState([]);
@@ -22,6 +23,9 @@ function Sentences() {
   useEffect(() => {
     fetchSentences();
   }, []);
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   const fetchSentences = async () => {
     try {
