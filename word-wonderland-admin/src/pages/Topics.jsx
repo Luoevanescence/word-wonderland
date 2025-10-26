@@ -23,9 +23,6 @@ function Topics() {
     fetchTopics();
   }, []);
 
-  // 使用全局弹窗关闭Hook
-  useGlobalModalClose(showModal, setShowModal, resetForm);
-
   const fetchTopics = async () => {
     try {
       setLoading(true);
@@ -99,6 +96,9 @@ function Topics() {
     });
     setEditingTopic(null);
   };
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   return (
     <div className="page-wrapper">

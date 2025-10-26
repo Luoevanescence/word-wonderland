@@ -35,9 +35,6 @@ function Words() {
     fetchPartsOfSpeech();
   }, []);
 
-  // 使用全局弹窗关闭Hook
-  useGlobalModalClose(showModal, setShowModal, resetForm);
-
   const fetchWords = async () => {
     try {
       setLoading(true);
@@ -185,6 +182,9 @@ function Words() {
     });
     setEditingWord(null);
   };
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   const addDefinition = () => {
     setFormData({

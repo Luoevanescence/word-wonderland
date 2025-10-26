@@ -25,9 +25,6 @@ function Phrases() {
     fetchPhrases();
   }, []);
 
-  // 使用全局弹窗关闭Hook
-  useGlobalModalClose(showModal, setShowModal, resetForm);
-
   const fetchPhrases = async () => {
     try {
       setLoading(true);
@@ -150,6 +147,9 @@ function Phrases() {
     });
     setEditingPhrase(null);
   };
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   return (
     <div className="page-wrapper">

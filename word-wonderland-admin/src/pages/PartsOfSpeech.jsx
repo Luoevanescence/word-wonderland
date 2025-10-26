@@ -25,9 +25,6 @@ function PartsOfSpeech() {
     fetchPartsOfSpeech();
   }, []);
 
-  // 使用全局弹窗关闭Hook
-  useGlobalModalClose(showModal, setShowModal, resetForm);
-
   const fetchPartsOfSpeech = async () => {
     try {
       setLoading(true);
@@ -147,6 +144,9 @@ function PartsOfSpeech() {
     });
     setEditingPos(null);
   };
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   return (
     <div className="page-wrapper">

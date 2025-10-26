@@ -25,9 +25,6 @@ function Patterns() {
     fetchPatterns();
   }, []);
 
-  // 使用全局弹窗关闭Hook
-  useGlobalModalClose(showModal, setShowModal, resetForm);
-
   const fetchPatterns = async () => {
     try {
       setLoading(true);
@@ -105,6 +102,9 @@ function Patterns() {
     });
     setEditingPattern(null);
   };
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   return (
     <div className="page-wrapper">

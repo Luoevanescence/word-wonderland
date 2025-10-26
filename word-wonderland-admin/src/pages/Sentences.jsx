@@ -24,9 +24,6 @@ function Sentences() {
     fetchSentences();
   }, []);
 
-  // 使用全局弹窗关闭Hook
-  useGlobalModalClose(showModal, setShowModal, resetForm);
-
   const fetchSentences = async () => {
     try {
       setLoading(true);
@@ -102,6 +99,9 @@ function Sentences() {
     });
     setEditingSentence(null);
   };
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   return (
     <div className="page-wrapper">
