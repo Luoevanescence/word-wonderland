@@ -10,6 +10,7 @@ import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
+import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
 
 function Words() {
   const [words, setWords] = useState([]);
@@ -36,6 +37,19 @@ function Words() {
     fetchWords();
     fetchPartsOfSpeech();
   }, []);
+
+  // 初始化表格列宽拖拽
+  useEffect(() => {
+    if (words.length > 0) {
+      // 延迟初始化，确保表格已渲染
+      setTimeout(() => {
+        initTableResize();
+      }, 100);
+    }
+    return () => {
+      cleanupTableResize();
+    };
+  }, [words]);
 
   const fetchWords = async () => {
     try {

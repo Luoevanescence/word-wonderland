@@ -1,82 +1,82 @@
- [
-    {
-      "id": "1",
-      "code": "n.",
-      "name": "名词",
-      "description": "人、地、物、事、抽象概念",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "2",
-      "code": "pron.",
-      "name": "代词",
-      "description": "代替名词，避免重复",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "3",
-      "code": "v.",
-      "name": "动词",
-      "description": "表示动作或状态",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "4",
-      "code": "adj.",
-      "name": "形容词",
-      "description": "修饰名词，“…的”",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "5",
-      "code": "adv.",
-      "name": "副词",
-      "description": "修饰动词、形容词或整句，“…地”",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "6",
-      "code": "prep.",
-      "name": "介词",
-      "description": "放在名词前，引出时间、地点、方式等关系",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "7",
-      "code": "conj.",
-      "name": "连词",
-      "description": "连接词、短语或句子",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "8",
-      "code": "int.",
-      "name": "感叹词",
-      "description": "standalone 的“情绪词”，常跟“！”",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "3b2a1eb9-9e62-4318-b145-8e020a445030",
-      "code": "vt.",
-      "name": "及物动词",
-      "description": "必须接宾语才能使句意完整。\n例：She eats an apple.（eat 是 vt，后接宾语 an apple）",
-      "createdAt": "2025-10-26T08:07:13.117Z",
-      "updatedAt": "2025-10-26T08:07:13.117Z"
-    },
-    {
-      "id": "7784c87d-e6bf-4ca2-9b7b-bc7de234db46",
-      "code": "vi.",
-      "name": "不及物动词",
-      "description": "无需接宾语就能表达完整意思，若接宾语需搭配介词。\n例：He runs fast.（run 是 vi，无宾语）；He runs to the park.（接宾语 the park 时，需加介词 to）",
-      "createdAt": "2025-10-26T08:11:44.176Z",
-      "updatedAt": "2025-10-26T08:11:44.176Z"
-    }
-  ]
+[
+  {
+    "id": "1",
+    "code": "n.",
+    "name": "名词",
+    "description": "人、地、物、事、抽象概念",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "code": "pron.",
+    "name": "代词",
+    "description": "代替名词，避免重复",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "code": "v.",
+    "name": "动词",
+    "description": "表示动作或状态",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "code": "adj.",
+    "name": "形容词",
+    "description": "修饰名词，“…的”",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "5",
+    "code": "adv.",
+    "name": "副词",
+    "description": "修饰动词、形容词或整句，“…地”",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "6",
+    "code": "prep.",
+    "name": "介词",
+    "description": "放在名词前，引出时间、地点、方式等关系",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "7",
+    "code": "conj.",
+    "name": "连词",
+    "description": "连接词、短语或句子",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "8",
+    "code": "int.",
+    "name": "感叹词",
+    "description": "standalone 的“情绪词”，常跟“！”",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "3b2a1eb9-9e62-4318-b145-8e020a445030",
+    "code": "vt.",
+    "name": "及物动词",
+    "description": "必须接宾语才能使句意完整。\n例：She eats an apple.（eat 是 vt，后接宾语 an apple）",
+    "createdAt": "2025-10-26T08:07:13.117Z",
+    "updatedAt": "2025-10-26T08:07:13.117Z"
+  },
+  {
+    "id": "7784c87d-e6bf-4ca2-9b7b-bc7de234db46",
+    "code": "vi.",
+    "name": "不及物动词",
+    "description": "无需接宾语就能表达完整意思，若接宾语需搭配介词。\n例：He runs fast.（run 是 vi，无宾语）；He runs to the park.（接宾语 the park 时，需加介词 to）",
+    "createdAt": "2025-10-26T08:11:44.176Z",
+    "updatedAt": "2025-10-26T08:11:44.176Z"
+  }
+]

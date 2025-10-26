@@ -4,6 +4,10 @@ import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
+import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { ToastContainer } from '../components/Toast';
+import { useConfirmDialog, useToast } from '../hooks/useDialog';
 
 function PartsOfSpeech() {
   const [partsOfSpeech, setPartsOfSpeech] = useState([]);
@@ -18,12 +22,28 @@ function PartsOfSpeech() {
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   
+  // 使用对话框和Toast hooks
+  const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { toasts, showToast, removeToast } = useToast();
+  
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(partsOfSpeech, 5);
 
   useEffect(() => {
     fetchPartsOfSpeech();
   }, []);
+
+  // 初始化表格列宽拖拽
+  useEffect(() => {
+    if (partsOfSpeech.length > 0) {
+      setTimeout(() => {
+        initTableResize();
+      }, 100);
+    }
+    return () => {
+      cleanupTableResize();
+    };
+  }, [partsOfSpeech]);
 
   const fetchPartsOfSpeech = async () => {
     try {
@@ -32,7 +52,7 @@ function PartsOfSpeech() {
       setPartsOfSpeech(response.data.data || []);
     } catch (error) {
       console.error('Error fetching parts of speech:', error);
-      alert('获取词性失败');
+      showToast('获取词性失败', 'error');
     } finally {
       setLoading(false);
     }
@@ -52,9 +72,10 @@ function PartsOfSpeech() {
       setShowModal(false);
       resetForm();
       fetchPartsOfSpeech();
+      showToast(editingPos ? '更新成功' : '创建成功', 'success');
     } catch (error) {
       console.error('Error saving part of speech:', error);
-      alert(error.response?.data?.message || '保存词性失败');
+      showToast(error.response?.data?.message || '保存词性失败', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -67,24 +88,35 @@ function PartsOfSpeech() {
       event.stopPropagation();
     }
     
-    if (!window.confirm('确定要删除这个词性吗？')) return;
-    try {
-      await partsOfSpeechAPI.delete(id);
-      await fetchPartsOfSpeech();
-      alert('删除成功');
-    } catch (error) {
-      console.error('Error deleting part of speech:', error);
-      alert(error.response?.data?.message || '删除词性失败');
+    const posToDelete = partsOfSpeech.find(p => p.id === id);
+    if (posToDelete && posToDelete.isSystem) {
+      return; // 系统预设词性不允许删除
     }
+    
+    showConfirm({
+      title: '确认删除',
+      message: '确定要删除这个词性吗？此操作无法撤销。',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await partsOfSpeechAPI.delete(id);
+          await fetchPartsOfSpeech();
+          showToast('删除成功', 'success');
+        } catch (error) {
+          console.error('Error deleting part of speech:', error);
+          showToast(error.response?.data?.message || '删除词性失败', 'error');
+        }
+      }
+    });
   };
 
   // 导出功能
   const handleExportAll = () => {
     const success = downloadJSONWithMeta(partsOfSpeech, 'partsOfSpeech');
     if (success) {
-      alert('导出成功！');
+      showToast('导出成功！', 'success');
     } else {
-      alert('导出失败，请重试');
+      showToast('导出失败，请重试', 'error');
     }
   };
 
@@ -109,21 +141,26 @@ function PartsOfSpeech() {
 
   const handleBulkDelete = async () => {
     if (selectedIds.length === 0) {
-      alert('请先选择要删除的项目');
+      showToast('请先选择要删除的项目', 'warning');
       return;
     }
 
-    if (!window.confirm(`确定要删除选中的 ${selectedIds.length} 个词性吗？`)) return;
-
-    try {
-      const response = await partsOfSpeechAPI.bulkDelete(selectedIds);
-      await fetchPartsOfSpeech();
-      setSelectedIds([]);
-      alert(response.data.message || '批量删除成功');
-    } catch (error) {
-      console.error('Error bulk deleting parts of speech:', error);
-      alert(error.response?.data?.message || '批量删除失败');
-    }
+    showConfirm({
+      title: '批量删除',
+      message: `确定要删除选中的 ${selectedIds.length} 个词性吗？此操作无法撤销。`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const response = await partsOfSpeechAPI.bulkDelete(selectedIds);
+          await fetchPartsOfSpeech();
+          setSelectedIds([]);
+          showToast(response.data.message || '批量删除成功', 'success');
+        } catch (error) {
+          console.error('Error bulk deleting parts of speech:', error);
+          showToast(error.response?.data?.message || '批量删除失败', 'error');
+        }
+      }
+    });
   };
 
   const handleEdit = (pos) => {
@@ -352,6 +389,19 @@ function PartsOfSpeech() {
           </div>
         </div>
       )}
+
+      {/* 确认对话框 */}
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        onConfirm={dialogState.onConfirm}
+        onCancel={closeDialog}
+      />
+
+      {/* Toast通知 */}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   );
 }

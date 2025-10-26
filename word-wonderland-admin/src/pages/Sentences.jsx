@@ -5,6 +5,10 @@ import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
+import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { ToastContainer } from '../components/Toast';
+import { useConfirmDialog, useToast } from '../hooks/useDialog';
 
 function Sentences() {
   const [sentences, setSentences] = useState([]);
@@ -19,12 +23,28 @@ function Sentences() {
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
+  // 使用对话框和Toast hooks
+  const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { toasts, showToast, removeToast } = useToast();
+
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(sentences, 5);
 
   useEffect(() => {
     fetchSentences();
   }, []);
+
+  // 初始化表格列宽拖拽
+  useEffect(() => {
+    if (sentences.length > 0) {
+      setTimeout(() => {
+        initTableResize();
+      }, 100);
+    }
+    return () => {
+      cleanupTableResize();
+    };
+  }, [sentences]);
 
   const fetchSentences = async () => {
     try {
@@ -33,7 +53,7 @@ function Sentences() {
       setSentences(response.data.data || []);
     } catch (error) {
       console.error('Error fetching sentences:', error);
-      alert('获取句子失败');
+      showToast('获取句子失败', 'error');
     } finally {
       setLoading(false);
     }
@@ -53,33 +73,40 @@ function Sentences() {
       setShowModal(false);
       resetForm();
       fetchSentences();
+      showToast(editingSentence ? '更新成功' : '创建成功', 'success');
     } catch (error) {
       console.error('Error saving sentence:', error);
-      alert('保存句子失败');
+      showToast(error.response?.data?.message || '保存句子失败', 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('确定要删除这个句子吗？')) return;
-    try {
-      await sentencesAPI.delete(id);
-      await fetchSentences();
-      alert('删除成功');
-    } catch (error) {
-      console.error('Error deleting sentence:', error);
-      alert(error.response?.data?.message || '删除句子失败');
-    }
+    showConfirm({
+      title: '确认删除',
+      message: '确定要删除这个句子吗？此操作无法撤销。',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await sentencesAPI.delete(id);
+          await fetchSentences();
+          showToast('删除成功', 'success');
+        } catch (error) {
+          console.error('Error deleting sentence:', error);
+          showToast(error.response?.data?.message || '删除句子失败', 'error');
+        }
+      }
+    });
   };
 
   // 导出功能
   const handleExportAll = () => {
     const success = downloadJSONWithMeta(sentences, 'sentences');
     if (success) {
-      alert('导出成功！');
+      showToast('导出成功！', 'success');
     } else {
-      alert('导出失败，请重试');
+      showToast('导出失败，请重试', 'error');
     }
   };
 
@@ -282,6 +309,19 @@ function Sentences() {
         content={detailView.content}
         onClose={() => setDetailView({ show: false, title: '', content: '' })}
       />
+
+      {/* 确认对话框 */}
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        onConfirm={dialogState.onConfirm}
+        onCancel={closeDialog}
+      />
+
+      {/* Toast通知 */}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   );
 }

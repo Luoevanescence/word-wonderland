@@ -11,17 +11,43 @@ import PhraseCard from './cards/PhraseCard';
 import SentenceCard from './cards/SentenceCard';
 import PatternCard from './cards/PatternCard';
 import TopicCard from './cards/TopicCard';
+import Masonry from 'react-masonry-css';
+import { useInView } from 'react-intersection-observer';
 import './ContentDisplay.css';
 
 function ContentDisplay({ category, count, setCount }) {
   const [items, setItems] = useState([]);
+  const [displayedItems, setDisplayedItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputCount, setInputCount] = useState(count);
+  
+  // 懒加载观察器
+  const { ref: loadMoreRef, inView } = useInView({
+    threshold: 0,
+    triggerOnce: false
+  });
 
   useEffect(() => {
     setItems([]); // 立即清空旧数据，避免类型不匹配
+    setDisplayedItems([]); // 清空已显示的项
     fetchItems();
   }, [category]);
+
+  // 懒加载：每次显示一部分数据
+  useEffect(() => {
+    if (items.length > 0) {
+      // 初始显示前10个
+      setDisplayedItems(items.slice(0, 10));
+    }
+  }, [items]);
+
+  // 监听滚动到底部，加载更多
+  useEffect(() => {
+    if (inView && displayedItems.length < items.length) {
+      const nextBatch = items.slice(0, displayedItems.length + 10);
+      setDisplayedItems(nextBatch);
+    }
+  }, [inView, items, displayedItems.length]);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -64,18 +90,27 @@ function ContentDisplay({ category, count, setCount }) {
   const renderCard = (item, index) => {
     switch (category) {
       case 'words':
-        return <WordCard key={item.id} word={item} index={index} />;
+        return <WordCard key={`${item.id}-${index}`} word={item} index={index} />;
       case 'phrases':
-        return <PhraseCard key={item.id} phrase={item} index={index} />;
+        return <PhraseCard key={`${item.id}-${index}`} phrase={item} index={index} />;
       case 'sentences':
-        return <SentenceCard key={item.id} sentence={item} index={index} />;
+        return <SentenceCard key={`${item.id}-${index}`} sentence={item} index={index} />;
       case 'patterns':
-        return <PatternCard key={item.id} pattern={item} index={index} />;
+        return <PatternCard key={`${item.id}-${index}`} pattern={item} index={index} />;
       case 'topics':
-        return <TopicCard key={item.id} topic={item} index={index} />;
+        return <TopicCard key={`${item.id}-${index}`} topic={item} index={index} />;
       default:
         return null;
     }
+  };
+
+  // 瀑布流列数配置
+  const breakpointColumns = {
+    default: 3,  // 默认3列
+    1600: 4,     // >= 1600px 显示4列
+    1200: 3,     // >= 1200px 显示3列
+    768: 2,      // >= 768px 显示2列
+    500: 1       // < 500px 显示1列
   };
 
   const getCategoryLabel = () => {
@@ -119,9 +154,23 @@ function ContentDisplay({ category, count, setCount }) {
           <p>请先在管理后台添加{getCategoryLabel()}！</p>
         </div>
       ) : (
-        <div className="cards-grid">
-          {items.map((item, index) => renderCard(item, index))}
-        </div>
+        <>
+          <Masonry
+            breakpointCols={breakpointColumns}
+            className="masonry-grid"
+            columnClassName="masonry-grid-column"
+          >
+            {displayedItems.map((item, index) => renderCard(item, index))}
+          </Masonry>
+          
+          {/* 懒加载触发器 */}
+          {displayedItems.length < items.length && (
+            <div ref={loadMoreRef} className="load-more-trigger">
+              <div className="spinner-small"></div>
+              <p>加载更多...</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

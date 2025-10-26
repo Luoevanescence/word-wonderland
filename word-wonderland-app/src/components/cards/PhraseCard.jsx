@@ -23,7 +23,7 @@ function PhraseCard({ phrase, index }) {
     >
       <div className="card-header">
         <h3 className="card-title">{phrase.phrase}</h3>
-        <span className="expand-icon">{isExpanded ? '−' : '+'}</span>
+        <span className="expand-icon">{isExpanded ? '▲' : '▼'}</span>
       </div>
       {isExpanded && (
         <div className="card-content">

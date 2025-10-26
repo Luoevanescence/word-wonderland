@@ -107,11 +107,39 @@
   font-size: 16px;
 }
 
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 25px;
+/* Masonry 瀑布流布局 */
+.masonry-grid {
+  display: flex;
+  width: auto;
   animation: fadeIn 0.5s ease-in;
+  margin-left: -25px; /* 抵消列的左边距 */
+}
+
+.masonry-grid-column {
+  padding-left: 25px; /* 列间距 */
+  background-clip: padding-box;
+}
+
+.masonry-grid-column > * {
+  margin-bottom: 25px;
+}
+
+/* 懒加载触发器 */
+.load-more-trigger {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(255, 255, 255, 0.8);
+  animation: fadeIn 0.5s ease-in;
+}
+
+.spinner-small {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
 }
 
 @keyframes fadeIn {
@@ -124,11 +152,16 @@
 }
 
 @media (max-width: 768px) {
-  .cards-grid {
-    grid-template-columns: 1fr;
-  }
   .controls {
     flex-direction: column;
+  }
+  
+  .masonry-grid {
+    margin-left: 0;
+  }
+  
+  .masonry-grid-column {
+    padding-left: 0;
   }
 }
 

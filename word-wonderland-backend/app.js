@@ -19,6 +19,7 @@ const sentenceRoutes = require('./routes/sentence.routes');
 const patternRoutes = require('./routes/pattern.routes');
 const topicRoutes = require('./routes/topic.routes');
 const partOfSpeechRoutes = require('./routes/partOfSpeech.routes');
+const componentRoutes = require('./routes/component.routes');
 
 // API 路由
 app.use(`${config.apiPrefix}/words`, wordRoutes);
@@ -27,6 +28,7 @@ app.use(`${config.apiPrefix}/sentences`, sentenceRoutes);
 app.use(`${config.apiPrefix}/patterns`, patternRoutes);
 app.use(`${config.apiPrefix}/topics`, topicRoutes);
 app.use(`${config.apiPrefix}/parts-of-speech`, partOfSpeechRoutes);
+app.use(`${config.apiPrefix}/components`, componentRoutes);
 
 // Swagger 文档
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -43,7 +45,8 @@ app.get('/', (req, res) => {
       sentences: `${config.apiPrefix}/sentences`,
       patterns: `${config.apiPrefix}/patterns`,
       topics: `${config.apiPrefix}/topics`,
-      partsOfSpeech: `${config.apiPrefix}/parts-of-speech`
+      partsOfSpeech: `${config.apiPrefix}/parts-of-speech`,
+      components: `${config.apiPrefix}/components`
     }
   });
 });

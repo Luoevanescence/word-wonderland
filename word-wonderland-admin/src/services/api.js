@@ -75,5 +75,14 @@ export const partsOfSpeechAPI = {
   bulkDelete: (ids) => api.post('/parts-of-speech/bulk/delete', { ids })
 };
 
+// Components API
+export const componentsAPI = {
+  getAll: () => api.get('/components'),
+  getById: (id) => api.get(`/components/${id}`),
+  create: (data) => api.post('/components', data),
+  update: (id, data) => api.put(`/components/${id}`, data),
+  delete: (id) => api.delete(`/components/${id}`)
+};
+
 export default api;
 

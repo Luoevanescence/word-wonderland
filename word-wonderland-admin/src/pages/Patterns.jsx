@@ -1,31 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { patternsAPI } from '../services/api';
+import { patternsAPI, componentsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
+import { Link } from 'react-router-dom';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
+import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
+import PatternBuilder from '../components/PatternBuilder';
+import { useConfirmDialog, useToast } from '../hooks/useDialog';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { ToastContainer } from '../components/Toast';
 
 function Patterns() {
   const [patterns, setPatterns] = useState([]);
+  const [components, setComponents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingPattern, setEditingPattern] = useState(null);
   const [formData, setFormData] = useState({
     pattern: '',
+    components: [],
     description: '',
     example: '',
     translation: ''
   });
-  const [submitting, setSubmitting] = useState(false); // 表单提交状态
-  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
+  const [submitting, setSubmitting] = useState(false);
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' });
+  
+  // 使用对话框和Toast hooks
+  const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { toasts, showToast, removeToast } = useToast();
 
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(patterns, 5);
 
   useEffect(() => {
     fetchPatterns();
+    fetchComponents();
   }, []);
+
+  // 初始化表格列宽拖拽
+  useEffect(() => {
+    if (patterns.length > 0) {
+      setTimeout(() => {
+        initTableResize();
+      }, 100);
+    }
+    return () => {
+      cleanupTableResize();
+    };
+  }, [patterns]);
 
   const fetchPatterns = async () => {
     try {
@@ -34,9 +59,18 @@ function Patterns() {
       setPatterns(response.data.data || []);
     } catch (error) {
       console.error('Error fetching patterns:', error);
-      alert('获取句型失败');
+      showToast('获取句型失败', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchComponents = async () => {
+    try {
+      const response = await componentsAPI.getAll();
+      setComponents(response.data.data || []);
+    } catch (error) {
+      console.error('Error fetching components:', error);
     }
   };
 
@@ -54,33 +88,40 @@ function Patterns() {
       setShowModal(false);
       resetForm();
       fetchPatterns();
+      showToast(editingPattern ? '更新成功' : '创建成功', 'success');
     } catch (error) {
       console.error('Error saving pattern:', error);
-      alert('保存句型失败');
+      showToast(error.response?.data?.message || '保存句型失败', 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('确定要删除这个句型吗？')) return;
-    try {
-      await patternsAPI.delete(id);
-      await fetchPatterns();
-      alert('删除成功');
-    } catch (error) {
-      console.error('Error deleting pattern:', error);
-      alert(error.response?.data?.message || '删除句型失败');
-    }
+    showConfirm({
+      title: '确认删除',
+      message: '确定要删除这个句型吗？此操作无法撤销。',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await patternsAPI.delete(id);
+          await fetchPatterns();
+          showToast('删除成功', 'success');
+        } catch (error) {
+          console.error('Error deleting pattern:', error);
+          showToast(error.response?.data?.message || '删除句型失败', 'error');
+        }
+      }
+    });
   };
 
   // 导出功能
   const handleExportAll = () => {
     const success = downloadJSONWithMeta(patterns, 'patterns');
     if (success) {
-      alert('导出成功！');
+      showToast('导出成功！', 'success');
     } else {
-      alert('导出失败，请重试');
+      showToast('导出失败，请重试', 'error');
     }
   };
 
@@ -88,6 +129,7 @@ function Patterns() {
     setEditingPattern(pattern);
     setFormData({
       pattern: pattern.pattern,
+      components: pattern.components || [],
       description: pattern.description,
       example: pattern.example || '',
       translation: pattern.translation || ''
@@ -98,11 +140,27 @@ function Patterns() {
   const resetForm = () => {
     setFormData({
       pattern: '',
+      components: [],
       description: '',
       example: '',
       translation: ''
     });
     setEditingPattern(null);
+  };
+
+  const openAddModal = () => {
+    if (components.length === 0) {
+      showConfirm({
+        title: '缺少成分',
+        message: '还没有可用的成分！需要先创建成分才能组合句型。\n\n是否现在前往成分管理页面？',
+        type: 'alert',
+        onConfirm: () => {
+          window.location.href = '/components';
+        }
+      });
+      return;
+    }
+    setShowModal(true);
   };
 
   // 使用全局弹窗关闭Hook
@@ -117,7 +175,7 @@ function Patterns() {
 
       <div className="page-content">
         <div className="actions">
-          <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+          <button className="btn btn-primary" onClick={openAddModal}>
             + 添加新句型
           </button>
           
@@ -127,6 +185,22 @@ function Patterns() {
             label="导出句型"
           />
         </div>
+
+        {components.length === 0 && (
+          <div style={{
+            background: '#fff3cd',
+            border: '1px solid #ffc107',
+            borderRadius: '8px',
+            padding: '15px',
+            marginBottom: '20px',
+            color: '#856404'
+          }}>
+            <strong>⚠️ 提示：</strong> 您还没有创建任何成分。句型由成分组合而成。
+            <Link to="/components" style={{ color: '#667eea', marginLeft: '10px', textDecoration: 'underline' }}>
+              点击前往成分管理页面
+            </Link>
+          </div>
+        )}
 
       {loading ? (
         <div className="loading">加载中...</div>
@@ -248,14 +322,29 @@ function Patterns() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h2>{editingPattern ? '编辑句型' : '添加新句型'}</h2>
             <form onSubmit={handleSubmit}>
+              <PatternBuilder
+                components={components}
+                patterns={patterns}
+                selectedItems={formData.components}
+                onChange={(items) => {
+                  const patternName = items.map(item => item.name).join(' + ');
+                  setFormData({ 
+                    ...formData, 
+                    components: items,
+                    pattern: patternName || formData.pattern
+                  });
+                }}
+                currentPatternId={editingPattern?.id}
+              />
+
               <div className="form-group">
-                <label>句型 *</label>
+                <label>句型名称（自动生成或手动修改） *</label>
                 <input
                   type="text"
                   value={formData.pattern}
                   onChange={(e) => setFormData({ ...formData, pattern: e.target.value })}
                   required
-                  placeholder="例如：主语 + 动词 + 宾语"
+                  placeholder="例如：主语 + 谓语 + 宾语"
                 />
               </div>
 
@@ -309,6 +398,19 @@ function Patterns() {
         content={detailView.content}
         onClose={() => setDetailView({ show: false, title: '', content: '' })}
       />
+
+      {/* 确认对话框 */}
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        onConfirm={dialogState.onConfirm}
+        onCancel={closeDialog}
+      />
+
+      {/* Toast通知 */}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   );
 }

@@ -602,6 +602,41 @@ td.text-cell:hover {
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
+/* 表格列宽拖拽手柄 */
+.table-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  z-index: 10;
+}
+
+.table-resizer:hover,
+.table-resizer.resizing {
+  background: rgba(102, 126, 234, 0.3);
+}
+
+.table-resizer::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 60%;
+  background: rgba(102, 126, 234, 0.4);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.table-resizer:hover::before,
+.table-resizer.resizing::before {
+  opacity: 1;
+}
+
 tbody tr {
   transition: all 0.3s;
 }

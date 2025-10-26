@@ -23,7 +23,7 @@ function PatternCard({ pattern, index }) {
     >
       <div className="card-header">
         <h3 className="card-title pattern-title">{pattern.pattern}</h3>
-        <span className="expand-icon">{isExpanded ? '−' : '+'}</span>
+        <span className="expand-icon">{isExpanded ? '▲' : '▼'}</span>
       </div>
       {isExpanded && (
         <div className="card-content">

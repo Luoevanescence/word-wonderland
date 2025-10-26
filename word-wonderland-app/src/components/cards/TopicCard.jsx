@@ -23,7 +23,7 @@ function TopicCard({ topic, index }) {
     >
       <div className="card-header">
         <h3 className="card-title">🏷️ {topic.name}</h3>
-        <span className="expand-icon">{isExpanded ? '−' : '+'}</span>
+        <span className="expand-icon">{isExpanded ? '▲' : '▼'}</span>
       </div>
       {isExpanded && topic.description && (
         <div className="card-content">

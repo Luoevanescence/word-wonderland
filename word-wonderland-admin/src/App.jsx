@@ -6,6 +6,7 @@ import Sentences from './pages/Sentences';
 import Patterns from './pages/Patterns';
 import Topics from './pages/Topics';
 import PartsOfSpeech from './pages/PartsOfSpeech';
+import Components from './pages/Components';
 import './App.css';
 
 function App() {
@@ -65,6 +66,9 @@ function App() {
               <NavLink to="/sentences" onClick={closeSidebar}>句子</NavLink>
             </li>
             <li>
+              <NavLink to="/components" onClick={closeSidebar}>成分</NavLink>
+            </li>
+            <li>
               <NavLink to="/patterns" onClick={closeSidebar}>句型</NavLink>
             </li>
             <li>
@@ -86,6 +90,7 @@ function App() {
             <Route path="/parts-of-speech" element={<PartsOfSpeech />} />
             <Route path="/phrases" element={<Phrases />} />
             <Route path="/sentences" element={<Sentences />} />
+            <Route path="/components" element={<Components />} />
             <Route path="/patterns" element={<Patterns />} />
             <Route path="/topics" element={<Topics />} />
           </Routes>

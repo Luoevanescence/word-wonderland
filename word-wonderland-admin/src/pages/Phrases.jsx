@@ -5,6 +5,10 @@ import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
+import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { ToastContainer } from '../components/Toast';
+import { useConfirmDialog, useToast } from '../hooks/useDialog';
 
 function Phrases() {
   const [phrases, setPhrases] = useState([]);
@@ -20,12 +24,28 @@ function Phrases() {
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
+  // 使用对话框和Toast hooks
+  const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { toasts, showToast, removeToast } = useToast();
+
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(phrases, 5);
 
   useEffect(() => {
     fetchPhrases();
   }, []);
+
+  // 初始化表格列宽拖拽
+  useEffect(() => {
+    if (phrases.length > 0) {
+      setTimeout(() => {
+        initTableResize();
+      }, 100);
+    }
+    return () => {
+      cleanupTableResize();
+    };
+  }, [phrases]);
 
   const fetchPhrases = async () => {
     try {
@@ -34,7 +54,7 @@ function Phrases() {
       setPhrases(response.data.data || []);
     } catch (error) {
       console.error('Error fetching phrases:', error);
-      alert('获取短语失败');
+      showToast('获取短语失败', 'error');
     } finally {
       setLoading(false);
     }
@@ -54,42 +74,49 @@ function Phrases() {
       setShowModal(false);
       resetForm();
       fetchPhrases();
+      showToast(editingPhrase ? '更新成功' : '创建成功', 'success');
     } catch (error) {
       console.error('Error saving phrase:', error);
-      alert('保存短语失败');
+      showToast(error.response?.data?.message || '保存短语失败', 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('确定要删除这个短语吗？')) return;
-    try {
-      await phrasesAPI.delete(id);
-      await fetchPhrases();
-      alert('删除成功');
-    } catch (error) {
-      console.error('Error deleting phrase:', error);
-      alert(error.response?.data?.message || '删除短语失败');
-    }
+    showConfirm({
+      title: '确认删除',
+      message: '确定要删除这个短语吗？此操作无法撤销。',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await phrasesAPI.delete(id);
+          await fetchPhrases();
+          showToast('删除成功', 'success');
+        } catch (error) {
+          console.error('Error deleting phrase:', error);
+          showToast(error.response?.data?.message || '删除短语失败', 'error');
+        }
+      }
+    });
   };
 
   // 导出功能
   const handleExportAll = () => {
     const success = downloadJSONWithMeta(phrases, 'phrases');
     if (success) {
-      alert('导出成功！');
+      showToast('导出成功！', 'success');
     } else {
-      alert('导出失败，请重试');
+      showToast('导出失败，请重试', 'error');
     }
   };
 
   const handleExportSelected = () => {
     const success = downloadSelectedJSON(phrases, selectedIds, 'phrases');
     if (success) {
-      alert(`成功导出 ${selectedIds.length} 个短语！`);
+      showToast(`成功导出 ${selectedIds.length} 个短语！`, 'success');
     } else {
-      alert('导出失败，请重试');
+      showToast('导出失败，请重试', 'error');
     }
   };
 
@@ -114,21 +141,26 @@ function Phrases() {
 
   const handleBulkDelete = async () => {
     if (selectedIds.length === 0) {
-      alert('请先选择要删除的项目');
+      showToast('请先选择要删除的项目', 'warning');
       return;
     }
 
-    if (!window.confirm(`确定要删除选中的 ${selectedIds.length} 个短语吗？`)) return;
-
-    try {
-      const response = await phrasesAPI.bulkDelete(selectedIds);
-      await fetchPhrases();
-      setSelectedIds([]);
-      alert(response.data.message || '批量删除成功');
-    } catch (error) {
-      console.error('Error bulk deleting phrases:', error);
-      alert(error.response?.data?.message || '批量删除失败');
-    }
+    showConfirm({
+      title: '批量删除',
+      message: `确定要删除选中的 ${selectedIds.length} 个短语吗？此操作无法撤销。`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const response = await phrasesAPI.bulkDelete(selectedIds);
+          await fetchPhrases();
+          setSelectedIds([]);
+          showToast(response.data.message || '批量删除成功', 'success');
+        } catch (error) {
+          console.error('Error bulk deleting phrases:', error);
+          showToast(error.response?.data?.message || '批量删除失败', 'error');
+        }
+      }
+    });
   };
 
   const handleEdit = (phrase) => {
@@ -339,6 +371,19 @@ function Phrases() {
         content={detailView.content}
         onClose={() => setDetailView({ show: false, title: '', content: '' })}
       />
+
+      {/* 确认对话框 */}
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        onConfirm={dialogState.onConfirm}
+        onCancel={closeDialog}
+      />
+
+      {/* Toast通知 */}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   );
 }

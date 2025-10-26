@@ -23,7 +23,7 @@ function WordCard({ word, index }) {
     >
       <div className="card-header">
         <h3 className="card-title">{word.word}</h3>
-        <span className="expand-icon">{isExpanded ? '−' : '+'}</span>
+        <span className="expand-icon">{isExpanded ? '▲' : '▼'}</span>
       </div>
       {isExpanded && (
         <div className="card-content">

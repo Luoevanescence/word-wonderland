@@ -4,6 +4,10 @@ import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
+import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { ToastContainer } from '../components/Toast';
+import { useConfirmDialog, useToast } from '../hooks/useDialog';
 
 function Topics() {
   const [topics, setTopics] = useState([]);
@@ -16,12 +20,28 @@ function Topics() {
   });
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
 
+  // 使用对话框和Toast hooks
+  const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { toasts, showToast, removeToast } = useToast();
+
   // 使用分页 hook
   const { currentData, renderPagination } = usePagination(topics, 5);
 
   useEffect(() => {
     fetchTopics();
   }, []);
+
+  // 初始化表格列宽拖拽
+  useEffect(() => {
+    if (topics.length > 0) {
+      setTimeout(() => {
+        initTableResize();
+      }, 100);
+    }
+    return () => {
+      cleanupTableResize();
+    };
+  }, [topics]);
 
   const fetchTopics = async () => {
     try {
@@ -30,7 +50,7 @@ function Topics() {
       setTopics(response.data.data || []);
     } catch (error) {
       console.error('Error fetching topics:', error);
-      alert('获取主题失败');
+      showToast('获取主题失败', 'error');
     } finally {
       setLoading(false);
     }
@@ -50,33 +70,40 @@ function Topics() {
       setShowModal(false);
       resetForm();
       fetchTopics();
+      showToast(editingTopic ? '更新成功' : '创建成功', 'success');
     } catch (error) {
       console.error('Error saving topic:', error);
-      alert('保存主题失败');
+      showToast(error.response?.data?.message || '保存主题失败', 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('确定要删除这个主题吗？')) return;
-    try {
-      await topicsAPI.delete(id);
-      await fetchTopics();
-      alert('删除成功');
-    } catch (error) {
-      console.error('Error deleting topic:', error);
-      alert(error.response?.data?.message || '删除主题失败');
-    }
+    showConfirm({
+      title: '确认删除',
+      message: '确定要删除这个主题吗？此操作无法撤销。',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await topicsAPI.delete(id);
+          await fetchTopics();
+          showToast('删除成功', 'success');
+        } catch (error) {
+          console.error('Error deleting topic:', error);
+          showToast(error.response?.data?.message || '删除主题失败', 'error');
+        }
+      }
+    });
   };
 
   // 导出功能
   const handleExportAll = () => {
     const success = downloadJSONWithMeta(topics, 'topics');
     if (success) {
-      alert('导出成功！');
+      showToast('导出成功！', 'success');
     } else {
-      alert('导出失败，请重试');
+      showToast('导出失败，请重试', 'error');
     }
   };
 
@@ -238,6 +265,19 @@ function Topics() {
           </div>
         </div>
       )}
+
+      {/* 确认对话框 */}
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        onConfirm={dialogState.onConfirm}
+        onCancel={closeDialog}
+      />
+
+      {/* Toast通知 */}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   );
 }

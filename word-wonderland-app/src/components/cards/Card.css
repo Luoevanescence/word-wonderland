@@ -28,26 +28,24 @@
 
 /* 展开图标 */
 .expand-icon {
-  font-size: 28px;
-  font-weight: 300;
+  font-size: 18px;
+  font-weight: bold;
   color: #667eea;
   transition: all 0.3s;
   line-height: 1;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
+  width: auto;
+  height: auto;
+  min-width: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: rgba(102, 126, 234, 0.1);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .card:hover .expand-icon {
-  background: rgba(102, 126, 234, 0.2);
-  transform: scale(1.1);
+  color: #764ba2;
+  transform: scale(1.2);
 }
 
 /* 卡片内容动画 */
@@ -215,10 +213,8 @@
   }
 
   .expand-icon {
-    font-size: 24px;
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
+    font-size: 16px;
+    min-width: 18px;
   }
   
   .sentence-text,

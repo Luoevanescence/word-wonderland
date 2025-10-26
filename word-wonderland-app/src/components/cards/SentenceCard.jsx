@@ -23,7 +23,7 @@ function SentenceCard({ sentence, index }) {
     >
       <div className="card-header">
         <h3 className="card-title sentence-title">{sentence.sentence}</h3>
-        <span className="expand-icon">{isExpanded ? '−' : '+'}</span>
+        <span className="expand-icon">{isExpanded ? '▲' : '▼'}</span>
       </div>
       {isExpanded && (
         <div className="card-content">
