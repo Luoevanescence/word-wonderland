@@ -3,6 +3,7 @@ import { phrasesAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
+import useGlobalModalClose from '../hooks/useGlobalModalClose';
 
 function Phrases() {
   const [phrases, setPhrases] = useState([]);
@@ -23,6 +24,9 @@ function Phrases() {
   useEffect(() => {
     fetchPhrases();
   }, []);
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   const fetchPhrases = async () => {
     try {

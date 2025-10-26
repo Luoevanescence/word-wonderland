@@ -8,6 +8,7 @@ import { ToastContainer } from '../components/Toast';
 import { useConfirmDialog, useToast } from '../hooks/useDialog';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
+import useGlobalModalClose from '../hooks/useGlobalModalClose';
 
 function Words() {
   const [words, setWords] = useState([]);
@@ -33,6 +34,9 @@ function Words() {
     fetchWords();
     fetchPartsOfSpeech();
   }, []);
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   const fetchWords = async () => {
     try {

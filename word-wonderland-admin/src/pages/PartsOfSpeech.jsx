@@ -3,6 +3,7 @@ import { partsOfSpeechAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
+import useGlobalModalClose from '../hooks/useGlobalModalClose';
 
 function PartsOfSpeech() {
   const [partsOfSpeech, setPartsOfSpeech] = useState([]);
@@ -23,6 +24,9 @@ function PartsOfSpeech() {
   useEffect(() => {
     fetchPartsOfSpeech();
   }, []);
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   const fetchPartsOfSpeech = async () => {
     try {

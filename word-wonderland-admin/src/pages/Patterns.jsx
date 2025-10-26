@@ -3,6 +3,7 @@ import { patternsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
+import useGlobalModalClose from '../hooks/useGlobalModalClose';
 
 function Patterns() {
   const [patterns, setPatterns] = useState([]);
@@ -23,6 +24,9 @@ function Patterns() {
   useEffect(() => {
     fetchPatterns();
   }, []);
+
+  // 使用全局弹窗关闭Hook
+  useGlobalModalClose(showModal, setShowModal, resetForm);
 
   const fetchPatterns = async () => {
     try {
