@@ -433,8 +433,7 @@ function Words() {
                         onChange={(value) => updateDefinition(index, 'partOfSpeech', value)}
                         options={partsOfSpeech.map((pos) => ({
                           value: pos.code,
-                          label: `${pos.code} - ${pos.name}`,
-                          description: pos.description
+                          label: `${pos.code} - ${pos.name}`
                         }))}
                         placeholder="请选择词性"
                         required

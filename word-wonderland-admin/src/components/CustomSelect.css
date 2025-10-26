@@ -123,6 +123,14 @@
   font-weight: 500;
 }
 
+/* 桌面端：当标签过长时使用省略号隐藏溢出，但保留描述显示 */
+.option-label {
+  min-width: 0; /* 允许 flex 子项正确收缩 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .custom-select-option.selected .option-label {
   color: white;
   font-weight: 600;
