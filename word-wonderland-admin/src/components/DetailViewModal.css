@@ -4,7 +4,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,15 +24,18 @@
 }
 
 .detail-modal-content {
-  background: white;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(40px) saturate(120%);
+  -webkit-backdrop-filter: blur(40px) saturate(120%);
+  border-radius: 20px;
   width: 90%;
   max-width: 600px;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  animation: slideUp 0.3s ease;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  animation: slideUp 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideUp {
@@ -48,53 +53,57 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 28px 32px;
+  border-bottom: 0.5px solid rgba(229, 231, 235, 0.5);
 }
 
 .detail-modal-header h2 {
   margin: 0;
-  font-size: 20px;
-  color: #333;
+  font-size: 22px;
+  color: #111827;
   font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .detail-modal-close {
   background: none;
-  border: none;
-  font-size: 32px;
-  color: #999;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.3);
   cursor: pointer;
   line-height: 1;
   padding: 0;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  transition: all 0.2s;
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .detail-modal-close:hover {
-  background: #f5f5f5;
-  color: #333;
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.6);
+  transform: rotate(90deg);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .detail-modal-body {
-  padding: 24px;
+  padding: 32px;
   overflow-y: auto;
   flex: 1;
   line-height: 1.8;
-  color: #333;
+  color: #111827;
   white-space: pre-wrap; /* 保留空格和换行 */
   word-wrap: break-word;
   font-size: 15px;
+  font-weight: 400;
 }
 
 .detail-modal-footer {
-  padding: 16px 24px;
-  border-top: 1px solid #e0e0e0;
+  padding: 20px 32px;
+  border-top: 0.5px solid rgba(229, 231, 235, 0.5);
   display: flex;
   justify-content: flex-end;
 }

@@ -139,11 +139,56 @@ const deleteComponent = (req, res) => {
   }
 };
 
+// 批量删除成分
+const bulkDeleteComponents = (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'IDs array is required'
+      });
+    }
+
+    const results = {
+      deleted: [],
+      notFound: []
+    };
+
+    ids.forEach(id => {
+      const deleted = componentService.delete(id);
+      if (deleted) {
+        results.deleted.push(id);
+      } else {
+        results.notFound.push(id);
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `成功删除 ${results.deleted.length} 个成分`,
+      data: {
+        deletedCount: results.deleted.length,
+        deletedIds: results.deleted,
+        notFoundIds: results.notFound
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error bulk deleting components',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getAllComponents,
   getComponentById,
   createComponent,
   updateComponent,
-  deleteComponent
+  deleteComponent,
+  bulkDeleteComponents
 };
 

@@ -4,6 +4,7 @@ import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
+import DetailViewModal from '../components/DetailViewModal';
 import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
@@ -19,6 +20,8 @@ function Topics() {
     description: ''
   });
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
+  const [selectedIds, setSelectedIds] = useState([]); // 批量删除
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
@@ -124,6 +127,65 @@ function Topics() {
     setEditingTopic(null);
   };
 
+  // 查看详情
+  const handleViewDetail = (topic) => {
+    const content = `
+主题名称：${topic.name}
+${topic.description ? `描述：${topic.description}` : ''}
+创建时间：${new Date(topic.createdAt).toLocaleString()}
+更新时间：${new Date(topic.updatedAt).toLocaleString()}
+    `.trim();
+    
+    setDetailView({
+      show: true,
+      title: `主题详情 - ${topic.name}`,
+      content: content
+    });
+  };
+
+  // 批量删除相关函数
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedIds(currentData.map(item => item.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    setSelectedIds(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(itemId => itemId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) {
+      showToast('请先选择要删除的项目', 'warning');
+      return;
+    }
+
+    showConfirm({
+      title: '批量删除',
+      message: `确定要删除选中的 ${selectedIds.length} 个主题吗？此操作无法撤销。`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const response = await topicsAPI.bulkDelete(selectedIds);
+          await fetchTopics();
+          setSelectedIds([]);
+          showToast(response.data.message || '批量删除成功', 'success');
+        } catch (error) {
+          console.error('Error bulk deleting topics:', error);
+          showToast(error.response?.data?.message || '批量删除失败', 'error');
+        }
+      }
+    });
+  };
+
   // 使用全局弹窗关闭Hook
   useGlobalModalClose(showModal, setShowModal, resetForm);
 
@@ -145,6 +207,15 @@ function Topics() {
             disabled={loading || topics.length === 0}
             label="导出主题"
           />
+          
+          {selectedIds.length > 0 && (
+            <div className="bulk-actions">
+              <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
+              <button className="btn btn-danger btn-small" onClick={handleBulkDelete}>
+                批量删除
+              </button>
+            </div>
+          )}
         </div>
 
       {loading ? (
@@ -161,6 +232,14 @@ function Topics() {
             <table>
               <thead>
                 <tr>
+                  <th className="checkbox-cell">
+                    <input
+                      type="checkbox"
+                      className="select-all-checkbox"
+                      checked={selectedIds.length === currentData.length && currentData.length > 0}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
                   <th>主题名称</th>
                   <th>描述</th>
                   <th>创建时间</th>
@@ -170,11 +249,21 @@ function Topics() {
               <tbody>
                 {currentData.map((topic) => (
                   <tr key={topic.id}>
+                    <td className="checkbox-cell">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(topic.id)}
+                        onChange={() => handleSelectOne(topic.id)}
+                      />
+                    </td>
                     <td><strong>{topic.name}</strong></td>
                     <td>{topic.description}</td>
                     <td>{new Date(topic.createdAt).toLocaleDateString()}</td>
                     <td>
                       <div className="actions-cell">
+                        <button className="btn btn-view-detail btn-small" onClick={() => handleViewDetail(topic)}>
+                          查看
+                        </button>
                         <button className="btn btn-secondary btn-small" onClick={() => handleEdit(topic)}>
                           编辑
                         </button>
@@ -194,6 +283,12 @@ function Topics() {
             {topics.map((topic) => (
               <div key={topic.id} className="mobile-card">
                 <div className="mobile-card-header">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(topic.id)}
+                    onChange={() => handleSelectOne(topic.id)}
+                    style={{ marginRight: '10px' }}
+                  />
                   <div className="mobile-card-title">{topic.name}</div>
                 </div>
                 <div className="mobile-card-content">
@@ -211,6 +306,9 @@ function Topics() {
                   </div>
                 </div>
                 <div className="mobile-card-actions">
+                  <button className="btn btn-view-detail btn-small" onClick={() => handleViewDetail(topic)}>
+                    查看
+                  </button>
                   <button className="btn btn-secondary btn-small" onClick={() => handleEdit(topic)}>
                     编辑
                   </button>
@@ -278,6 +376,14 @@ function Topics() {
 
       {/* Toast通知 */}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
+      
+      {/* 详情查看弹窗 */}
+      <DetailViewModal
+        isOpen={detailView.show}
+        title={detailView.title}
+        content={detailView.content}
+        onClose={() => setDetailView({ show: false, title: '', content: '' })}
+      />
     </div>
   );
 }

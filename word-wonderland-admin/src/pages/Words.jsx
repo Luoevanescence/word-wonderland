@@ -76,7 +76,7 @@ function Words() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return; // 防止重复提交
-    
+
     setSubmitting(true);
     try {
       if (editingWord) {
@@ -102,7 +102,7 @@ function Words() {
       event.preventDefault();
       event.stopPropagation();
     }
-    
+
     showConfirm({
       title: '确认删除',
       message: '确定要删除这个单词吗？此操作无法撤销。',
@@ -247,7 +247,7 @@ function Words() {
           <button className="btn btn-primary" onClick={openAddModal}>
             + 添加新单词
           </button>
-          
+
           <ExportButton
             onExport={handleExportAll}
             onExportSelected={handleExportSelected}
@@ -255,7 +255,7 @@ function Words() {
             disabled={loading || words.length === 0}
             label="导出单词"
           />
-          
+
           {selectedIds.length > 0 && (
             <div className="bulk-actions">
               <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
@@ -266,167 +266,163 @@ function Words() {
           )}
         </div>
 
-      {partsOfSpeech.length === 0 && (
-        <div style={{
-          background: '#fff3cd',
-          border: '1px solid #ffc107',
-          borderRadius: '8px',
-          padding: '15px',
-          marginBottom: '20px',
-          color: '#856404'
-        }}>
-          <strong>⚠️ 提示：</strong> 您还没有创建任何词性。
-          <Link to="/parts-of-speech" style={{ color: '#667eea', marginLeft: '10px', textDecoration: 'underline' }}>
-            点击前往词性管理页面
-          </Link>
-        </div>
-      )}
+        {partsOfSpeech.length === 0 && (
+          <div style={{
+            background: '#fff3cd',
+            border: '1px solid #ffc107',
+            borderRadius: '8px',
+            padding: '15px',
+            marginBottom: '20px',
+            color: '#856404'
+          }}>
+            <strong>⚠️ 提示：</strong> 您还没有创建任何词性。
+            <Link to="/parts-of-speech" style={{ color: 'var(--brand-primary)', marginLeft: '10px', textDecoration: 'underline' }}>
+              点击前往词性管理页面
+            </Link>
+          </div>
+        )}
 
-      {loading ? (
-        <div className="loading">加载中...</div>
-      ) : words.length === 0 ? (
-        <div className="empty-state">
-          <h3>还没有单词</h3>
-          <p>开始添加您的第一个单词吧！</p>
-        </div>
-      ) : (
-        <>
-          {/* 桌面端表格视图 */}
-          <div className="data-table">
-            <table>
-              <thead>
-                <tr>
-                  <th className="checkbox-cell">
-                    <input
-                      type="checkbox"
-                      className="select-all-checkbox"
-                      checked={selectedIds.length === currentData.length && currentData.length > 0}
-                      onChange={handleSelectAll}
-                    />
-                  </th>
-                  <th>单词</th>
-                  <th>释义</th>
-                  <th>创建时间</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentData.map((word) => (
-                  <tr key={word.id}>
-                    <td className="checkbox-cell">
+        {loading ? (
+          <div className="loading">加载中...</div>
+        ) : words.length === 0 ? (
+          <div className="empty-state">
+            <h3>还没有单词</h3>
+            <p>开始添加您的第一个单词吧！</p>
+          </div>
+        ) : (
+          <>
+            {/* 桌面端表格视图 */}
+            <div className="data-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th className="checkbox-cell">
                       <input
                         type="checkbox"
-                        checked={selectedIds.includes(word.id)}
-                        onChange={() => handleSelectOne(word.id)}
+                        className="select-all-checkbox"
+                        checked={selectedIds.length === currentData.length && currentData.length > 0}
+                        onChange={handleSelectAll}
                       />
-                    </td>
-                    <td><strong>{word.word}</strong></td>
-                    <td className="text-cell">
-                      {word.definitions.map((def, idx) => (
-                        <div key={idx}>
-                          <span style={{ fontWeight: 500, color: '#667eea' }}>
-                            {def.partOfSpeech}
-                          </span>{' '}
-                          {def.meaning}
-                        </div>
-                      ))}
-                    </td>
-                  <td>{new Date(word.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    <div className="actions-cell">
-                      <button 
-                        className="btn-view-detail" 
-                        onClick={() => setDetailView({
-                          show: true,
-                          title: `单词释义：${word.word}`,
-                          content: word.definitions.map((def, idx) => 
-                            `${def.partOfSpeech} ${def.meaning}`
-                          ).join('\n\n')
-                        })}
-                        onContextMenu={(e) => e.preventDefault()}
-                      >
-                        详情
-                      </button>
-                      <button 
-                        className="btn btn-secondary btn-small" 
-                        onClick={() => handleEdit(word)}
-                        onContextMenu={(e) => e.preventDefault()}
-                      >
-                        编辑
-                      </button>
-                      <button 
-                        className="btn btn-danger btn-small" 
-                        onClick={(e) => handleDelete(word.id, e)}
-                        onContextMenu={(e) => e.preventDefault()}
-                      >
-                        删除
-                      </button>
-                    </div>
-                  </td>
+                    </th>
+                    <th>单词</th>
+                    <th>释义</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* 移动端卡片视图 - 显示所有数据，不分页 */}
-          <div className="mobile-card-view">
-            {words.map((word) => (
-              <div key={word.id} className="mobile-card">
-                <div className="mobile-card-header">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(word.id)}
-                    onChange={() => handleSelectOne(word.id)}
-                    style={{ marginRight: '10px' }}
-                  />
-                  <div className="mobile-card-title">{word.word}</div>
-                </div>
-                <div className="mobile-card-content">
-                  <div className="mobile-card-row">
-                    <div className="mobile-card-label">释义</div>
-                    <div className="mobile-card-value">
-                      {word.definitions.map((def, idx) => (
-                        <div key={idx}>
-                          <span style={{ fontWeight: 500, color: '#667eea' }}>
-                            {def.partOfSpeech}
-                          </span>{' '}
-                          {def.meaning}
+                </thead>
+                <tbody>
+                  {currentData.map((word) => (
+                    <tr key={word.id}>
+                      <td className="checkbox-cell">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(word.id)}
+                          onChange={() => handleSelectOne(word.id)}
+                        />
+                      </td>
+                      <td><strong>{word.word}</strong></td>
+                      <td className="text-cell">
+                        <span style={{ fontWeight: 500, color: 'var(--brand-primary)' }}>
+                          {word.definitions[0]?.partOfSpeech}
+                        </span>{' '}
+                        {word.definitions[0]?.meaning}
+                      </td>
+                      <td>{new Date(word.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <div className="actions-cell">
+                          <button
+                            className="btn-view-detail"
+                            onClick={() => setDetailView({
+                              show: true,
+                              title: `单词释义：${word.word}`,
+                              content: word.definitions.map((def, idx) =>
+                                `${def.partOfSpeech} ${def.meaning}`
+                              ).join('\n\n')
+                            })}
+                            onContextMenu={(e) => e.preventDefault()}
+                          >
+                            详情
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-small"
+                            onClick={() => handleEdit(word)}
+                            onContextMenu={(e) => e.preventDefault()}
+                          >
+                            编辑
+                          </button>
+                          <button
+                            className="btn btn-danger btn-small"
+                            onClick={(e) => handleDelete(word.id, e)}
+                            onContextMenu={(e) => e.preventDefault()}
+                          >
+                            删除
+                          </button>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mobile-card-row">
-                    <div className="mobile-card-label">创建时间</div>
-                    <div className="mobile-card-value">
-                      {new Date(word.createdAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-                <div className="mobile-card-actions">
-                  <button 
-                    className="btn btn-secondary btn-small" 
-                    onClick={() => handleEdit(word)}
-                    onContextMenu={(e) => e.preventDefault()}
-                  >
-                    编辑
-                  </button>
-                  <button 
-                    className="btn btn-danger btn-small" 
-                    onClick={(e) => handleDelete(word.id, e)}
-                    onContextMenu={(e) => e.preventDefault()}
-                  >
-                    删除
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {/* 分页组件 */}
-          {renderPagination()}
-        </>
-      )}
+            {/* 移动端卡片视图 - 显示所有数据，不分页 */}
+            <div className="mobile-card-view">
+              {words.map((word) => (
+                <div key={word.id} className="mobile-card">
+                  <div className="mobile-card-header">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(word.id)}
+                      onChange={() => handleSelectOne(word.id)}
+                      style={{ marginRight: '10px' }}
+                    />
+                    <div className="mobile-card-title">{word.word}</div>
+                  </div>
+                  <div className="mobile-card-content">
+                    <div className="mobile-card-row">
+                      <div className="mobile-card-label">释义</div>
+                      <div className="mobile-card-value">
+                        {word.definitions.map((def, idx) => (
+                          <div key={idx}>
+                            <span style={{ fontWeight: 500, color: 'var(--brand-primary)' }}>
+                              {def.partOfSpeech}
+                            </span>{' '}
+                            {def.meaning}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mobile-card-row">
+                      <div className="mobile-card-label">创建时间</div>
+                      <div className="mobile-card-value">
+                        {new Date(word.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mobile-card-actions">
+                    <button
+                      className="btn btn-secondary btn-small"
+                      onClick={() => handleEdit(word)}
+                      onContextMenu={(e) => e.preventDefault()}
+                    >
+                      编辑
+                    </button>
+                    <button
+                      className="btn btn-danger btn-small"
+                      onClick={(e) => handleDelete(word.id, e)}
+                      onContextMenu={(e) => e.preventDefault()}
+                    >
+                      删除
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 分页组件 */}
+            {renderPagination()}
+          </>
+        )}
       </div>
 
       {showModal && (
@@ -459,7 +455,7 @@ function Words() {
                         ✕
                       </button>
                     )}
-                    <div className="form-group">
+                    <div className="form-group form-group-z-index-selector">
                       <label>词性 *</label>
                       <CustomSelect
                         value={def.partOfSpeech}

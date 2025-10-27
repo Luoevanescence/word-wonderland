@@ -3,16 +3,19 @@
 }
 
 .controls {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
-  padding: 25px;
-  margin-bottom: 30px;
+  background: var(--surface-card);
+  backdrop-filter: blur(30px) saturate(120%);
+  -webkit-backdrop-filter: blur(30px) saturate(120%);
+  border-radius: 16px;
+  padding: 24px 32px;
+  margin-bottom: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
   flex-wrap: wrap;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-subtle), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--glass-border);
 }
 
 .count-control {
@@ -22,58 +25,87 @@
 }
 
 .count-control label {
-  font-weight: 600;
-  color: #555;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
 .count-control input {
   width: 80px;
-  padding: 10px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 16px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line-divider);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
   text-align: center;
-  transition: border-color 0.3s;
+  transition: all 0.15s ease-out;
+  background: var(--glass-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  color: var(--text-primary);
 }
 
 .count-control input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--brand-primary);
+  background: var(--glass-bg-hover);
 }
 
 .refresh-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 30px;
-  font-size: 16px;
-  font-weight: 600;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  height: 40px;
+  padding: 0 24px;
+  background: var(--glass-bg);
+  color: var(--brand-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-button);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  letter-spacing: -0.01em;
+  position: relative;
+}
+
+.refresh-btn::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 4px;
+  background: var(--brand-primary);
+  border-radius: 2px 0 0 2px;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .refresh-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: var(--glass-bg-hover);
+}
+
+.refresh-btn:hover:not(:disabled)::after {
+  width: 24px;
 }
 
 .refresh-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .loading-state {
   text-align: center;
   padding: 60px 20px;
-  color: white;
+  color: var(--brand-primary);
 }
 
 .spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 4px solid rgba(16, 185, 129, 0.2);
+  border-top-color: var(--brand-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -85,26 +117,32 @@
 
 .loading-state p {
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--text-medium);
 }
 
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 80px 20px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(6, 182, 212, 0.15), 0 0 0 1px rgba(6, 182, 212, 0.08);
+  border: 2px dashed rgba(6, 182, 212, 0.25);
 }
 
 .empty-state h3 {
-  font-size: 24px;
-  margin-bottom: 10px;
-  color: #555;
+  font-size: 26px;
+  margin-bottom: 12px;
+  color: var(--text-dark);
+  font-weight: 700;
 }
 
 .empty-state p {
-  color: #999;
+  color: var(--text-light);
   font-size: 16px;
+  font-weight: 500;
 }
 
 /* Masonry 瀑布流布局 */
@@ -128,15 +166,15 @@
 .load-more-trigger {
   text-align: center;
   padding: 40px 20px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--brand-primary);
   animation: fadeIn 0.5s ease-in;
 }
 
 .spinner-small {
   width: 30px;
   height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 3px solid rgba(16, 185, 129, 0.2);
+  border-top-color: var(--brand-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 15px;

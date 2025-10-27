@@ -81,7 +81,8 @@ export const componentsAPI = {
   getById: (id) => api.get(`/components/${id}`),
   create: (data) => api.post('/components', data),
   update: (id, data) => api.put(`/components/${id}`, data),
-  delete: (id) => api.delete(`/components/${id}`)
+  delete: (id) => api.delete(`/components/${id}`),
+  bulkDelete: (ids) => api.post('/components/bulk/delete', { ids })
 };
 
 export default api;

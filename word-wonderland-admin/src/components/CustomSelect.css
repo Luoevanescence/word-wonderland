@@ -23,7 +23,7 @@
 }
 
 .custom-select-trigger.open {
-  border-color: #667eea;
+  border-color: var(--brand-primary);
   background: white;
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
 }
@@ -32,7 +32,7 @@
   flex: 1;
   font-size: 15px;
   font-weight: 600;
-  color: #667eea;
+  color: var(--brand-primary);
   transition: color 0.3s;
 }
 
@@ -49,7 +49,7 @@
   width: 24px;
   height: 24px;
   margin-left: 12px;
-  color: #667eea;
+  color: var(--brand-primary);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -66,7 +66,7 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  border: 2px solid #667eea;
+  border: 2px solid var(--brand-primary);
   overflow: hidden;
   animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   max-height: 320px;
@@ -102,18 +102,18 @@
 }
 
 .custom-select-option:hover {
-  background: linear-gradient(135deg, #f8f9ff 0%, #f0f1ff 100%);
+  background: linear-gradient(135deg, #e3fffb 0%, #fffef0 100%);
   transform: translateX(4px);
 }
 
 .custom-select-option.selected {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
   color: white;
   font-weight: 600;
 }
 
 .custom-select-option.selected:hover {
-  background: linear-gradient(135deg, #7c8ef5 0%, #8557b3 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
   transform: translateX(4px);
 }
 
@@ -176,13 +176,13 @@
 }
 
 .custom-select-dropdown::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(180deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
   border-radius: 3px;
   border: 1px solid white;
 }
 
 .custom-select-dropdown::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #7c8ef5 0%, #8557b3 100%);
+  background: linear-gradient(180deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
 }
 
 /* 移动端优化 */

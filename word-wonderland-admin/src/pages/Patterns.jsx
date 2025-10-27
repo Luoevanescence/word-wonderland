@@ -27,6 +27,7 @@ function Patterns() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' });
+  const [selectedIds, setSelectedIds] = useState([]); // 批量删除
   
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
@@ -163,6 +164,49 @@ function Patterns() {
     setShowModal(true);
   };
 
+  // 批量删除相关函数
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedIds(currentData.map(item => item.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    setSelectedIds(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(itemId => itemId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) {
+      showToast('请先选择要删除的项目', 'warning');
+      return;
+    }
+
+    showConfirm({
+      title: '批量删除',
+      message: `确定要删除选中的 ${selectedIds.length} 个句型吗？此操作无法撤销。`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const response = await patternsAPI.bulkDelete(selectedIds);
+          await fetchPatterns();
+          setSelectedIds([]);
+          showToast(response.data.message || '批量删除成功', 'success');
+        } catch (error) {
+          console.error('Error bulk deleting patterns:', error);
+          showToast(error.response?.data?.message || '批量删除失败', 'error');
+        }
+      }
+    });
+  };
+
   // 使用全局弹窗关闭Hook
   useGlobalModalClose(showModal, setShowModal, resetForm);
 
@@ -184,6 +228,15 @@ function Patterns() {
             disabled={loading || patterns.length === 0}
             label="导出句型"
           />
+          
+          {selectedIds.length > 0 && (
+            <div className="bulk-actions">
+              <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
+              <button className="btn btn-danger btn-small" onClick={handleBulkDelete}>
+                批量删除
+              </button>
+            </div>
+          )}
         </div>
 
         {components.length === 0 && (
@@ -196,7 +249,7 @@ function Patterns() {
             color: '#856404'
           }}>
             <strong>⚠️ 提示：</strong> 您还没有创建任何成分。句型由成分组合而成。
-            <Link to="/components" style={{ color: '#667eea', marginLeft: '10px', textDecoration: 'underline' }}>
+            <Link to="/components" style={{ color: 'var(--brand-primary)', marginLeft: '10px', textDecoration: 'underline' }}>
               点击前往成分管理页面
             </Link>
           </div>
@@ -216,6 +269,14 @@ function Patterns() {
             <table>
               <thead>
                 <tr>
+                  <th className="checkbox-cell">
+                    <input
+                      type="checkbox"
+                      className="select-all-checkbox"
+                      checked={selectedIds.length === currentData.length && currentData.length > 0}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
                   <th>句型</th>
                   <th>说明</th>
                   <th>例句</th>
@@ -226,7 +287,14 @@ function Patterns() {
               <tbody>
                 {currentData.map((pattern) => (
                   <tr key={pattern.id}>
-                    <td><strong style={{ color: '#667eea' }}>{pattern.pattern}</strong></td>
+                    <td className="checkbox-cell">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(pattern.id)}
+                        onChange={() => handleSelectOne(pattern.id)}
+                      />
+                    </td>
+                    <td><strong style={{ color: 'var(--brand-primary)' }}>{pattern.pattern}</strong></td>
                     <td className="text-cell">{pattern.description}</td>
                     <td className="text-cell">
                       {pattern.example && (
@@ -270,7 +338,13 @@ function Patterns() {
             {patterns.map((pattern) => (
               <div key={pattern.id} className="mobile-card">
                 <div className="mobile-card-header">
-                  <div className="mobile-card-title" style={{ color: '#667eea' }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(pattern.id)}
+                    onChange={() => handleSelectOne(pattern.id)}
+                    style={{ marginRight: '10px' }}
+                  />
+                  <div className="mobile-card-title" style={{ color: 'var(--brand-primary)' }}>
                     {pattern.pattern}
                   </div>
                 </div>

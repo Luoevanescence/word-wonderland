@@ -22,6 +22,7 @@ function Sentences() {
   });
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
+  const [selectedIds, setSelectedIds] = useState([]); // 批量删除
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
@@ -129,6 +130,49 @@ function Sentences() {
     setEditingSentence(null);
   };
 
+  // 批量删除相关函数
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedIds(currentData.map(item => item.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    setSelectedIds(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(itemId => itemId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) {
+      showToast('请先选择要删除的项目', 'warning');
+      return;
+    }
+
+    showConfirm({
+      title: '批量删除',
+      message: `确定要删除选中的 ${selectedIds.length} 个句子吗？此操作无法撤销。`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const response = await sentencesAPI.bulkDelete(selectedIds);
+          await fetchSentences();
+          setSelectedIds([]);
+          showToast(response.data.message || '批量删除成功', 'success');
+        } catch (error) {
+          console.error('Error bulk deleting sentences:', error);
+          showToast(error.response?.data?.message || '批量删除失败', 'error');
+        }
+      }
+    });
+  };
+
   // 使用全局弹窗关闭Hook
   useGlobalModalClose(showModal, setShowModal, resetForm);
 
@@ -150,6 +194,15 @@ function Sentences() {
             disabled={loading || sentences.length === 0}
             label="导出句子"
           />
+          
+          {selectedIds.length > 0 && (
+            <div className="bulk-actions">
+              <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
+              <button className="btn btn-danger btn-small" onClick={handleBulkDelete}>
+                批量删除
+              </button>
+            </div>
+          )}
         </div>
 
       {loading ? (
@@ -166,6 +219,14 @@ function Sentences() {
             <table>
               <thead>
                 <tr>
+                  <th className="checkbox-cell">
+                    <input
+                      type="checkbox"
+                      className="select-all-checkbox"
+                      checked={selectedIds.length === currentData.length && currentData.length > 0}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
                   <th>句子</th>
                   <th>翻译</th>
                   <th>备注</th>
@@ -176,6 +237,13 @@ function Sentences() {
               <tbody>
                 {currentData.map((sentence) => (
                   <tr key={sentence.id}>
+                    <td className="checkbox-cell">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(sentence.id)}
+                        onChange={() => handleSelectOne(sentence.id)}
+                      />
+                    </td>
                     <td className="text-cell"><strong>{sentence.sentence}</strong></td>
                     <td className="text-cell">{sentence.translation}</td>
                     <td className="text-cell" style={{ color: '#666' }}>{sentence.note}</td>
@@ -210,13 +278,16 @@ function Sentences() {
           <div className="mobile-card-view">
             {sentences.map((sentence) => (
               <div key={sentence.id} className="mobile-card">
+                <div className="mobile-card-header">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(sentence.id)}
+                    onChange={() => handleSelectOne(sentence.id)}
+                    style={{ marginRight: '10px' }}
+                  />
+                  <div className="mobile-card-title">{sentence.sentence}</div>
+                </div>
                 <div className="mobile-card-content">
-                  <div className="mobile-card-row">
-                    <div className="mobile-card-label">句子</div>
-                    <div className="mobile-card-value" style={{ fontWeight: 600 }}>
-                      {sentence.sentence}
-                    </div>
-                  </div>
                   <div className="mobile-card-row">
                     <div className="mobile-card-label">翻译</div>
                     <div className="mobile-card-value">{sentence.translation}</div>

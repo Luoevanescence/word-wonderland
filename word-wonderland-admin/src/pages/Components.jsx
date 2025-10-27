@@ -22,6 +22,7 @@ function Components() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' });
+  const [selectedIds, setSelectedIds] = useState([]); // 批量删除
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
@@ -121,6 +122,49 @@ function Components() {
     downloadJSONWithMeta(components, 'components');
   };
 
+  // 批量删除相关函数
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedIds(currentData.map(item => item.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    setSelectedIds(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(itemId => itemId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) {
+      showToast('请先选择要删除的项目', 'warning');
+      return;
+    }
+
+    showConfirm({
+      title: '批量删除',
+      message: `确定要删除选中的 ${selectedIds.length} 个成分吗？此操作无法撤销。`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const response = await componentsAPI.bulkDelete(selectedIds);
+          await fetchComponents();
+          setSelectedIds([]);
+          showToast(response.data.message || '批量删除成功', 'success');
+        } catch (error) {
+          console.error('Error bulk deleting components:', error);
+          showToast(error.response?.data?.message || '批量删除失败', 'error');
+        }
+      }
+    });
+  };
+
   // 使用全局弹窗关闭Hook
   useGlobalModalClose(showModal, setShowModal, resetForm);
 
@@ -143,6 +187,15 @@ function Components() {
             disabled={loading || components.length === 0}
             label="导出成分"
           />
+          
+          {selectedIds.length > 0 && (
+            <div className="bulk-actions">
+              <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
+              <button className="btn btn-danger btn-small" onClick={handleBulkDelete}>
+                批量删除
+              </button>
+            </div>
+          )}
         </div>
 
       {loading ? (
@@ -159,6 +212,14 @@ function Components() {
             <table>
               <thead>
                 <tr>
+                  <th className="checkbox-cell">
+                    <input
+                      type="checkbox"
+                      className="select-all-checkbox"
+                      checked={selectedIds.length === currentData.length && currentData.length > 0}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
                   <th>成分名称</th>
                   <th>说明</th>
                   <th>示例</th>
@@ -169,6 +230,13 @@ function Components() {
               <tbody>
                 {currentData.map((component) => (
                   <tr key={component.id}>
+                    <td className="checkbox-cell">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(component.id)}
+                        onChange={() => handleSelectOne(component.id)}
+                      />
+                    </td>
                     <td><strong>{component.name}</strong></td>
                     <td className="text-cell">{component.description}</td>
                     <td className="text-cell" style={{ fontStyle: 'italic', color: '#666' }}>{component.example}</td>
@@ -204,6 +272,12 @@ function Components() {
             {components.map((component) => (
               <div key={component.id} className="mobile-card">
                 <div className="mobile-card-header">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(component.id)}
+                    onChange={() => handleSelectOne(component.id)}
+                    style={{ marginRight: '10px' }}
+                  />
                   <div className="mobile-card-title">{component.name}</div>
                 </div>
                 <div className="mobile-card-content">

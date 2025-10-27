@@ -4,14 +4,48 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* 品牌焦点色 - 薄荷拿铁方案 */
+  --brand-primary: #10B981;   /* Emerald-500 清新薄荷绿 */
+  --brand-accent: #F59E0B;    /* Amber-500 温暖琥珀黄 */
+  
+  /* 按钮选中颜色 */
+  --button-checked: #feeda7;
+  
+  /* 中性色系统 - 温暖基调 */
+  --surface-ground: #FDFBF8;  /* 微暖米白 */
+  --surface-card: rgba(255, 255, 255, 0.9);
+  --surface-elevated: rgba(255, 255, 255, 0.95);
+  --text-primary: #111827;    /* Gray-900 */
+  --text-secondary: #4B5563;  /* Gray-600 */
+  --line-divider: rgba(229, 231, 235, 0.5);  /* Gray-200 50%透明 */
+  
+  /* 玻璃材质 */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-hover: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  
+  /* 阴影 */
+  --shadow-subtle: 0 0 40px -20px rgba(16, 185, 129, 0.08);
+  --shadow-elevated: 0 20px 50px -10px rgba(0, 0, 0, 0.15);
+  --shadow-button: 0 4px 20px rgba(16, 185, 129, 0.12);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #333;
+  /* 薄荷拿铁弥散背景 - 清新温暖 */
+  background: 
+    radial-gradient(ellipse 800px 600px at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 60%),
+    radial-gradient(circle 500px at 90% 15%, rgba(245, 158, 11, 0.03) 0%, transparent 55%),
+    radial-gradient(ellipse 700px 900px at 75% 85%, rgba(251, 191, 36, 0.025) 0%, transparent 50%),
+    radial-gradient(circle 400px at 30% 70%, rgba(52, 211, 153, 0.03) 0%, transparent 60%),
+    #FDFBF8;
+  background-attachment: fixed;
+  color: var(--text-primary);
   min-height: 100vh;
 }
 

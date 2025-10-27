@@ -4,6 +4,7 @@ import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
+import DetailViewModal from '../components/DetailViewModal';
 import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
@@ -21,6 +22,7 @@ function PartsOfSpeech() {
   });
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
   
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
@@ -182,6 +184,23 @@ function PartsOfSpeech() {
     setEditingPos(null);
   };
 
+  // 查看详情
+  const handleViewDetail = (pos) => {
+    const content = `
+代码：${pos.code}
+名称：${pos.name}
+${pos.description ? `描述：${pos.description}` : ''}
+创建时间：${new Date(pos.createdAt).toLocaleString()}
+更新时间：${new Date(pos.updatedAt).toLocaleString()}
+    `.trim();
+    
+    setDetailView({
+      show: true,
+      title: `词性详情 - ${pos.name}`,
+      content: content
+    });
+  };
+
   // 使用全局弹窗关闭Hook
   useGlobalModalClose(showModal, setShowModal, resetForm);
 
@@ -253,12 +272,18 @@ function PartsOfSpeech() {
                         onChange={() => handleSelectOne(pos.id)}
                       />
                     </td>
-                    <td><strong style={{ color: '#667eea' }}>{pos.code}</strong></td>
+                    <td><strong style={{ color: 'var(--brand-primary)' }}>{pos.code}</strong></td>
                     <td>{pos.name}</td>
                     <td style={{ color: '#666' }}>{pos.description}</td>
                     <td>{new Date(pos.createdAt).toLocaleDateString()}</td>
                     <td>
                     <div className="actions-cell">
+                      <button 
+                        className="btn btn-view-detail btn-small" 
+                        onClick={() => handleViewDetail(pos)}
+                      >
+                        查看
+                      </button>
                       <button 
                         className="btn btn-secondary btn-small" 
                         onClick={() => handleEdit(pos)}
@@ -292,7 +317,7 @@ function PartsOfSpeech() {
                     onChange={() => handleSelectOne(pos.id)}
                     style={{ marginRight: '10px' }}
                   />
-                  <div className="mobile-card-title" style={{ color: '#667eea' }}>
+                  <div className="mobile-card-title" style={{ color: 'var(--brand-primary)' }}>
                     {pos.code} - {pos.name}
                   </div>
                 </div>
@@ -313,6 +338,12 @@ function PartsOfSpeech() {
                   </div>
                 </div>
                 <div className="mobile-card-actions">
+                  <button 
+                    className="btn btn-view-detail btn-small" 
+                    onClick={() => handleViewDetail(pos)}
+                  >
+                    查看
+                  </button>
                   <button 
                     className="btn btn-secondary btn-small" 
                     onClick={() => handleEdit(pos)}
@@ -402,6 +433,14 @@ function PartsOfSpeech() {
 
       {/* Toast通知 */}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
+      
+      {/* 详情查看弹窗 */}
+      <DetailViewModal
+        isOpen={detailView.show}
+        title={detailView.title}
+        content={detailView.content}
+        onClose={() => setDetailView({ show: false, title: '', content: '' })}
+      />
     </div>
   );
 }
