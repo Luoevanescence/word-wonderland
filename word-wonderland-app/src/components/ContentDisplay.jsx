@@ -51,25 +51,25 @@ function ContentDisplay({ category, count, setCount }) {
     }
   }, [inView, items, displayedItems.length]);
 
-  const fetchItems = async () => {
+  const fetchItems = async (requestCount = count) => {
     setLoading(true);
     try {
       let response;
       switch (category) {
         case 'words':
-          response = await getRandomWords(count);
+          response = await getRandomWords(requestCount);
           break;
         case 'phrases':
-          response = await getRandomPhrases(count);
+          response = await getRandomPhrases(requestCount);
           break;
         case 'sentences':
-          response = await getRandomSentences(count);
+          response = await getRandomSentences(requestCount);
           break;
         case 'patterns':
-          response = await getRandomPatterns(count);
+          response = await getRandomPatterns(requestCount);
           break;
         case 'topics':
-          response = await getRandomTopics(count);
+          response = await getRandomTopics(requestCount);
           break;
         default:
           response = { data: { data: [] } };
@@ -85,8 +85,17 @@ function ContentDisplay({ category, count, setCount }) {
 
   const handleRefresh = () => {
     if (loading) return; // 防止重复点击
-    setCount(inputCount);
-    fetchItems();
+    
+    // 确保 inputCount 是有效数字
+    const validCount = parseInt(inputCount);
+    if (isNaN(validCount) || validCount < 1 || validCount > 50) {
+      setInputCount(10); // 如果无效，重置为默认值10
+      setCount(10);
+      fetchItems(10);
+    } else {
+      setCount(validCount);
+      fetchItems(validCount); // 直接传入最新的数量
+    }
   };
 
   const renderCard = (item, index) => {
@@ -130,14 +139,25 @@ function ContentDisplay({ category, count, setCount }) {
     <div className="content-display">
       <div className="controls">
         <div className="count-control">
-          <label htmlFor="count">项目数量：</label>
+          <label htmlFor="count">随机数量：</label>
           <input
             id="count"
-            type="number"
-            min="1"
-            max="50"
+            type="text"
             value={inputCount}
-            onChange={(e) => setInputCount(parseInt(e.target.value) || 1)}
+            onChange={(e) => setInputCount(e.target.value)}
+            onFocus={(e) => e.target.select()}
+            onBlur={(e) => {
+              // 失去焦点时进行校验
+              const value = parseInt(e.target.value);
+              if (isNaN(value) || value < 1) {
+                setInputCount(1); // 无效值或小于1，重置为1
+              } else if (value > 50) {
+                setInputCount(50); // 超过50，设为50
+              } else {
+                setInputCount(value); // 有效值
+              }
+            }}
+            placeholder="1-50"
           />
         </div>
         <button className="refresh-btn" onClick={handleRefresh} disabled={loading}>

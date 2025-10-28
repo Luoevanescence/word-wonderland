@@ -5,7 +5,7 @@
   border-radius: 16px;
   padding: 25px;
   box-shadow: var(--shadow-subtle), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   animation: slideIn 0.25s ease-out forwards;
   opacity: 0;
@@ -29,12 +29,13 @@
   border-bottom: none;
 }
 
-/* 展开图标 - 使用辅助色 */
+/* 展开图标 - 折叠时绿色，展开时黄色 */
 .expand-icon {
   font-size: 18px;
   font-weight: 600;
-  color: var(--brand-accent);
-  transition: all 0.2s ease-out;
+  color: #10b981;
+  /* 折叠状态（▼）- 绿色 */
+  transition: color 0.2s ease-out;
   line-height: 1;
   width: auto;
   height: auto;
@@ -46,9 +47,18 @@
   margin-top: 2px;
 }
 
+/* 展开状态的三角形 - 黄色 */
+.card.expanded .expand-icon {
+  color: #f59e0b;
+}
+.card.expanded .card-header::after {
+  display: block;
+}
+
+/* 移除 hover 动画效果 */
 .card:hover .expand-icon {
-  color: var(--brand-primary);
-  transform: scale(1.1);
+  /* 不再有动画效果 */
+  transition: all 0.5s ease-in-out;
 }
 
 /* 卡片内容动画 */
@@ -61,6 +71,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -72,6 +83,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -79,13 +91,32 @@
 }
 
 .card-header {
+  position: relative;
+  /* 给伪元素定位 */
   margin-bottom: 18px;
   padding-bottom: 18px;
-  border-bottom: 2px solid rgba(16, 185, 129, 0.12);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 15px;
+}
+
+.card-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  /* 与原 border 同宽 */
+  background: linear-gradient(90deg,
+      transparent,
+      var(--strip-start, #fff159) 20%,
+      var(--strip-end, #ffbb46) 80%,
+      transparent);
+  border-radius: 1px;
+  /* 2 px 高，圆角 1 px 更柔和 */
+  display: none;
 }
 
 .card-title {
@@ -214,7 +245,7 @@
   .card.collapsed {
     padding: 15px 20px;
   }
-  
+
   .card-title {
     font-size: 20px;
   }
@@ -227,10 +258,9 @@
     font-size: 16px;
     min-width: 18px;
   }
-  
+
   .sentence-text,
   .meaning-text {
     font-size: 16px;
   }
 }
-
