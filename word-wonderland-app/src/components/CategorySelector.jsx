@@ -1,12 +1,14 @@
 import React from 'react';
 import './CategorySelector.css';
 
+import { WordsIcon, PhrasesIcon, SentencesIcon, PatternsIcon, TopicsIcon } from './icons/Icons';
+
 const categories = [
-  { id: 'words', label: '单词', icon: '📝' },
-  { id: 'phrases', label: '短语', icon: '🔤' },
-  { id: 'sentences', label: '句子', icon: '📖' },
-  { id: 'patterns', label: '句型', icon: '🎯' },
-  { id: 'topics', label: '主题', icon: '🏷️' }
+  { id: 'words',    label: '单词', icon: <WordsIcon /> },
+  { id: 'phrases',  label: '短语', icon: <PhrasesIcon /> },
+  { id: 'sentences',label: '句子', icon: <SentencesIcon /> },
+  { id: 'patterns', label: '句型', icon: <PatternsIcon /> },
+  { id: 'topics',   label: '主题', icon: <TopicsIcon /> }
 ];
 
 function CategorySelector({ activeCategory, setActiveCategory }) {

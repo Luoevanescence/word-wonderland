@@ -1,70 +1,111 @@
-.category-selector {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 48px;
-  flex-wrap: wrap;
-  animation: slideUp 0.25s ease-out;
+.category-selector{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin-bottom:48px;
+  flex-wrap:wrap;
 }
 
-.category-btn {
-  height: 40px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 0 20px;
-  font-size: 15px;
-  font-weight: 500;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: var(--shadow-button);
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
+.category-btn{
+  /* height:40px; */
+  padding:10px 20px;
+  font-size:15px;
+  font-weight:500;
+  letter-spacing:-0.01em;
+  color:var(--text-primary);
+  border:1px solid var(--glass-border);
+  border-radius:6px;
+  background:var(--glass-bg);
+  backdrop-filter:blur(30px);
+  -webkit-backdrop-filter:blur(30px);
+  box-shadow:var(--shadow-button);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  position:relative;
+  overflow:hidden;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
 }
 
-.category-btn:hover {
-  background: var(--glass-bg-hover);
+/* ===== 图标两色分层 ===== */
+.category-btn .ico-bg{          /* 外框背景 */
+  color:transparent;             /* 默认透明 */
+  transition:color .3s cubic-bezier(.4,0,.2,1);
+}
+.category-btn .ico-fg{          /* 字母/图形 */
+  color:var(--brand-primary);    /* 默认主色 */
+  transition:color .3s cubic-bezier(.4,0,.2,1);
 }
 
+/* ===== hover 状态 ===== */
+.category-btn:hover{
+  background:var(--glass-bg-hover);
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(16,185,129,.20),
+             0 0 0 1px rgba(16,185,129,.25);
+}
+
+/* ===== 选中状态 ===== */
 .category-btn.active {
-  background: var(--brand-primary);
-  color: white;
-  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+  /* border-color: var(--brand-primary); */
+  border: none;
+
+  /* 1. 薄荷 + 拿铁 双径向渐变 */
+background:
+  /* ① 左上薄荷大光晕（半径 60%）*/
+  radial-gradient(ellipse 60% 60% at 15% 15%,
+    rgba(14,165,120,.38) 0%,
+    transparent 50%),
+
+  /* ② 右上拿铁大光晕（半径 55%）*/
+  radial-gradient(ellipse 55% 55% at 85% 85% ,
+    rgba(255, 177, 51, 0.518) 0%,
+    transparent 50%),
+
+  /* ③ 中心奶沫高光（半径 25%）*/
+  radial-gradient(ellipse 25% 25% at 50% 50%,
+    rgba(255,255,255,.18) 0%,
+    transparent 50%),
+
+  /* ④ 全局尾光（半径 100%）*/
+  radial-gradient(circle at 50% 50%,
+    rgba(14,165,120,.16) 0%,
+    transparent 100%);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  /* 2. 三色阴影：薄荷内晕 + 暖色外晕 + 弥散尾光 */
+  box-shadow:
+    0 1px 1px 1px rgba(16,185,129,.45),                    /* 内圈薄荷描边 */
+    0 8px 24px -4px rgba(16,185,129,.45),              /* 薄荷光晕 */
+    0 20px 48px -8px rgba(245,158,11,.25),             /* 拿铁外晕 */
+    0 32px 64px -12px rgba(16,185,129,.15);            /* 尾光弥散 */
+
+  transform: translateY(-2px) scale(1.03);
 }
 
-.category-icon {
-  font-size: 24px;
+/* 选中时图标变色 */
+.category-btn.active .ico-bg{
+  color:rgba(255,255,255,1);   /* 外框淡白 */
+}
+.category-btn.active .ico-fg{
+  color:#fdc838d0;                    /* 字母纯白 */
 }
 
-.category-label {
-  font-size: 16px;
+.category-icon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+
+@media (max-width:768px){
+  .category-btn{
+    padding:12px 20px;
+    font-size:14px;
   }
 }
-
-@media (max-width: 768px) {
-  .category-btn {
-    padding: 12px 20px;
-    font-size: 14px;
-  }
-  .category-icon {
-    font-size: 20px;
-  }
-  .category-label {
-    font-size: 14px;
-  }
-}
-

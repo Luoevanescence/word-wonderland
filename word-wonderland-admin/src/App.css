@@ -269,18 +269,6 @@
     /* 为移动端菜单按钮留出空间 */
   }
 
-  .page-header {
-    padding: 20px;
-  }
-
-  .page-header h1 {
-    font-size: 24px;
-  }
-
-  .page-header p {
-    font-size: 14px;
-  }
-
   .page-content {
     padding: 20px;
   }
@@ -367,7 +355,7 @@
 
 .page-header {
   flex-shrink: 0;
-  padding: 40px 56px 24px;
+  padding: 30px 56px 24px;
   margin-bottom: 0;
   border-bottom: none;
   position: relative;
@@ -405,7 +393,7 @@
 .page-content {
   flex: 1;
   overflow-y: auto;
-  padding: 32px 56px 56px;
+  padding: 32px 56px 32px;
   background: transparent;
 }
 
@@ -717,10 +705,7 @@ td.text-cell {
 }
 
 td.text-cell:hover {
-  overflow: visible;
-  white-space: normal;
-  position: relative;
-  z-index: 10;
+  cursor: mice;
 }
 
 /* 查看详情按钮 - 使用辅助色强调 */
@@ -945,6 +930,7 @@ tbody tr:hover {
   /* position: relative; */
   /* z-index: 1; */
 }
+
 .form-group-z-index-selector {
   /* z-index: 5; */
 }

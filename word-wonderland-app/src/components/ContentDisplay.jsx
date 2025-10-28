@@ -4,7 +4,8 @@ import {
   getRandomPhrases,
   getRandomSentences,
   getRandomPatterns,
-  getRandomTopics
+  getRandomTopics,
+ 
 } from '../services/api';
 import WordCard from './cards/WordCard';
 import PhraseCard from './cards/PhraseCard';
@@ -14,13 +15,14 @@ import TopicCard from './cards/TopicCard';
 import Masonry from 'react-masonry-css';
 import { useInView } from 'react-intersection-observer';
 import './ContentDisplay.css';
+import { RefreshIcon, DiceIcon, HintStrip } from './icons/Icons';
 
 function ContentDisplay({ category, count, setCount }) {
   const [items, setItems] = useState([]);
   const [displayedItems, setDisplayedItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputCount, setInputCount] = useState(count);
-  
+
   // 懒加载观察器
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0,
@@ -139,7 +141,11 @@ function ContentDisplay({ category, count, setCount }) {
           />
         </div>
         <button className="refresh-btn" onClick={handleRefresh} disabled={loading}>
-          {loading ? '🔄 加载中...' : `🎲 获取随机${getCategoryLabel()}`}
+          <HintStrip stripClass="strip-warm hint-strip" />
+          <span style={{ marginLeft: 8 }} className='refresh-text'>
+            {loading ? <RefreshIcon spinning color="var(--brand-accent)"/> : <DiceIcon />}
+            <span style={{ marginLeft: 6 }}>获取随机{getCategoryLabel()}</span>
+          </span>
         </button>
       </div>
 
@@ -162,7 +168,7 @@ function ContentDisplay({ category, count, setCount }) {
           >
             {displayedItems.map((item, index) => renderCard(item, index))}
           </Masonry>
-          
+
           {/* 懒加载触发器 */}
           {displayedItems.length < items.length && (
             <div ref={loadMoreRef} className="load-more-trigger">

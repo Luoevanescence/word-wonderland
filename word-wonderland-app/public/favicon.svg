@@ -1,79 +1,62 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <!-- 渐变定义 -->
+    <!-- 1. 背景：薄荷 → 拿铁 -->
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E0C7A7;stop-opacity:1" />
     </linearGradient>
-    
+
+    <!-- 2. 书本奶沫白渐变 -->
     <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#e0e7ff;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.85" />
+      <stop offset="100%" style="stop-color:#F7FDFA;stop-opacity:0.75" />
     </linearGradient>
-    
+
+    <!-- 3. 中心薄荷高光 -->
     <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:0" />
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.35" />
+      <stop offset="100%" style="stop-color:#10B981;stop-opacity:0" />
     </radialGradient>
-    
+
+    <!-- 4. 星星/光芒：奶沫 → 白 -->
     <linearGradient id="sparkleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#F7FDFA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:1" />
     </linearGradient>
   </defs>
-  
-  <!-- 圆角方形背景 -->
+
+  <!-- 圆角背景 -->
   <rect x="0" y="0" width="64" height="64" rx="12" ry="12" fill="url(#bgGradient)"/>
-  
-  <!-- 光芒背景 -->
+
+  <!-- 薄荷光芒 -->
   <circle cx="32" cy="32" r="22" fill="url(#glowGradient)"/>
-  
-  <!-- 简化的书本 -->
+
+  <!-- 简化书本 -->
   <g>
-    <path d="M 12 18 Q 12 22 12 46 L 28 48 L 28 20 Q 22 18 12 18" 
-          fill="none" 
-          stroke="url(#bookGradient)" 
-          stroke-width="2.5" 
-          stroke-linecap="round"
-          stroke-linejoin="round"/>
-    
-    <path d="M 52 18 Q 52 22 52 46 L 36 48 L 36 20 Q 42 18 52 18" 
-          fill="none" 
-          stroke="url(#bookGradient)" 
-          stroke-width="2.5" 
-          stroke-linecap="round"
-          stroke-linejoin="round"/>
-    
-    <line x1="32" y1="19" x2="32" y2="47" 
-          stroke="url(#bookGradient)" 
-          stroke-width="3" 
-          stroke-linecap="round"/>
-    
-    <path d="M 16 26 Q 20 26.5 26 27" stroke="#e0e7ff" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-    <path d="M 16 32 Q 20 32.5 26 33" stroke="#e0e7ff" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-    <path d="M 38 27 Q 42 26.5 48 26" stroke="#e0e7ff" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-    <path d="M 38 33 Q 42 32.5 48 32" stroke="#e0e7ff" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+    <path d="M12 18 Q12 22 12 46 L28 48 L28 20 Q22 18 12 18" 
+          fill="none" stroke="url(#bookGradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M52 18 Q52 22 52 46 L36 48 L36 20 Q42 18 52 18" 
+          fill="none" stroke="url(#bookGradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="32" y1="19" x2="32" y2="47" stroke="url(#bookGradient)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M16 26 Q20 26.5 26 27" stroke="#F7FDFA" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+    <path d="M16 32 Q20 32.5 26 33" stroke="#F7FDFA" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+    <path d="M38 27 Q42 26.5 48 26" stroke="#F7FDFA" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+    <path d="M38 33 Q42 32.5 48 32" stroke="#F7FDFA" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
   </g>
-  
+
   <!-- 星光 -->
   <g fill="url(#sparkleGradient)">
-    <circle cx="14" cy="12" r="1.5" opacity="0.9"/>
-    <circle cx="20" cy="10" r="1" opacity="0.7"/>
-    <circle cx="44" cy="10" r="1" opacity="0.7"/>
-    <circle cx="50" cy="12" r="1.5" opacity="0.9"/>
-    <circle cx="10" cy="52" r="1.2" opacity="0.8"/>
-    <circle cx="54" cy="52" r="1.2" opacity="0.8"/>
+    <circle cx="10" cy="12" r="3" opacity="0.9"/>
+    <circle cx="20" cy="8" r="2" opacity="0.7"/>
+    <circle cx="44" cy="8" r="2" opacity="0.7"/>
+    <circle cx="54" cy="12" r="3" opacity="0.9"/>
+    <circle cx="10" cy="54" r="2.4" opacity="0.8"/>
+    <circle cx="54" cy="54" r="2.4" opacity="0.8"/>
   </g>
-  
-  <!-- 字母W -->
-  <text x="32" y="38" 
-        font-family="Arial, sans-serif" 
-        font-size="18" 
-        font-weight="900" 
-        fill="#ffffff" 
-        text-anchor="middle"
-        letter-spacing="1">W</text>
-  
+
+  <!-- 字母 W -->
+  <text x="32" y="38" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#F7FDFA" text-anchor="middle" letter-spacing="1">W</text>
+
   <!-- 光芒线条 -->
   <g stroke="url(#sparkleGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.6">
     <line x1="24" y1="28" x2="22" y2="26"/>

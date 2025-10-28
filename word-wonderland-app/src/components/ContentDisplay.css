@@ -56,31 +56,69 @@
   height: 40px;
   padding: 0 24px;
   background: var(--glass-bg);
-  color: var(--brand-primary);
-  border: 1px solid var(--glass-border);
+  color: var(--btn-warm-text);
+  border: 1px solid var(--btn-warm-border);
   border-radius: 12px;
   font-size: 15px;
   font-weight: 500;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-button);
+  box-shadow: var(--btn-warm-shadow);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   letter-spacing: -0.01em;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .25s cubic-bezier(.4, 0, .2, 1);
+  overflow: hidden;
+}
+.refresh-text{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hint-strip {
+  position: absolute;
+  left: 12px;
+  bottom: 50%;
+  transform: translateY(0%);
+
+  transition: all 0.3s ease-out;
 }
 
-.refresh-btn::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 4px;
-  background: var(--brand-primary);
-  border-radius: 2px 0 0 2px;
-  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+.refresh-btn:hover {
+  background: var(--btn-warm-hover);
+  border-color: rgba(255, 183, 77, 0.8);
+  box-shadow:0 8px 32px rgba(255, 194, 26, 0.2),
+             0 0 0 1px rgba(185, 106, 16, 0.25);
+
+  .hint-strip {
+    transform: translateY(50%);
+
+  }
 }
+
+
+/* 默认琥珀 */
+.strip-amber {
+  --strip-start: #FAD15A;
+  --strip-end: #F59E0B;
+}
+
+/* 薄荷 */
+.strip-mint {
+  --strip-start: #A7F3D0;
+  --strip-end: #34D399;
+}
+
+/* 暖粉 */
+.strip-warm {
+  --strip-start: #FED7AA;
+  --strip-end: #FB923C;
+}
+
+
 
 .refresh-btn:hover:not(:disabled) {
   background: var(--glass-bg-hover);
@@ -112,7 +150,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-state p {
@@ -150,15 +190,17 @@
   display: flex;
   width: auto;
   animation: fadeIn 0.5s ease-in;
-  margin-left: -25px; /* 抵消列的左边距 */
+  margin-left: -25px;
+  /* 抵消列的左边距 */
 }
 
 .masonry-grid-column {
-  padding-left: 25px; /* 列间距 */
+  padding-left: 25px;
+  /* 列间距 */
   background-clip: padding-box;
 }
 
-.masonry-grid-column > * {
+.masonry-grid-column>* {
   margin-bottom: 25px;
 }
 
@@ -184,6 +226,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -193,13 +236,12 @@
   .controls {
     flex-direction: column;
   }
-  
+
   .masonry-grid {
     margin-left: 0;
   }
-  
+
   .masonry-grid-column {
     padding-left: 0;
   }
 }
-
