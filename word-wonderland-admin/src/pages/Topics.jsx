@@ -34,17 +34,19 @@ function Topics() {
     fetchTopics();
   }, []);
 
-  // 初始化表格列宽拖拽
+  // 初始化表格列宽拖拽（只在首次有数据时初始化）
   useEffect(() => {
     if (topics.length > 0) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         initTableResize();
       }, 100);
+      
+      return () => {
+        clearTimeout(timer);
+        cleanupTableResize();
+      };
     }
-    return () => {
-      cleanupTableResize();
-    };
-  }, [topics]);
+  }, [topics.length > 0]); // 只在从无数据变为有数据时触发
 
   const fetchTopics = async () => {
     try {
@@ -278,9 +280,9 @@ ${topic.description ? `描述：${topic.description}` : ''}
             </table>
           </div>
 
-          {/* 移动端卡片视图 - 显示所有数据，不分页 */}
+          {/* 移动端卡片视图 - 使用分页数据 */}
           <div className="mobile-card-view">
-            {topics.map((topic) => (
+            {currentData.map((topic) => (
               <div key={topic.id} className="mobile-card">
                 <div className="mobile-card-header">
                   <input

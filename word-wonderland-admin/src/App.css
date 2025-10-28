@@ -797,30 +797,23 @@ tbody tr:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+  /* 移除毛玻璃效果以提升性能 */
+  /* backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px); */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: overlayFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes overlayFadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  /* 移除渐入动画以提升打开速度 */
+  /* animation: overlayFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1); */
 }
 
 .modal {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(40px) saturate(120%);
-  -webkit-backdrop-filter: blur(40px) saturate(120%);
+  background: rgba(255, 255, 255, 0.98);
+  /* 减少毛玻璃效果以提升性能 */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
   width: 90%;
   max-width: 560px;
@@ -831,7 +824,8 @@ tbody tr:hover {
     0 0 0 1px rgba(16, 185, 129, 0.08);
   /* 薄荷绿外圈 */
   border: 1px solid var(--glass-border);
-  animation: modalSlideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 简化动画以提升打开速度 */
+  animation: modalFadeIn 0.15s ease-out;
   position: relative;
   z-index: 1001;
   /* 确保弹窗在遮罩之上 */
@@ -841,15 +835,16 @@ tbody tr:hover {
   /* 防止整体滚动 */
 }
 
-@keyframes modalSlideUp {
+/* 简化的淡入动画 - 更快更流畅 */
+@keyframes modalFadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: scale(0.95);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
 
@@ -865,9 +860,9 @@ tbody tr:hover {
   letter-spacing: -0.02em;
   position: relative;
   background: rgba(255, 255, 255, 0.98);
-  /* 与底部按钮区域保持一致 */
-  backdrop-filter: blur(40px) saturate(120%);
-  -webkit-backdrop-filter: blur(40px) saturate(120%);
+  /* 移除毛玻璃效果以提升性能 */
+  /* backdrop-filter: blur(40px) saturate(120%);
+  -webkit-backdrop-filter: blur(40px) saturate(120%); */
   border-radius: 20px 20px 0 0;
   z-index: 1;
   /* 提升层级，确保在滚动内容之上 */
@@ -931,9 +926,7 @@ tbody tr:hover {
   /* z-index: 1; */
 }
 
-.form-group-z-index-selector {
-  /* z-index: 5; */
-}
+/* .form-group-z-index-selector 已移除 - 不再需要 */
 
 .form-group label {
   display: block;
@@ -960,9 +953,10 @@ tbody tr:hover {
   border-radius: 12px;
   font-size: 15px;
   transition: all 0.15s ease-out;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background: rgba(255, 255, 255, 0.98);
+  /* 移除毛玻璃效果以提升输入性能 */
+  /* backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px); */
   color: var(--text-primary);
   line-height: 1.6;
 }
@@ -1005,11 +999,12 @@ tbody tr:hover {
   border: 1px solid var(--line-divider);
   border-radius: 12px;
   font-size: 15px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease-out;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background-color: rgba(255, 255, 255, 0.98);
+  /* 移除毛玻璃效果以提升性能 */
+  /* backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px); */
   /* 薄荷绿下拉箭头 */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2310B981' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -1120,7 +1115,9 @@ tbody tr:hover {
   justify-content: flex-end;
   padding: 24px 48px 40px;
   margin-top: 0;
-  -webkit-backdrop-filter: blur(40px) saturate(120%);
+  /* 移除毛玻璃效果以提升性能 */
+  /* -webkit-backdrop-filter: blur(40px) saturate(120%); */
+  background: rgba(255, 255, 255, 0.98);
   border-radius: 0 0 20px 20px;
   position: relative;
   /* z-index: 3; */
@@ -1136,14 +1133,15 @@ tbody tr:hover {
 
 .definition-item {
   background: var(--glass-bg);
-  /* backdrop-filter: blur(30px); */
-  -webkit-backdrop-filter: blur(30px);
+  /* 完全移除毛玻璃效果以提升性能 */
+  /* backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px); */
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 16px;
   position: relative;
   border: 1px solid var(--line-divider);
-  transition: all 0.2s ease-out;
+  transition: all 0.15s ease-out;
 }
 
 .definition-item:hover {
@@ -1186,13 +1184,14 @@ tbody tr:hover {
   padding: 0 20px;
   border: 1px dashed var(--line-divider);
   background: var(--glass-bg);
-  /* backdrop-filter: blur(30px); */
-  -webkit-backdrop-filter: blur(30px);
+  /* 移除毛玻璃效果以提升性能 */
+  /* backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px); */
   color: var(--text-secondary);
   border-radius: 12px;
   margin-top: 12px;
   font-weight: 500;
-  transition: all 0.2s ease-out;
+  transition: all 0.15s ease-out;
   font-size: 15px;
   letter-spacing: -0.01em;
 }

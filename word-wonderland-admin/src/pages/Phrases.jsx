@@ -35,17 +35,19 @@ function Phrases() {
     fetchPhrases();
   }, []);
 
-  // 初始化表格列宽拖拽
+  // 初始化表格列宽拖拽（只在首次有数据时初始化）
   useEffect(() => {
     if (phrases.length > 0) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         initTableResize();
       }, 100);
+      
+      return () => {
+        clearTimeout(timer);
+        cleanupTableResize();
+      };
     }
-    return () => {
-      cleanupTableResize();
-    };
-  }, [phrases]);
+  }, [phrases.length > 0]); // 只在从无数据变为有数据时触发
 
   const fetchPhrases = async () => {
     try {
@@ -270,9 +272,9 @@ function Phrases() {
             </table>
           </div>
 
-          {/* 移动端卡片视图 - 显示所有数据，不分页 */}
+          {/* 移动端卡片视图 - 使用分页数据 */}
           <div className="mobile-card-view">
-            {phrases.map((phrase) => (
+            {currentData.map((phrase) => (
               <div key={phrase.id} className="mobile-card">
                 <div className="mobile-card-header">
                   <div className="mobile-card-title">{phrase.phrase}</div>

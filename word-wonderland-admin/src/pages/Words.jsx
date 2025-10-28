@@ -38,18 +38,20 @@ function Words() {
     fetchPartsOfSpeech();
   }, []);
 
-  // 初始化表格列宽拖拽
+  // 初始化表格列宽拖拽（只在首次有数据时初始化）
   useEffect(() => {
     if (words.length > 0) {
       // 延迟初始化，确保表格已渲染
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         initTableResize();
       }, 100);
+      
+      return () => {
+        clearTimeout(timer);
+        cleanupTableResize();
+      };
     }
-    return () => {
-      cleanupTableResize();
-    };
-  }, [words]);
+  }, [words.length > 0]); // 只在从无数据变为有数据时触发
 
   const fetchWords = async () => {
     try {
@@ -365,9 +367,9 @@ function Words() {
               </table>
             </div>
 
-            {/* 移动端卡片视图 - 显示所有数据，不分页 */}
+            {/* 移动端卡片视图 - 使用分页数据 */}
             <div className="mobile-card-view">
-              {words.map((word) => (
+              {currentData.map((word) => (
                 <div key={word.id} className="mobile-card">
                   <div className="mobile-card-header">
                     <input
