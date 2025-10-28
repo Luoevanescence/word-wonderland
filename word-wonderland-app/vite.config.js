@@ -57,7 +57,15 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            // 排除 favicon 和 logo，其他图片使用缓存优先策略
+            urlPattern: ({ url }) => {
+              const pathname = url.pathname;
+              // 排除 favicon.svg 和 logo.svg
+              if (pathname.includes('favicon.svg') || pathname.includes('logo.svg')) {
+                return false;
+              }
+              return /\.(?:png|jpg|jpeg|svg|gif|webp)$/.test(pathname);
+            },
             handler: 'CacheFirst',
             options: {
               cacheName: 'image-cache',
@@ -65,6 +73,18 @@ export default defineConfig({
                 maxEntries: 60,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30天
               }
+            }
+          },
+          {
+            // favicon 和 logo 使用网络优先策略
+            urlPattern: ({ url }) => {
+              const pathname = url.pathname;
+              return pathname.includes('favicon.svg') || pathname.includes('logo.svg');
+            },
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'logo-cache',
+              networkTimeoutSeconds: 3
             }
           }
         ]
