@@ -1,11 +1,15 @@
 .app {
   min-height: 100vh;
   padding: 32px 24px;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* 移动端优化 */
@@ -16,6 +20,12 @@
   
   .container {
     max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 16px 10px;
   }
 }
 

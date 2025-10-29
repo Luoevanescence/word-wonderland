@@ -5,30 +5,27 @@
 }
 
 :root {
-  /* 品牌焦点色 - 薄荷拿铁方案（保持不变） */
+  /* 品牌焦点色 - 薄荷拿铁方案 */
   --brand-primary: #10B981;   /* Emerald-500 清新薄荷绿 */
-  --brand-accent: #FAD15A;    /* Amber-500 温暖琥珀黄 */
-  --brand-lime: #A3E635;      /* Lime-400 荧光绿强调色 */
+  --brand-accent: #F59E0B;    /* Amber-500 温暖琥珀黄 */
   
-  /* 深色主题色系统 */
-  --surface-ground: #0A1F1A;  /* 深绿基底 */
-  --surface-card: rgba(15, 35, 28, 0.75);  /* 半透明深绿卡片 */
-  --surface-elevated: rgba(20, 45, 35, 0.85);  /* 抬升表面 */
-  --text-primary: #F1F5F9;    /* 浅灰白主文字 */
-  --text-secondary: #94A3B8;  /* 灰蓝次要文字 */
-  --text-dark: #E2E8F0;       /* 深色模式下的深色文字 */
-  --text-medium: #CBD5E1;     /* 中等文字 */
-  --line-divider: rgba(148, 163, 184, 0.15);  /* 分割线 */
+  /* 中性色系统 - 温暖基调 */
+  --surface-ground: #FDFBF8;  /* 微暖米白 */
+  --surface-card: rgba(255, 255, 255, 0.9);
+  --surface-elevated: rgba(255, 255, 255, 0.95);
+  --text-primary: #111827;    /* Gray-900 */
+  --text-secondary: #4B5563;  /* Gray-600 */
+  --line-divider: rgba(229, 231, 235, 0.5);  /* Gray-200 50%透明 */
   
-  /* 玻璃材质 - 深色版本 */
-  --glass-bg: rgba(15, 35, 28, 0.6);  /* 深绿玻璃 */
-  --glass-bg-hover: rgba(20, 45, 35, 0.75);  /* hover 深绿玻璃 */
-  --glass-border: rgba(16, 185, 129, 0.2);  /* 薄荷绿边框 */
+  /* 玻璃材质 - 统一规格 */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-hover: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.8);
   
-  /* 阴影 - 深色主题 */
-  --shadow-subtle: 0 0 40px -20px rgba(16, 185, 129, 0.3);
-  --shadow-elevated: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
-  --shadow-button: 0 4px 20px rgba(16, 185, 129, 0.25);
+  /* 阴影 - 暗部细节 */
+  --shadow-subtle: 0 0 40px -20px rgba(16, 185, 129, 0.08);
+  --shadow-elevated: 0 20px 50px -10px rgba(0, 0, 0, 0.15);
+  --shadow-button: 0 4px 20px rgba(16, 185, 129, 0.12);
 }
 
 body {
@@ -37,14 +34,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* 深绿色渐变背景 - 仿照图片风格 */
-  background:
-    radial-gradient(ellipse 900px 700px at 15% 10%, rgba(16, 185, 129, 0.15) 0%, transparent 60%),
-    radial-gradient(circle 600px at 85% 20%, rgba(163, 230, 53, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse 800px 1000px at 70% 90%, rgba(250, 209, 90, 0.06) 0%, transparent 50%),
-    radial-gradient(circle 500px at 25% 75%, rgba(52, 211, 153, 0.1) 0%, transparent 60%),
-    linear-gradient(135deg, #0A1F1A 0%, #0F231E 50%, #0D2520 100%);
+  /* 薄荷拿铁弥散背景 - 清新温暖 */
+  background: 
+    radial-gradient(ellipse 800px 600px at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 60%),
+    radial-gradient(circle 500px at 90% 15%, rgba(245, 158, 11, 0.03) 0%, transparent 55%),
+    radial-gradient(ellipse 700px 900px at 75% 85%, rgba(251, 191, 36, 0.025) 0%, transparent 50%),
+    radial-gradient(circle 400px at 30% 70%, rgba(52, 211, 153, 0.03) 0%, transparent 60%),
+    #FDFBF8;
   background-attachment: fixed;
   color: var(--text-primary);
 }
@@ -68,7 +64,7 @@ a {
 }
 
 
-/* 覆盖 webkit 浏览器 autofill 背景 - 深色主题 */
+/* 覆盖 webkit 浏览器 autofill 背景 */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -77,13 +73,13 @@ textarea:-webkit-autofill:hover,
 textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:focus {
-  box-shadow: 0 0 0 1000px rgba(20, 45, 35, 0.8) inset !important;
-  -webkit-text-fill-color: #F1F5F9 !important;
-  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: 0 0 0 1000px #F0FFF4 inset !important; /* 将 #F0FFF4 改为你想要的背景色 */
+  -webkit-text-fill-color: #111827 !important;        /* 字体颜色（防止被浏览器改为不可读颜色） */
+  transition: background-color 5000s ease-in-out 0s;  /* 防止浏览器瞬间覆盖背景 */
 }
 
-/* 覆盖 Firefox 的 autofill - 深色主题 */
+/* 覆盖 Firefox 的 autofill（如果需要） */
 input:-moz-autofill {
-  box-shadow: 0 0 0 1000px rgba(20, 45, 35, 0.8) inset !important;
-  -moz-text-fill-color: #F1F5F9 !important;
+  box-shadow: 0 0 0 1000px #F0FFF4 inset !important;
+  -moz-text-fill-color: #111827 !important;
 }

@@ -39,14 +39,12 @@
   width: 280px;
   height: 100vh;
   background: var(--surface-elevated);
-  backdrop-filter: blur(40px) saturate(140%);
-  -webkit-backdrop-filter: blur(40px) saturate(140%);
-  border-right: 1px solid var(--glass-border);
+  backdrop-filter: blur(40px) saturate(120%);
+  -webkit-backdrop-filter: blur(40px) saturate(120%);
+  border-right: 0.5px solid var(--line-divider);
   color: var(--text-primary);
   padding: 48px 0;
-  box-shadow: 
-    var(--shadow-subtle),
-    0 0 80px -20px rgba(16, 185, 129, 0.3);
+  box-shadow: var(--shadow-subtle);
   overflow-y: auto;
   flex-shrink: 0;
 }
@@ -104,20 +102,15 @@
 }
 
 .nav-links a:hover {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.04);
   color: var(--text-primary);
-  border-left-color: rgba(16, 185, 129, 0.3);
 }
 
 .nav-links a.active {
-  background: linear-gradient(
-    90deg,
-    rgba(16, 185, 129, 0.15) 0%,
-    transparent 100%
-  );
-  color: var(--brand-lime);
+  background: transparent;
+  color: var(--brand-primary);
   font-weight: 600;
-  border-left-color: var(--brand-lime);
+  border-left-color: var(--brand-primary);
 }
 
 .nav-links a.active::after {
@@ -128,9 +121,9 @@
   transform: translateY(-50%);
   width: 4px;
   height: 4px;
-  background: var(--brand-lime);
+  background: var(--brand-primary);
   border-radius: 50%;
-  box-shadow: 0 0 12px rgba(163, 230, 53, 0.8);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
 }
 
 .main-content {
@@ -152,15 +145,13 @@
 
 .mobile-card {
   background: var(--surface-card);
-  backdrop-filter: blur(30px) saturate(140%);
-  -webkit-backdrop-filter: blur(30px) saturate(140%);
-  border-radius: 16px;
+  backdrop-filter: blur(30px) saturate(120%);
+  -webkit-backdrop-filter: blur(30px) saturate(120%);
+  border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
-  box-shadow: 
-    var(--shadow-subtle),
-    0 0 50px -20px rgba(16, 185, 129, 0.3);
-  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-subtle);
+  border: 1px solid var(--line-divider);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -189,7 +180,7 @@
 .mobile-card-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #333;
   flex: 1;
 }
 
@@ -212,7 +203,7 @@
 }
 
 .mobile-card-value {
-  color: var(--text-secondary);
+  color: #333;
   font-size: 14px;
   line-height: 1.6;
 }
@@ -454,23 +445,22 @@ input[type="checkbox"] {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--line-divider);
   border-radius: 4px;
-  background: rgba(15, 35, 28, 0.5);
+  background: white;
   position: relative;
   transition: all 0.15s ease-out;
   flex-shrink: 0;
 }
 
 input[type="checkbox"]:hover {
-  border-color: var(--brand-primary);
-  background: rgba(20, 45, 35, 0.6);
+  border-color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 input[type="checkbox"]:checked {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: var(--brand-lime);
-  box-shadow: 0 0 10px rgba(163, 230, 53, 0.3);
+  background: white;
+  border-color: var(--brand-primary);
 }
 
 input[type="checkbox"]:checked::after {
@@ -479,7 +469,7 @@ input[type="checkbox"]:checked::after {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1);
-  color: var(--brand-lime);
+  color: rgba(0, 0, 0, 0.6);
   font-size: 11px;
   font-weight: 700;
   line-height: 1;
@@ -546,26 +536,22 @@ input[type="checkbox"]:checked::after {
 }
 
 
-/* Primary按钮 - 荧光绿强调 */
+/* Primary按钮 - 品牌色文字+背景滑动动画（无指示条） */
 .btn-primary {
   position: relative;
+  /* 伪元素定位基准 */
   overflow: hidden;
-  background: linear-gradient(
-    135deg,
-    rgba(163, 230, 53, 0.2) 0%,
-    rgba(16, 185, 129, 0.15) 100%
-  );
-  color: var(--brand-lime);
-  border: 1px solid rgba(163, 230, 53, 0.4);
-  box-shadow: 
-    0 0 30px rgba(163, 230, 53, 0.2),
-    0 8px 24px rgba(16, 185, 129, 0.2);
-  backdrop-filter: blur(30px) saturate(150%);
-  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  /* 隐藏超出按钮的背景层 */
+  background: var(--glass-bg);
+  color: var(--brand-primary);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-button);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 背景覆盖层 */
+/* 背景覆盖层：从左到右滑动覆盖 */
 .btn-primary::before {
   content: '';
   position: absolute;
@@ -573,38 +559,38 @@ input[type="checkbox"]:checked::after {
   top: 0;
   width: 100%;
   height: 100%;
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(16, 185, 129, 0.08);
+  /* 主色透明版背景 */
   transform: translateX(-100%);
+  /* 初始隐藏在左侧 */
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 滑动动画 */
   z-index: -1;
+  /* 位于原背景下方 */
 }
 
-/* hover 状态 */
+/* hover 状态：背景滑动+交互效果 */
 .btn-primary:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(163, 230, 53, 0.3) 0%,
-    rgba(16, 185, 129, 0.25) 100%
-  );
-  border-color: rgba(163, 230, 53, 0.6);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(40px) saturate(130%);
+  -webkit-backdrop-filter: blur(40px) saturate(130%);
+  border-color: var(--brand-primary);
   box-shadow:
-    0 0 40px rgba(163, 230, 53, 0.4),
-    0 12px 32px rgba(16, 185, 129, 0.3),
-    0 0 0 1px rgba(163, 230, 53, 0.5);
-  transform: translateY(-2px);
+    0 8px 32px rgba(16, 185, 129, .20),
+    0 0 0 1px rgba(16, 185, 129, .25);
+  transform: translateY(-2px) scale(1.02);
 }
 
 /* 背景层滑动覆盖 */
 .btn-primary:hover::before {
   transform: translateX(0);
+  /* 从左到右完全覆盖 */
 }
 
 /* 点击状态 */
 .btn-primary:active {
-  transform: translateY(0px);
-  box-shadow: 
-    0 0 20px rgba(163, 230, 53, 0.3),
-    0 4px 12px rgba(16, 185, 129, 0.2);
+  transform: translateY(0px) scale(1);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.1);
 }
 
 .btn-secondary {
@@ -656,14 +642,11 @@ input[type="checkbox"]:checked::after {
 
 .data-table {
   background: var(--surface-card);
-  backdrop-filter: blur(30px) saturate(140%);
-  -webkit-backdrop-filter: blur(30px) saturate(140%);
-  border-radius: 20px;
+  backdrop-filter: blur(30px) saturate(120%);
+  -webkit-backdrop-filter: blur(30px) saturate(120%);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 
-    var(--shadow-subtle),
-    0 0 60px -20px rgba(16, 185, 129, 0.3),
-    inset 0 1px 1px rgba(16, 185, 129, 0.15);
+  box-shadow: var(--shadow-subtle), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   border: 1px solid var(--glass-border);
 }
 
@@ -788,7 +771,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: rgba(16, 185, 129, 0.08);
+  background: rgba(16, 185, 129, 0.02);
 }
 
 .actions-cell {
@@ -827,25 +810,29 @@ tbody tr:hover {
 }
 
 .modal {
-  background: var(--surface-elevated);
-  backdrop-filter: blur(30px) saturate(140%);
-  -webkit-backdrop-filter: blur(30px) saturate(140%);
-  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.98);
+  /* 减少毛玻璃效果以提升性能 */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
   width: 90%;
   max-width: 560px;
   max-height: 85vh;
   box-shadow:
-    0 0 80px -20px rgba(16, 185, 129, 0.5),
-    0 20px 50px -10px rgba(0, 0, 0, 0.6),
-    inset 0 1px 1px rgba(16, 185, 129, 0.2),
-    0 0 0 1px rgba(163, 230, 53, 0.3);
+    0 20px 50px -10px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 0 1px rgba(16, 185, 129, 0.08);
+  /* 薄荷绿外圈 */
   border: 1px solid var(--glass-border);
-  animation: modalFadeIn 0.2s ease-out;
+  /* 简化动画以提升打开速度 */
+  animation: modalFadeIn 0.15s ease-out;
   position: relative;
   z-index: 1001;
+  /* 确保弹窗在遮罩之上 */
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  /* 防止整体滚动 */
 }
 
 /* 简化的淡入动画 - 更快更流畅 */
@@ -861,9 +848,10 @@ tbody tr:hover {
   }
 }
 
-/* 弹窗标题区域 - 固定在顶部 */
+/* 弹窗标题区域 - 固定在顶部 ✅ */
 .modal h2 {
   flex-shrink: 0;
+  /* 不允许收缩，始终固定在顶部 */
   margin: 0;
   padding: 40px 48px 20px;
   color: var(--text-primary);
@@ -871,14 +859,18 @@ tbody tr:hover {
   font-weight: 600;
   letter-spacing: -0.02em;
   position: relative;
-  background: transparent;
-  border-radius: 24px 24px 0 0;
+  background: rgba(255, 255, 255, 0.98);
+  /* 移除毛玻璃效果以提升性能 */
+  /* backdrop-filter: blur(40px) saturate(120%);
+  -webkit-backdrop-filter: blur(40px) saturate(120%); */
+  border-radius: 20px 20px 0 0;
   z-index: 1;
-  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.1);
-  text-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
+  /* 提升层级，确保在滚动内容之上 */
+  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.06);
+  /* 底部微阴影，增强层次感 */
 }
 
-/* 标题下方荧光绿装饰线 */
+/* 标题下方薄荷绿装饰线 */
 .modal h2::after {
   content: '';
   position: absolute;
@@ -886,9 +878,8 @@ tbody tr:hover {
   bottom: 0;
   width: 48px;
   height: 3px;
-  background: linear-gradient(90deg, var(--brand-lime) 0%, rgba(163, 230, 53, 0.2) 100%);
+  background: linear-gradient(90deg, var(--brand-primary) 0%, rgba(16, 185, 129, 0.2) 100%);
   border-radius: 2px;
-  box-shadow: 0 0 10px rgba(163, 230, 53, 0.5);
 }
 
 /* 弹窗内容区域 - 可滚动 */
@@ -958,16 +949,16 @@ tbody tr:hover {
   width: 100%;
   height: 44px;
   padding: 0 16px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--line-divider);
   border-radius: 12px;
   font-size: 15px;
-  transition: all 0.2s ease-out;
-  background: rgba(15, 35, 28, 0.5);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.15s ease-out;
+  background: rgba(255, 255, 255, 0.98);
+  /* 移除毛玻璃效果以提升输入性能 */
+  /* backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px); */
   color: var(--text-primary);
   line-height: 1.6;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .form-group textarea {
@@ -986,13 +977,14 @@ tbody tr:hover {
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: var(--brand-lime);
-  background: rgba(20, 45, 35, 0.6);
+  border-color: var(--brand-primary);
+  background: white;
   box-shadow:
-    0 0 20px rgba(163, 230, 53, 0.3),
-    0 4px 12px rgba(16, 185, 129, 0.2),
-    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    0 0 0 3px rgba(16, 185, 129, 0.12),
+    0 4px 12px rgba(16, 185, 129, 0.08);
   position: relative;
+  /* z-index: 5; */
+  /* focus时提升层级 */
 }
 
 .form-group textarea {
@@ -1004,15 +996,17 @@ tbody tr:hover {
   width: 100%;
   height: 44px;
   padding: 0 40px 0 16px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--line-divider);
   border-radius: 12px;
   font-size: 15px;
-  transition: all 0.2s ease-out;
+  transition: all 0.15s ease-out;
   cursor: pointer;
-  background-color: rgba(15, 35, 28, 0.5);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23A3E635' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+  background-color: rgba(255, 255, 255, 0.98);
+  /* 移除毛玻璃效果以提升性能 */
+  /* backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px); */
+  /* 薄荷绿下拉箭头 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2310B981' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
   background-size: 12px;
@@ -1023,26 +1017,25 @@ tbody tr:hover {
   font-weight: 500;
   position: relative;
   z-index: 1;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* 确保在其他元素之上 */
 }
 
 .form-group select:hover {
   border-color: var(--brand-primary);
-  background-color: rgba(20, 45, 35, 0.6);
-  box-shadow: 
-    0 0 15px rgba(16, 185, 129, 0.2),
-    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.1);
 }
 
 .form-group select option {
   padding: 12px 16px;
   font-size: 14px;
-  background: rgba(20, 45, 35, 0.95);
+  background: white;
   color: var(--text-primary);
 }
 
 .form-group select option:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.08);
+  /* 薄荷绿hover */
 }
 
 /* 词性选择器特殊样式 - 选中后用辅助色强调 */

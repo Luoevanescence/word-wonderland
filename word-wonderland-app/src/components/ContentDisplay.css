@@ -1,121 +1,141 @@
 .content-display {
   animation: fadeIn 0.5s ease-in;
+  position: relative;
+  z-index: 1;
 }
 
 .controls {
-  background: var(--surface-card);
-  backdrop-filter: blur(30px) saturate(140%);
-  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  background: var(--surface-elevated);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
   border-radius: 20px;
   padding: 28px 36px;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 24px;
   flex-wrap: wrap;
   box-shadow: 
-    var(--shadow-subtle),
-    0 0 60px -20px rgba(16, 185, 129, 0.3),
-    inset 0 1px 1px rgba(16, 185, 129, 0.15);
+    0 4px 24px rgba(16, 185, 129, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
   border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
 }
 
 .count-control {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .count-control label {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .count-control input {
   width: 90px;
   height: 44px;
   padding: 0 16px;
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 14px;
   font-size: 16px;
   font-weight: 600;
   text-align: center;
-  transition: all 0.2s ease-out;
-  background: rgba(15, 35, 28, 0.5);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 液态玻璃效果 */
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.5) 0%, 
+    rgba(255, 255, 255, 0.3) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
   color: var(--text-primary);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 2px 12px rgba(16, 185, 129, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .count-control input:focus {
   outline: none;
-  border-color: var(--brand-lime);
-  background: rgba(20, 45, 35, 0.6);
+  border-color: rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.65) 0%, 
+    rgba(255, 255, 255, 0.45) 100%);
   box-shadow: 
-    0 0 20px rgba(163, 230, 53, 0.3),
-    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    0 4px 16px rgba(16, 185, 129, 0.1),
+    0 0 0 1px rgba(16, 185, 129, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transform: translateY(-1px);
 }
 
 .refresh-btn {
-  height: 48px;
-  padding: 0 32px;
-  background: linear-gradient(
-    135deg,
-    rgba(163, 230, 53, 0.2) 0%,
-    rgba(16, 185, 129, 0.15) 100%
-  );
-  color: #A3E635;
-  border: 1px solid rgba(163, 230, 53, 0.4);
+  height: 44px;
+  padding: 0 28px;
+  color: var(--btn-warm-text);
+  border: 1px solid var(--btn-warm-border);
   border-radius: 14px;
   font-size: 15px;
   font-weight: 600;
-  box-shadow: 
-    0 0 30px rgba(163, 230, 53, 0.2),
-    0 8px 24px rgba(16, 185, 129, 0.2);
-  backdrop-filter: blur(30px) saturate(150%);
-  -webkit-backdrop-filter: blur(30px) saturate(150%);
   letter-spacing: -0.01em;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all .25s cubic-bezier(.4, 0, .2, 1);
   overflow: hidden;
+  
+  /* 液态玻璃效果 */
+  background: linear-gradient(135deg,
+    rgba(255, 224, 178, 0.1) 0%,
+    rgba(255, 236, 179, 0.05) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
+  box-shadow: 
+    0 2px 12px rgba(245, 158, 11, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  
+  transition: all .35s cubic-bezier(.4, 0, .2, 1);
 }
+
 .refresh-text{
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
 }
+
 .hint-strip {
   position: absolute;
   left: 12px;
   bottom: 50%;
   transform: translateY(0%);
-
   transition: all 0.3s ease-out;
+  z-index: 1;
 }
 
 .refresh-btn:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(163, 230, 53, 0.3) 0%,
-    rgba(16, 185, 129, 0.25) 100%
-  );
-  border-color: rgba(163, 230, 53, 0.6);
+  background: linear-gradient(135deg,
+    rgba(255, 224, 178, 0.55) 0%,
+    rgba(255, 236, 179, 0.45) 100%);
+  border-color: rgba(255, 183, 77, 0.6);
   box-shadow:
-    0 0 40px rgba(163, 230, 53, 0.4),
-    0 12px 32px rgba(16, 185, 129, 0.3),
-    0 0 0 1px rgba(163, 230, 53, 0.5);
+    0 4px 20px rgba(245, 158, 11, 0.15),
+    0 0 0 1px rgba(245, 158, 11, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
+}
 
-  .hint-strip {
-    transform: translateY(50%);
-  }
+.refresh-btn:hover .hint-strip {
+  transform: translateY(40%);
 }
 
 
@@ -154,59 +174,106 @@
 
 .loading-state {
   text-align: center;
-  padding: 60px 20px;
-  color: var(--brand-lime);
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(163, 230, 53, 0.2);
-  border-top-color: var(--brand-lime);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
-  filter: drop-shadow(0 0 10px rgba(163, 230, 53, 0.5));
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  padding: 80px 20px;
+  color: var(--brand-primary);
+  background: var(--surface-card);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 20px;
+  box-shadow: var(--shadow-subtle);
+  border: 1px solid var(--glass-border);
 }
 
 .loading-state p {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-medium);
+  color: var(--text-secondary);
+  margin-top: 16px;
 }
 
 .empty-state {
   text-align: center;
-  padding: 80px 20px;
-  background: var(--surface-card);
-  backdrop-filter: blur(30px) saturate(140%);
-  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  padding: 80px 40px;
+  background: var(--surface-elevated);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
   border-radius: 24px;
   box-shadow: 
-    var(--shadow-subtle),
-    0 0 60px -20px rgba(16, 185, 129, 0.3),
-    inset 0 1px 1px rgba(16, 185, 129, 0.15);
-  border: 2px dashed rgba(16, 185, 129, 0.3);
+    0 4px 24px rgba(16, 185, 129, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  border: 2px dashed rgba(16, 185, 129, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .empty-state h3 {
-  font-size: 26px;
+  font-size: 28px;
   margin-bottom: 12px;
   color: var(--text-primary);
   font-weight: 700;
-  text-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
 }
 
 .empty-state p {
   color: var(--text-secondary);
   font-size: 16px;
   font-weight: 500;
+}
+
+
+
+.stats-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.1) 0%,
+    rgba(245, 158, 11, 0.08) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 
+    0 2px 12px rgba(16, 185, 129, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+}
+
+.stats-count {
+  font-size: 20px;
+  color: var(--brand-primary);
+}
+
+.stats-divider {
+  font-size: 16px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.stats-total {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.stats-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-left: 4px;
 }
 
 /* Masonry 瀑布流布局 */
@@ -239,12 +306,11 @@
 .spinner-small {
   width: 30px;
   height: 30px;
-  border: 3px solid rgba(163, 230, 53, 0.2);
-  border-top-color: var(--brand-lime);
+  border: 3px solid rgba(16, 185, 129, 0.2);
+  border-top-color: var(--brand-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 15px;
-  filter: drop-shadow(0 0 8px rgba(163, 230, 53, 0.4));
 }
 
 @keyframes fadeIn {

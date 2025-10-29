@@ -60,7 +60,7 @@ function MainLayout() {
             Word Wonderland
           </h2>
           <p>管理员后台</p>
-          {user && <p style={{fontSize: '12px', marginTop: '8px', color: 'var(--brand-accent)'}}>👤 {user.username}</p>}
+          {user && <p style={{fontSize: '12px', marginTop: '8px', color: 'var(--brand-accent)'}}> {user.username}</p>}
         </div>
         <ul className="nav-links">
           <li>

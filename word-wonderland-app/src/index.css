@@ -5,70 +5,60 @@
 }
 
 :root {
-  /* 品牌焦点色 - 薄荷拿铁方案（保持不变） */
+  /* 品牌焦点色 - 薄荷拿铁方案 */
   --brand-primary: #10B981;
   /* Emerald-500 清新薄荷绿 */
   --brand-accent: #FAD15A;
   /* Amber-500 温暖琥珀黄 */
-  --brand-lime: #A3E635;
-  /* Lime-400 荧光绿强调色 */
+  --brand-light-primary: #90ffe3;
+  --brand-light-accent: #f5ec3c;
+  --brand-mint-light: #A7F3D0;
+  --brand-mint-dark: #059669;
 
-  /* ===== 深色主题按钮系统 ===== */
-  --btn-warm-bg: rgba(16, 185, 129, 0.15);
-  /* 薄荷绿半透明 */
-  --btn-warm-border: rgba(16, 185, 129, 0.3);
-  /* 薄荷绿边框 */
-  --btn-warm-text: #A3E635;
-  /* 荧光绿文字 */
-  --btn-warm-hover: rgba(16, 185, 129, 0.25);
-  /* hover 更亮 */
-  --btn-warm-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
+  /* ===== 液态玻璃按钮系统 ===== */
+  --btn-glass-bg: rgba(255, 255, 255, 0.4);
+  --btn-glass-border: rgba(16, 185, 129, 0.2);
+  --btn-glass-hover: rgba(255, 255, 255, 0.6);
+  --btn-glass-active: rgba(16, 185, 129, 0.15);
+  
+  /* ===== 暖色按钮系统 ===== */
+  --btn-warm-bg: rgba(255, 224, 178, 0.35);
+  --btn-warm-border: rgba(253, 203, 127, 0.5);
+  --btn-warm-text: rgb(251,152, 70);
+  --btn-warm-hover: rgba(255, 236, 179, 0.55);
+  --btn-warm-shadow: 0 4px 16px rgba(255, 167, 38, 0.12);
 
   /* 按钮选中颜色 */
-  --button-checked: #A3E635;
-  /* 荧光绿 */
+  --button-checked: #feeda7;
 
-  /* 深色主题色系统 */
-  --surface-ground: #0A1F1A;
-  /* 深绿基底 */
-  --surface-card: rgba(15, 35, 28, 0.75);
-  /* 半透明深绿卡片 */
-  --surface-elevated: rgba(20, 45, 35, 0.85);
-  /* 抬升表面 */
-  --text-primary: #F1F5F9;
-  /* 浅灰白主文字 */
-  --text-secondary: #94A3B8;
-  /* 灰蓝次要文字 */
-  --text-dark: #E2E8F0;
-  /* 深色模式下的深色文字 */
-  --text-medium: #CBD5E1;
-  /* 中等文字 */
-  --line-divider: rgba(148, 163, 184, 0.1);
-  /* 分割线 */
+  /* 中性色系统 - 温暖基调 */
+  --surface-ground: #FDFBF8;
+  --surface-card: rgba(255, 255, 255, 0.85);
+  --surface-elevated: rgba(255, 255, 255, 0.92);
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-medium: #6B7280;
+  --text-light: #9CA3AF;
+  --line-divider: rgba(229, 231, 235, 0.5);
 
-  /* 玻璃材质 - 深色版本 */
-  --glass-bg: rgba(15, 35, 28, 0.6);
-  /* 深绿玻璃 */
-  --glass-bg-hover: rgba(20, 45, 35, 0.75);
-  /* hover 深绿玻璃 */
-  --glass-border: rgba(16, 185, 129, 0.2);
-  /* 薄荷绿边框 */
+  /* 玻璃材质 - 更强的液态效果 */
+  --glass-bg: rgba(255, 255, 255, 0.5);
+  --glass-bg-hover: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-shadow: 0 8px 32px rgba(16, 185, 129, 0.08);
 
-  /* 阴影 - 深色主题 */
-  --shadow-subtle: 0 0 40px -20px rgba(16, 185, 129, 0.3);
-  --shadow-elevated: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
-  --shadow-button: 0 4px 20px rgba(16, 185, 129, 0.25);
+  /* 阴影 - 减小阴影强度 */
+  --shadow-subtle: 0 2px 20px rgba(16, 185, 129, 0.05);
+  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --shadow-button: 0 2px 12px rgba(16, 185, 129, 0.08);
 
   /* 隐藏滚动条 */
   overflow-y: auto;
   overflow-x: hidden;
   padding: 32px 48px 0;
   scrollbar-width: none;
-  /* Firefox */
   -ms-overflow-style: none;
-  /* IE/Edge */
   scroll-behavior: smooth;
-  /* 平滑滚动 */
   position: relative;
 }
 
@@ -79,16 +69,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
-  /* 深绿色渐变背景 - 仿照图片风格 */
+  /* 薄荷拿铁弥散背景 - 清新温暖 更柔和 */
   background:
-    radial-gradient(ellipse 900px 700px at 15% 10%, rgba(16, 185, 129, 0.15) 0%, transparent 60%),
-    radial-gradient(circle 600px at 85% 20%, rgba(163, 230, 53, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse 800px 1000px at 70% 90%, rgba(250, 209, 90, 0.06) 0%, transparent 50%),
-    radial-gradient(circle 500px at 25% 75%, rgba(52, 211, 153, 0.1) 0%, transparent 60%),
-    linear-gradient(135deg, #0A1F1A 0%, #0F231E 50%, #0D2520 100%);
+    radial-gradient(ellipse 900px 700px at 15% 15%, rgba(16, 185, 129, 0.06) 0%, transparent 65%),
+    radial-gradient(circle 600px at 85% 20%, rgba(245, 158, 11, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 800px 1000px at 70% 90%, rgba(251, 191, 36, 0.035) 0%, transparent 55%),
+    radial-gradient(circle 500px at 25% 75%, rgba(52, 211, 153, 0.04) 0%, transparent 65%),
+    linear-gradient(135deg, #FDFBF8 0%, #F8FDF9 100%);
   background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
 /* 移动端优化 */

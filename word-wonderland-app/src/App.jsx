@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import CategorySelector from './components/CategorySelector';
 import ContentDisplay from './components/ContentDisplay';
+import { FloatingParticles, BackgroundPattern } from './components/DecorativeElements';
 import './App.css';
 
 function App() {
@@ -10,6 +11,8 @@ function App() {
 
   return (
     <div className="app">
+      <FloatingParticles />
+      <BackgroundPattern />
       <Header />
       <div className="container">
         <CategorySelector 
