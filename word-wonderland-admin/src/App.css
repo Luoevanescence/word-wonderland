@@ -690,6 +690,11 @@ td {
   font-size: 14px;
   transition: background 0.15s ease-out;
   line-height: 1.6;
+  /* 所有单元格都只显示一行，溢出隐藏 */
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 td:last-child {
