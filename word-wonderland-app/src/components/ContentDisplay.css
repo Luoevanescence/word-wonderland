@@ -1,141 +1,122 @@
 .content-display {
   animation: fadeIn 0.5s ease-in;
-  position: relative;
-  z-index: 1;
 }
 
 .controls {
-  background: var(--surface-elevated);
-  backdrop-filter: blur(40px) saturate(150%);
-  -webkit-backdrop-filter: blur(40px) saturate(150%);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: 20px;
-  padding: 28px 36px;
+  padding: 20px 28px;
   margin-bottom: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
-  box-shadow: 
-    0 4px 24px rgba(16, 185, 129, 0.06),
-    0 0 0 1px rgba(255, 255, 255, 0.9),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   border: 1px solid var(--glass-border);
   position: relative;
   overflow: hidden;
 }
 
+.controls::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--liquid-glass-gradient);
+  opacity: 0;
+  transition: opacity 0.4s ease, left 0.8s ease;
+  pointer-events: none;
+}
+
+.controls:hover::before {
+  opacity: 1;
+  left: 100%;
+}
+
 .count-control {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .count-control label {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .count-control input {
-  width: 90px;
-  height: 44px;
-  padding: 0 16px;
-  border: 1px solid rgba(16, 185, 129, 0.15);
-  border-radius: 14px;
-  font-size: 16px;
-  font-weight: 600;
+  width: 80px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line-divider);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
   text-align: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* 液态玻璃效果 */
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.5) 0%, 
-    rgba(255, 255, 255, 0.3) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  
+  transition: all 0.15s ease-out;
+  background: var(--glass-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   color: var(--text-primary);
-  box-shadow: 
-    0 2px 12px rgba(16, 185, 129, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .count-control input:focus {
   outline: none;
-  border-color: rgba(16, 185, 129, 0.3);
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.65) 0%, 
-    rgba(255, 255, 255, 0.45) 100%);
-  box-shadow: 
-    0 4px 16px rgba(16, 185, 129, 0.1),
-    0 0 0 1px rgba(16, 185, 129, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  transform: translateY(-1px);
+  border-color: var(--brand-primary);
+  background: var(--glass-bg-hover);
 }
 
 .refresh-btn {
-  height: 44px;
-  padding: 0 28px;
+  height: 40px;
+  padding: 0 24px;
+  background: var(--glass-bg);
   color: var(--btn-warm-text);
   border: 1px solid var(--btn-warm-border);
-  border-radius: 14px;
+  border-radius: 12px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
+  box-shadow: var(--btn-warm-shadow);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   letter-spacing: -0.01em;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all .25s cubic-bezier(.4, 0, .2, 1);
   overflow: hidden;
-  
-  /* 液态玻璃效果 */
-  background: linear-gradient(135deg,
-    rgba(255, 224, 178, 0.1) 0%,
-    rgba(255, 236, 179, 0.05) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  
-  box-shadow: 
-    0 2px 12px rgba(245, 158, 11, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  
-  transition: all .35s cubic-bezier(.4, 0, .2, 1);
 }
-
 .refresh-text{
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  position: relative;
-  z-index: 2;
 }
-
 .hint-strip {
   position: absolute;
   left: 12px;
   bottom: 50%;
   transform: translateY(0%);
+
   transition: all 0.3s ease-out;
-  z-index: 1;
 }
 
 .refresh-btn:hover {
-  background: linear-gradient(135deg,
-    rgba(255, 224, 178, 0.55) 0%,
-    rgba(255, 236, 179, 0.45) 100%);
-  border-color: rgba(255, 183, 77, 0.6);
-  box-shadow:
-    0 4px 20px rgba(245, 158, 11, 0.15),
-    0 0 0 1px rgba(245, 158, 11, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  transform: translateY(-2px);
-}
+  background: var(--btn-warm-hover);
+  border-color: rgba(255, 183, 77, 0.8);
+  box-shadow:0 8px 32px rgba(255, 194, 26, 0.2),
+             0 0 0 1px rgba(185, 106, 16, 0.25);
 
-.refresh-btn:hover .hint-strip {
-  transform: translateY(40%);
+  .hint-strip {
+    transform: translateY(50%);
+
+  }
 }
 
 
@@ -174,106 +155,54 @@
 
 .loading-state {
   text-align: center;
-  padding: 80px 20px;
+  padding: 60px 20px;
   color: var(--brand-primary);
-  background: var(--surface-card);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border-radius: 20px;
-  box-shadow: var(--shadow-subtle);
-  border: 1px solid var(--glass-border);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(16, 185, 129, 0.2);
+  border-top-color: var(--brand-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-state p {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-secondary);
-  margin-top: 16px;
+  color: var(--text-medium);
 }
 
 .empty-state {
   text-align: center;
-  padding: 80px 40px;
-  background: var(--surface-elevated);
-  backdrop-filter: blur(40px) saturate(150%);
-  -webkit-backdrop-filter: blur(40px) saturate(150%);
-  border-radius: 24px;
-  box-shadow: 
-    0 4px 24px rgba(16, 185, 129, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-  border: 2px dashed rgba(16, 185, 129, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.empty-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
-  animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  padding: 80px 20px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(6, 182, 212, 0.15), 0 0 0 1px rgba(6, 182, 212, 0.08);
+  border: 2px dashed rgba(6, 182, 212, 0.25);
 }
 
 .empty-state h3 {
-  font-size: 28px;
+  font-size: 26px;
   margin-bottom: 12px;
-  color: var(--text-primary);
+  color: var(--text-dark);
   font-weight: 700;
 }
 
 .empty-state p {
-  color: var(--text-secondary);
+  color: var(--text-light);
   font-size: 16px;
   font-weight: 500;
-}
-
-
-
-.stats-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg,
-    rgba(16, 185, 129, 0.1) 0%,
-    rgba(245, 158, 11, 0.08) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 16px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  box-shadow: 
-    0 2px 12px rgba(16, 185, 129, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  font-weight: 600;
-}
-
-.stats-count {
-  font-size: 20px;
-  color: var(--brand-primary);
-}
-
-.stats-divider {
-  font-size: 16px;
-  color: var(--text-secondary);
-  opacity: 0.5;
-}
-
-.stats-total {
-  font-size: 18px;
-  color: var(--text-secondary);
-}
-
-.stats-text {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-left: 4px;
 }
 
 /* Masonry 瀑布流布局 */

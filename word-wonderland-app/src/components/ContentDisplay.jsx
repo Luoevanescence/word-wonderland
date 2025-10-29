@@ -12,11 +12,12 @@ import PhraseCard from './cards/PhraseCard';
 import SentenceCard from './cards/SentenceCard';
 import PatternCard from './cards/PatternCard';
 import TopicCard from './cards/TopicCard';
+import LiquidButton from './LiquidButton';
+import LoadingSpinner from './LoadingSpinner';
 import Masonry from 'react-masonry-css';
 import { useInView } from 'react-intersection-observer';
 import './ContentDisplay.css';
 import { RefreshIcon, DiceIcon, HintStrip } from './icons/Icons';
-import { WaveLoader, ShineEffect } from './DecorativeElements';
 
 function ContentDisplay({ category, count, setCount }) {
   const [items, setItems] = useState([]);
@@ -161,30 +162,27 @@ function ContentDisplay({ category, count, setCount }) {
             placeholder="1-50"
           />
         </div>
-        <button className="refresh-btn liquid-glass-btn" onClick={handleRefresh} disabled={loading}>
-          <ShineEffect />
+        <button className="refresh-btn" onClick={handleRefresh} disabled={loading}>
           <HintStrip stripClass="strip-warm hint-strip" />
-          <span className='refresh-text'>
-            {loading ? <WaveLoader visible={true} /> : <DiceIcon />}
-            <span style={{ marginLeft: 8 }}>获取随机{getCategoryLabel()}</span>
+          <span style={{ marginLeft: 8 }} className='refresh-text'>
+            {loading ? <RefreshIcon spinning color="var(--brand-accent)"/> : <DiceIcon  color="var(--brand-accent)"/>}
+            <span style={{ marginLeft: 6 }}>获取随机{getCategoryLabel()}</span>
           </span>
         </button>
       </div>
 
       {loading ? (
         <div className="loading-state">
-          <WaveLoader visible={true} />
+          <div className="spinner"></div>
           <p>正在加载精彩内容...</p>
         </div>
       ) : items.length === 0 ? (
         <div className="empty-state">
-          {/* <div className="empty-icon"></div> */}
           <h3>暂无{getCategoryLabel()}</h3>
           <p>请先在管理后台添加{getCategoryLabel()}！</p>
         </div>
       ) : (
         <>
-
           <Masonry
             breakpointCols={breakpointColumns}
             className="masonry-grid"
@@ -196,7 +194,7 @@ function ContentDisplay({ category, count, setCount }) {
           {/* 懒加载触发器 */}
           {displayedItems.length < items.length && (
             <div ref={loadMoreRef} className="load-more-trigger">
-              <WaveLoader visible={true} />
+              <div className="spinner-small"></div>
               <p>加载更多...</p>
             </div>
           )}

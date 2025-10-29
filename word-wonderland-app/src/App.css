@@ -1,31 +1,84 @@
 .app {
   min-height: 100vh;
-  padding: 32px 24px;
+  padding: 20px;
+  padding-bottom: 120px; /* 折叠导航不需要额外空间 */
   position: relative;
-  overflow-x: hidden;
+}
+
+/* 确保内容在装饰元素之上，但不影响 BottomNav */
+.app > *:not(.floating-particles):not(.background-pattern):not(.nav-toggle):not(.bottom-nav) {
+  position: relative;
+  z-index: 1;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  position: relative;
-  z-index: 1;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Tab content styles */
+.tab-content {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.tab-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.tab-description {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.analytics-placeholder,
+.settings-placeholder {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: 20px;
+  padding: 60px 40px;
+  text-align: center;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-card);
+  margin-top: 40px;
+}
+
+.analytics-placeholder p,
+.settings-placeholder p {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 移动端优化 */
 @media (max-width: 768px) {
   .app {
-    padding: 20px 12px;
+    padding: 15px 10px 100px;
   }
-  
-  .container {
-    max-width: 100%;
-  }
-}
 
-@media (max-width: 480px) {
-  .app {
-    padding: 16px 10px;
+  .tab-title {
+    font-size: 24px;
+  }
+
+  .analytics-placeholder,
+  .settings-placeholder {
+    padding: 40px 20px;
   }
 }
 

@@ -1,0 +1,156 @@
+.liquid-button {
+  position: relative;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.liquid-button-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: inherit;
+  transition: all 0.4s ease;
+  z-index: 0;
+}
+
+/* 液态效果 */
+.liquid-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.liquid-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Hover 时的闪光效果 */
+.liquid-button:hover .shine-effect {
+  left: 100%;
+}
+
+.liquid-button-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-primary);
+  letter-spacing: 0.3px;
+}
+
+.liquid-button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Primary variant - 薄荷绿 */
+.liquid-button-primary .liquid-button-bg {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.3) 0%,
+    rgba(16, 185, 129, 0.15) 100%);
+  box-shadow: 
+    0 4px 12px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.liquid-button-primary:hover .liquid-button-bg {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.4) 0%,
+    rgba(16, 185, 129, 0.2) 100%);
+  box-shadow: 
+    0 6px 20px rgba(16, 185, 129, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.liquid-button-primary:active {
+  transform: scale(0.98);
+}
+
+/* Secondary variant - 琥珀黄 */
+.liquid-button-secondary .liquid-button-bg {
+  background: linear-gradient(135deg,
+    rgba(250, 209, 90, 0.3) 0%,
+    rgba(250, 209, 90, 0.15) 100%);
+  box-shadow: 
+    0 4px 12px rgba(250, 209, 90, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.liquid-button-secondary:hover .liquid-button-bg {
+  background: linear-gradient(135deg,
+    rgba(250, 209, 90, 0.4) 0%,
+    rgba(250, 209, 90, 0.2) 100%);
+  box-shadow: 
+    0 6px 20px rgba(250, 209, 90, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Accent variant - 温暖橙 */
+.liquid-button-accent .liquid-button-bg {
+  background: linear-gradient(135deg,
+    rgba(245, 158, 11, 0.3) 0%,
+    rgba(245, 158, 11, 0.15) 100%);
+  box-shadow: 
+    0 4px 12px rgba(245, 158, 11, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.liquid-button-accent:hover .liquid-button-bg {
+  background: linear-gradient(135deg,
+    rgba(245, 158, 11, 0.4) 0%,
+    rgba(245, 158, 11, 0.2) 100%);
+  box-shadow: 
+    0 6px 20px rgba(245, 158, 11, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Hover state */
+.liquid-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Disabled state */
+.liquid-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .liquid-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+

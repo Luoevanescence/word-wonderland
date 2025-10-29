@@ -1,0 +1,260 @@
+/* ===== 折叠按钮 - 左下角 ===== */
+.nav-toggle {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  box-shadow: 
+    0 4px 16px rgba(16, 185, 129, 0.15),
+    0 0 0 1px rgba(16, 185, 129, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: bounceIn 0.6s ease-out;
+}
+
+.nav-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 6px 24px rgba(16, 185, 129, 0.25),
+    0 0 0 1px rgba(16, 185, 129, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.nav-toggle.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.5);
+}
+
+.toggle-icon {
+  color: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.nav-toggle:hover .toggle-icon {
+  transform: rotate(90deg);
+}
+
+.toggle-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== 展开的导航栏 ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  padding: 0 20px 20px;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+}
+
+.bottom-nav.collapsed {
+  transform: translateY(150%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bottom-nav.expanded {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.bottom-nav-container {
+  max-width: 650px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border-radius: 24px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 8px 32px rgba(16, 185, 129, 0.18),
+    0 0 0 1px rgba(16, 185, 129, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  pointer-events: all;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 16px;
+  color: var(--text-secondary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  cursor: pointer;
+  min-width: 60px;
+}
+
+.nav-item:hover {
+  background: rgba(16, 185, 129, 0.1);
+  transform: translateY(-2px);
+}
+
+.nav-item.active {
+  color: var(--brand-primary);
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.18) 0%,
+    rgba(16, 185, 129, 0.1) 100%);
+}
+
+/* 收起按钮样式 */
+.nav-item.nav-collapse {
+  flex: 0;
+  min-width: auto;
+  padding: 8px 16px;
+  color: var(--text-secondary);
+  border-left: 1px solid rgba(16, 185, 129, 0.15);
+  margin-left: 8px;
+}
+
+.nav-item.nav-collapse:hover {
+  color: var(--brand-primary);
+  background: rgba(232, 255, 179, 0.525);
+}
+
+.nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  transition: transform 0.3s ease;
+}
+
+.nav-item.active .nav-icon {
+  transform: scale(1.1);
+}
+
+.nav-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.nav-indicator {
+  position: absolute;
+  top: 4px;
+  width: 4px;
+  height: 4px;
+  background: var(--brand-primary);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* 移除遮罩层 - 只能通过关闭按钮来收起导航栏 */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .nav-toggle {
+    width: 50px;
+    height: 50px;
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .toggle-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+
+  .bottom-nav {
+    padding: 0 12px 12px;
+  }
+
+  .bottom-nav-container {
+    padding: 10px 12px;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+
+  .nav-item {
+    padding: 6px 8px;
+    min-width: 50px;
+  }
+
+  .nav-label {
+    font-size: 11px;
+  }
+
+  .nav-item.nav-collapse {
+    padding: 6px 12px;
+  }
+}
+
+/* 为底部导航留出空间（折叠状态不需要） */
+body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Card.css';
+import { ChevronDownIcon, ChevronUpIcon } from '../icons/Icons';
 
 function PatternCard({ pattern, index }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -23,7 +24,13 @@ function PatternCard({ pattern, index }) {
     >
       <div className="card-header">
         <h3 className="card-title pattern-title">{pattern.pattern}</h3>
-        <span className="expand-icon">{isExpanded ? '▲' : '▼'}</span>
+        <span className="expand-icon">
+          {isExpanded ? (
+            <ChevronUpIcon color="#f59e0b" />
+          ) : (
+            <ChevronDownIcon color="#10b981" />
+          )}
+        </span>
       </div>
       {isExpanded && (
         <div className="card-content">

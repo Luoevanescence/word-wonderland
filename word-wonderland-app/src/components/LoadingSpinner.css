@@ -1,0 +1,114 @@
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px;
+}
+
+.spinner-ring {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.loading-spinner-small .spinner-ring {
+  width: 40px;
+  height: 40px;
+}
+
+.loading-spinner-large .spinner-ring {
+  width: 80px;
+  height: 80px;
+}
+
+.spinner-segment {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.spinner-segment:nth-child(1) {
+  border-top-color: var(--brand-primary);
+  animation-delay: -0.45s;
+}
+
+.spinner-segment:nth-child(2) {
+  border-right-color: var(--brand-accent);
+  animation-delay: -0.3s;
+}
+
+.spinner-segment:nth-child(3) {
+  border-bottom-color: #F59E0B;
+  animation-delay: -0.15s;
+}
+
+.spinner-segment:nth-child(4) {
+  border-left-color: var(--brand-primary);
+  opacity: 0.6;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  animation: pulse-text 2s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 现代化加载动画 - 液态效果 */
+.loading-spinner-liquid {
+  display: flex;
+  gap: 8px;
+  padding: 40px;
+}
+
+.liquid-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+  animation: liquid-bounce 1.4s ease-in-out infinite;
+}
+
+.liquid-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.liquid-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes liquid-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+

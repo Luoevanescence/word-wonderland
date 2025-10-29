@@ -54,7 +54,7 @@
 .wave-circle {
   width: 12px;
   height: 12px;
-  background: linear-gradient(135deg, var(--brand-primary), var(--brand-mint-light));
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-mint-light),var(--brand-accent));
   border-radius: 50%;
   animation: wave 1.4s ease-in-out infinite;
   box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);

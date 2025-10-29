@@ -10,56 +10,76 @@
   /* Emerald-500 清新薄荷绿 */
   --brand-accent: #FAD15A;
   /* Amber-500 温暖琥珀黄 */
-  --brand-light-primary: #90ffe3;
-  --brand-light-accent: #f5ec3c;
-  --brand-mint-light: #A7F3D0;
-  --brand-mint-dark: #059669;
-
-  /* ===== 液态玻璃按钮系统 ===== */
-  --btn-glass-bg: rgba(255, 255, 255, 0.4);
-  --btn-glass-border: rgba(16, 185, 129, 0.2);
-  --btn-glass-hover: rgba(255, 255, 255, 0.6);
-  --btn-glass-active: rgba(16, 185, 129, 0.15);
   
+  /* 装饰元素辅助颜色 */
+  --brand-light-primary: rgb(108, 255, 206);
+  --brand-light-accent: rgb(250, 229, 90);
+  --brand-mint-light: rgba(167, 243, 208, 0.8);
+  
+  /* 液态玻璃按钮颜色 */
+  --btn-glass-bg: rgba(255, 255, 255, 0.5);
+  --btn-glass-hover: rgba(255, 255, 255, 0.65);
+  --btn-glass-active: rgba(255, 255, 255, 0.45);
+  --btn-glass-border: rgba(16, 185, 129, 0.2);
+
   /* ===== 暖色按钮系统 ===== */
-  --btn-warm-bg: rgba(255, 224, 178, 0.35);
-  --btn-warm-border: rgba(253, 203, 127, 0.5);
-  --btn-warm-text: rgb(251,152, 70);
-  --btn-warm-hover: rgba(255, 236, 179, 0.55);
-  --btn-warm-shadow: 0 4px 16px rgba(255, 167, 38, 0.12);
+  --btn-warm-bg: rgba(255, 224, 178, 0.45);
+  /* 浅琥珀 45% 透明度 */
+  --btn-warm-border: rgba(255, 183, 77, 0.6);
+  /* 琥珀-400 带透明 */
+  --btn-warm-text: #B45309;
+  /* 琥珀-700 低饱暖棕 */
+  --btn-warm-hover: rgba(255, 236, 179, 0.65);
+  /* 更亮且更透 */
+  --btn-warm-shadow: 0 6px 24px rgba(255, 167, 38, 0.18);
 
   /* 按钮选中颜色 */
   --button-checked: #feeda7;
 
   /* 中性色系统 - 温暖基调 */
   --surface-ground: #FDFBF8;
-  --surface-card: rgba(255, 255, 255, 0.85);
-  --surface-elevated: rgba(255, 255, 255, 0.92);
+  /* 微暖米白 */
+  --surface-card: rgba(255, 255, 255, 0.9);
+  --surface-elevated: rgba(255, 255, 255, 0.95);
   --text-primary: #111827;
+  /* Gray-900 */
   --text-secondary: #4B5563;
-  --text-medium: #6B7280;
-  --text-light: #9CA3AF;
+  /* Gray-600 */
   --line-divider: rgba(229, 231, 235, 0.5);
+  /* Gray-200 50%透明 */
 
-  /* 玻璃材质 - 更强的液态效果 */
+  /* 玻璃材质 - 增强液态玻璃效果 */
   --glass-bg: rgba(255, 255, 255, 0.5);
   --glass-bg-hover: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.9);
-  --glass-shadow: 0 8px 32px rgba(16, 185, 129, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-blur: blur(20px) saturate(180%);
+  
+  /* 液态玻璃渐变 */
+  --liquid-glass-gradient: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.4) 0%, 
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 100%);
 
   /* 阴影 - 减小阴影强度 */
-  --shadow-subtle: 0 2px 20px rgba(16, 185, 129, 0.05);
-  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.08);
-  --shadow-button: 0 2px 12px rgba(16, 185, 129, 0.08);
+  --shadow-subtle: 0 2px 16px rgba(16, 185, 129, 0.06);
+  --shadow-elevated: 0 8px 24px rgba(16, 185, 129, 0.12);
+  --shadow-button: 0 4px 12px rgba(16, 185, 129, 0.1);
+  --shadow-card: 0 4px 16px rgba(16, 185, 129, 0.08);
+}
 
-  /* 隐藏滚动条 */
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 32px 48px 0;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+/* 隐藏滚动条样式 */
+html {
   scroll-behavior: smooth;
-  position: relative;
+  /* 平滑滚动 */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Edge */
 }
 
 body {
@@ -68,19 +88,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* 薄荷拿铁弥散背景 - 清新温暖 更柔和 */
+  /* 薄荷拿铁弥散背景 - 清新温暖 */
   background:
-    radial-gradient(ellipse 900px 700px at 15% 15%, rgba(16, 185, 129, 0.06) 0%, transparent 65%),
-    radial-gradient(circle 600px at 85% 20%, rgba(245, 158, 11, 0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 800px 1000px at 70% 90%, rgba(251, 191, 36, 0.035) 0%, transparent 55%),
-    radial-gradient(circle 500px at 25% 75%, rgba(52, 211, 153, 0.04) 0%, transparent 65%),
-    linear-gradient(135deg, #FDFBF8 0%, #F8FDF9 100%);
+    radial-gradient(ellipse 800px 600px at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 60%),
+    radial-gradient(circle 500px at 90% 15%, rgba(245, 158, 11, 0.03) 0%, transparent 55%),
+    radial-gradient(ellipse 700px 900px at 75% 85%, rgba(251, 191, 36, 0.025) 0%, transparent 50%),
+    radial-gradient(circle 400px at 30% 70%, rgba(52, 211, 153, 0.03) 0%, transparent 60%),
+    #FDFBF8;
   background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
 }
 
 /* 移动端优化 */
