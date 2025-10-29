@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const wordController = require('../controllers/word.controller');
+const authMiddleware = require('../middleware/auth.middleware');
 
 /**
  * @swagger
@@ -67,136 +68,16 @@ const wordController = require('../controllers/word.controller');
  *       400:
  *         description: Invalid input
  */
-router.post('/', wordController.create);
-
-/**
- * @swagger
- * /api/words:
- *   get:
- *     summary: Get all words
- *     tags: [Words]
- *     responses:
- *       200:
- *         description: List of all words
- */
-router.get('/', wordController.findAll);
-
-/**
- * @swagger
- * /api/words/random:
- *   get:
- *     summary: Get random words
- *     tags: [Words]
- *     parameters:
- *       - in: query
- *         name: count
- *         schema:
- *           type: integer
- *           default: 10
- *         description: Number of random words to retrieve
- *     responses:
- *       200:
- *         description: List of random words
- */
+// 公开路由（不需要认证）
 router.get('/random', wordController.getRandom);
 
-/**
- * @swagger
- * /api/words/{id}:
- *   get:
- *     summary: Get word by ID
- *     tags: [Words]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Word details
- *       404:
- *         description: Word not found
- */
-router.get('/:id', wordController.findById);
-
-/**
- * @swagger
- * /api/words/{id}:
- *   put:
- *     summary: Update word
- *     tags: [Words]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               word:
- *                 type: string
- *               definitions:
- *                 type: array
- *                 items:
- *                   $ref: '#/components/schemas/WordDefinition'
- *     responses:
- *       200:
- *         description: Word updated successfully
- *       404:
- *         description: Word not found
- */
-router.put('/:id', wordController.update);
-
-/**
- * @swagger
- * /api/words/{id}:
- *   delete:
- *     summary: Delete word
- *     tags: [Words]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Word deleted successfully
- *       404:
- *         description: Word not found
- */
-router.delete('/:id', wordController.delete);
-
-/**
- * @swagger
- * /api/words/bulk/delete:
- *   post:
- *     summary: Bulk delete words
- *     tags: [Words]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ids:
- *                 type: array
- *                 items:
- *                   type: string
- *     responses:
- *       200:
- *         description: Words deleted successfully
- *       400:
- *         description: Invalid input
- */
-router.post('/bulk/delete', wordController.bulkDelete);
+// 需要认证的路由
+router.post('/', authMiddleware, wordController.create);
+router.get('/', authMiddleware, wordController.findAll);
+router.get('/:id', authMiddleware, wordController.findById);
+router.put('/:id', authMiddleware, wordController.update);
+router.delete('/:id', authMiddleware, wordController.delete);
+router.post('/bulk/delete', authMiddleware, wordController.bulkDelete);
 
 module.exports = router;
 

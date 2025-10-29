@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const phraseController = require('../controllers/phrase.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+
+// 公开路由（不需要认证）
 
 /**
  * @swagger
@@ -44,102 +47,15 @@ const phraseController = require('../controllers/phrase.controller');
  *       201:
  *         description: Phrase created successfully
  */
-router.post('/', phraseController.create);
-
-/**
- * @swagger
- * /api/phrases:
- *   get:
- *     summary: Get all phrases
- *     tags: [Phrases]
- *     responses:
- *       200:
- *         description: List of all phrases
- */
-router.get('/', phraseController.findAll);
-
-/**
- * @swagger
- * /api/phrases/random:
- *   get:
- *     summary: Get random phrases
- *     tags: [Phrases]
- *     parameters:
- *       - in: query
- *         name: count
- *         schema:
- *           type: integer
- *           default: 10
- *     responses:
- *       200:
- *         description: List of random phrases
- */
 router.get('/random', phraseController.getRandom);
 
-/**
- * @swagger
- * /api/phrases/{id}:
- *   get:
- *     summary: Get phrase by ID
- *     tags: [Phrases]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Phrase details
- *       404:
- *         description: Phrase not found
- */
-router.get('/:id', phraseController.findById);
-
-/**
- * @swagger
- * /api/phrases/{id}:
- *   put:
- *     summary: Update phrase
- *     tags: [Phrases]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Phrase'
- *     responses:
- *       200:
- *         description: Phrase updated successfully
- */
-router.put('/:id', phraseController.update);
-
-/**
- * @swagger
- * /api/phrases/{id}:
- *   delete:
- *     summary: Delete phrase
- *     tags: [Phrases]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Phrase deleted successfully
- */
-router.delete('/:id', phraseController.delete);
-
-// 批量删除短语
-router.post('/bulk/delete', phraseController.bulkDelete);
+// 需要认证的路由
+router.post('/', authMiddleware, phraseController.create);
+router.get('/', authMiddleware, phraseController.findAll);
+router.get('/:id', authMiddleware, phraseController.findById);
+router.put('/:id', authMiddleware, phraseController.update);
+router.delete('/:id', authMiddleware, phraseController.delete);
+router.post('/bulk/delete', authMiddleware, phraseController.bulkDelete);
 
 module.exports = router;
 

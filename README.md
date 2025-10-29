@@ -218,6 +218,7 @@ A: 数据保存在 `backend/data/` 目录下的JSON文件中，定期备份。
 项目已支持 Docker 部署，快速启动所有服务。
 
 📚 **部署文档**：
+
 - [Docker 部署指南](DOCKER_DEPLOYMENT.md) - 完整部署教程（本地/GitHub）
 - [数据导出指南](DOCKER_DATA_EXPORT.md) - 获取存储卷数据的多种方法
 - [快速命令参考](DOCKER_QUICK_REFERENCE.md) - 常用命令速查表
@@ -265,11 +266,12 @@ docker-compose up -d --build
 
 ### 三种方案对比
 
-| 方案 | 开发难度 | 推荐度 | 开发周期 |
-|------|---------|--------|---------|
-| PWA | ⭐ 简单 | ⭐⭐⭐⭐⭐ | 1-2天 |
-| Capacitor | ⭐⭐ 中等 | ⭐⭐⭐⭐⭐ | 3-5天 |
-| React Native | ⭐⭐⭐ 较难 | ⭐⭐⭐ | 1-2周 |
+
+| 方案         | 开发难度    | 推荐度     | 开发周期 |
+| ------------ | ----------- | ---------- | -------- |
+| PWA          | ⭐ 简单     | ⭐⭐⭐⭐⭐ | 1-2天    |
+| Capacitor    | ⭐⭐ 中等   | ⭐⭐⭐⭐⭐ | 3-5天    |
+| React Native | ⭐⭐⭐ 较难 | ⭐⭐⭐     | 1-2周    |
 
 ### 快速开始（PWA）
 
@@ -285,13 +287,13 @@ npm install vite-plugin-pwa -D
 
 ## 📈 未来计划
 
-- [ ]  用户认证和授权
+- [X]  用户认证和授权
 - [ ]  数据库支持（MongoDB/PostgreSQL）
 - [ ]  学习统计和分析
 - [ ]  单词卡片记忆功能
 - [ ]  发音功能
 - [ ]  导入导出Excel
-- [x]  Docker部署支持
+- [X]  Docker部署支持
 - [ ]  移动端 APP（PWA/Capacitor）
 
 ## 🤝 贡献

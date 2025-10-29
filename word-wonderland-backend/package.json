@@ -16,7 +16,9 @@
     "body-parser": "^1.20.2",
     "swagger-ui-express": "^5.0.0",
     "swagger-jsdoc": "^6.2.8",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

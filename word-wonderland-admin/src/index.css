@@ -63,3 +63,23 @@ a {
   color: inherit;
 }
 
+
+/* 覆盖 webkit 浏览器 autofill 背景 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:focus {
+  box-shadow: 0 0 0 1000px #F0FFF4 inset !important; /* 将 #F0FFF4 改为你想要的背景色 */
+  -webkit-text-fill-color: #111827 !important;        /* 字体颜色（防止被浏览器改为不可读颜色） */
+  transition: background-color 5000s ease-in-out 0s;  /* 防止浏览器瞬间覆盖背景 */
+}
+
+/* 覆盖 Firefox 的 autofill（如果需要） */
+input:-moz-autofill {
+  box-shadow: 0 0 0 1000px #F0FFF4 inset !important;
+  -moz-text-fill-color: #111827 !important;
+}

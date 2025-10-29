@@ -12,7 +12,11 @@ app.use(cors(config.corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// 中间件
+const authMiddleware = require('./middleware/auth.middleware');
+
 // 路由
+const authRoutes = require('./routes/auth.routes');
 const wordRoutes = require('./routes/word.routes');
 const phraseRoutes = require('./routes/phrase.routes');
 const sentenceRoutes = require('./routes/sentence.routes');
@@ -21,7 +25,11 @@ const topicRoutes = require('./routes/topic.routes');
 const partOfSpeechRoutes = require('./routes/partOfSpeech.routes');
 const componentRoutes = require('./routes/component.routes');
 
-// API 路由
+// 认证路由（公开）
+app.use(`${config.apiPrefix}/auth`, authRoutes);
+
+// API 路由（需要认证 - 管理端操作）
+// 注意：GET /random 路由是公开的，已在路由文件中单独处理
 app.use(`${config.apiPrefix}/words`, wordRoutes);
 app.use(`${config.apiPrefix}/phrases`, phraseRoutes);
 app.use(`${config.apiPrefix}/sentences`, sentenceRoutes);
@@ -40,6 +48,7 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     documentation: '/api-docs',
     endpoints: {
+      auth: `${config.apiPrefix}/auth`,
       words: `${config.apiPrefix}/words`,
       phrases: `${config.apiPrefix}/phrases`,
       sentences: `${config.apiPrefix}/sentences`,

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken, logout } from '../utils/auth';
 
 // 使用相对路径 /api，通过 Vite proxy 转发到后端
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
@@ -9,6 +10,42 @@ const api = axios.create({
     'Content-Type': 'application/json'
   }
 });
+
+// 请求拦截器 - 自动添加 token
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// 响应拦截器 - 处理 token 过期
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response) {
+      // token 过期或无效
+      if (error.response.status === 401) {
+        const errorCode = error.response.data?.code;
+        if (errorCode === 'TOKEN_EXPIRED' || errorCode === 'TOKEN_INVALID') {
+          // 清除登录信息
+          logout();
+          // 跳转到登录页
+          window.location.href = '/login';
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Words API
 export const wordsAPI = {
