@@ -1,12 +1,15 @@
 .card {
   background: var(--surface-card);
-  backdrop-filter: blur(30px) saturate(120%);
-  -webkit-backdrop-filter: blur(30px) saturate(120%);
-  border-radius: 16px;
-  padding: 25px;
-  box-shadow: var(--shadow-subtle), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(30px) saturate(140%);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 
+    var(--shadow-subtle),
+    0 0 50px -20px rgba(16, 185, 129, 0.4),
+    inset 0 1px 1px rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: slideIn 0.25s ease-out forwards;
   opacity: 0;
   cursor: pointer;
@@ -14,8 +17,12 @@
 }
 
 .card:hover {
-  transform: scale(0.995);
-  box-shadow: 0 0 50px -20px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transform: translateY(-4px) scale(1.005);
+  box-shadow: 
+    0 0 60px -15px rgba(16, 185, 129, 0.5),
+    0 20px 40px -10px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(16, 185, 129, 0.2);
+  border-color: rgba(163, 230, 53, 0.3);
 }
 
 /* 折叠状态样式 */
@@ -29,12 +36,12 @@
   border-bottom: none;
 }
 
-/* 展开图标 - 折叠时绿色，展开时黄色 */
+/* 展开图标 - 折叠时荧光绿，展开时琥珀黄 */
 .expand-icon {
   font-size: 18px;
   font-weight: 600;
-  color: #10b981;
-  /* 折叠状态（▼）- 绿色 */
+  color: #A3E635;
+  /* 折叠状态（▼）- 荧光绿 */
   transition: color 0.2s ease-out;
   line-height: 1;
   width: auto;
@@ -45,11 +52,13 @@
   justify-content: center;
   flex-shrink: 0;
   margin-top: 2px;
+  filter: drop-shadow(0 0 8px rgba(163, 230, 53, 0.5));
 }
 
-/* 展开状态的三角形 - 黄色 */
+/* 展开状态的三角形 - 琥珀黄 */
 .card.expanded .expand-icon {
-  color: #f59e0b;
+  color: #FAD15A;
+  filter: drop-shadow(0 0 8px rgba(250, 209, 90, 0.5));
 }
 .card.expanded .card-header::after {
   display: block;
@@ -122,10 +131,11 @@
 .card-title {
   font-size: 24px;
   font-weight: 700;
-  color: var(--text-dark);
+  color: var(--text-primary);
   margin: 0;
   flex: 1;
   line-height: 1.3;
+  text-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
 }
 
 .sentence-title {
@@ -171,7 +181,7 @@
 
 .sentence-text {
   font-size: 18px;
-  color: var(--text-dark);
+  color: var(--text-primary);
   font-style: italic;
   margin-bottom: 12px;
   line-height: 1.6;
@@ -180,38 +190,41 @@
 .translation-text {
   font-size: 16px;
   color: var(--text-secondary);
-  padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(245, 158, 11, 0.03) 100%);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 12px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(163, 230, 53, 0.08) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
   margin-bottom: 10px;
-  border: 1px solid rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: inset 0 1px 2px rgba(16, 185, 129, 0.1);
 }
 
 .example-text {
   font-size: 15px;
   color: var(--text-secondary);
   font-style: italic;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(16, 185, 129, 0.03) 100%);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 12px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(250, 209, 90, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
   margin-top: 10px;
-  border: 1px solid rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(250, 209, 90, 0.25);
+  box-shadow: inset 0 1px 2px rgba(250, 209, 90, 0.1);
 }
 
 .note-text {
   font-size: 14px;
   color: var(--text-secondary);
   margin-top: 10px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(245, 158, 11, 0.05) 100%);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(250, 209, 90, 0.18) 0%, rgba(250, 209, 90, 0.12) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-left: 3px solid var(--brand-accent);
-  border-radius: 8px;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 2px rgba(250, 209, 90, 0.1);
 }
 
 .description-text {
@@ -226,15 +239,18 @@
 
 /* Topic Card Styles */
 .topic-card {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 2px solid rgba(16, 185, 129, 0.25);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(163, 230, 53, 0.12) 100%);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  border: 2px solid rgba(16, 185, 129, 0.35);
 }
 
 .topic-card:hover {
-  border-color: var(--brand-primary);
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(245, 158, 11, 0.12) 100%);
+  border-color: rgba(163, 230, 53, 0.5);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(163, 230, 53, 0.18) 100%);
+  box-shadow: 
+    0 0 60px -15px rgba(163, 230, 53, 0.6),
+    0 20px 40px -10px rgba(0, 0, 0, 0.4);
 }
 
 @media (max-width: 768px) {

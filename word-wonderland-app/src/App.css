@@ -1,17 +1,21 @@
 .app {
   min-height: 100vh;
-  padding: 20px;
+  padding: 32px 24px;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 /* 移动端优化 */
 @media (max-width: 768px) {
   .app {
-    padding: 15px 10px;
+    padding: 20px 12px;
+  }
+  
+  .container {
+    max-width: 100%;
   }
 }
 

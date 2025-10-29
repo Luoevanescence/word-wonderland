@@ -6,13 +6,33 @@
 
 .header-content {
   background: var(--surface-elevated);
-  backdrop-filter: blur(40px) saturate(120%);
-  -webkit-backdrop-filter: blur(40px) saturate(120%);
-  border-radius: 20px;
-  padding: 32px 48px;
-  box-shadow: var(--shadow-subtle), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(40px) saturate(140%);
+  -webkit-backdrop-filter: blur(40px) saturate(140%);
+  border-radius: 24px;
+  padding: 36px 52px;
+  box-shadow: 
+    var(--shadow-subtle),
+    0 0 80px -20px rgba(16, 185, 129, 0.4),
+    inset 0 1px 1px rgba(16, 185, 129, 0.2);
   border: 1px solid var(--glass-border);
   display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(163, 230, 53, 0.5) 50%,
+    transparent
+  );
 }
 
 .title {
@@ -25,13 +45,14 @@
   justify-content: center;
   gap: 16px;
   letter-spacing: -0.03em;
+  text-shadow: 0 2px 20px rgba(16, 185, 129, 0.3);
 }
 
 .logo-icon {
   width: 64px;
   height: 64px;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.4));
 }
 
 .subtitle {
