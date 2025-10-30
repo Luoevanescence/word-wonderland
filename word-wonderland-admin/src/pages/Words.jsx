@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { wordsAPI, partsOfSpeechAPI } from '../services/api';
+import { wordsAPI, partsOfSpeechAPI, categoriesAPI } from '../services/api';
 import { Link } from 'react-router-dom';
 import { usePagination } from '../hooks/usePagination.jsx';
 import CustomSelect from '../components/CustomSelect';
@@ -19,11 +19,13 @@ import { exportToExcel, importFromExcel, downloadExcelTemplate, exportSelectedTo
 function Words() {
   const [words, setWords] = useState([]);
   const [partsOfSpeech, setPartsOfSpeech] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingWord, setEditingWord] = useState(null);
   const [formData, setFormData] = useState({
     word: '',
+    categoryId: '',
     definitions: [{ partOfSpeech: '', meaning: '' }]
   });
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除：选中的ID列表
@@ -46,6 +48,7 @@ function Words() {
     fetchWords();
     fetchPartsOfSpeech();
   }, []);
+  useEffect(() => { fetchCategories(); }, []);
 
   // 当单词数据变化时，重新应用筛选
   useEffect(() => {
@@ -88,6 +91,15 @@ function Words() {
       setPartsOfSpeech(response.data.data || []);
     } catch (error) {
       console.error('Error fetching parts of speech:', error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await categoriesAPI.getAll();
+      setCategories(res.data.data || []);
+    } catch (e) {
+      // ignore
     }
   };
 
@@ -161,6 +173,7 @@ function Words() {
   const handleExportExcel = () => {
     const headers = [
       { key: 'word', label: '单词' },
+      { key: 'categoryName', label: '分类' },
       { 
         key: 'definitions', 
         label: '词性和释义',
@@ -185,6 +198,7 @@ function Words() {
   const handleImportExcel = async (file) => {
     const fieldMapping = [
       { excelKey: '单词', dataKey: 'word', required: true },
+      { excelKey: '分类', dataKey: 'categoryName', required: false },
       {
         excelKey: '词性',
         dataKey: 'partOfSpeech',
@@ -207,13 +221,12 @@ function Words() {
     try {
       const importedData = await importFromExcel(file, fieldMapping);
       
-      // 转换为 API 需要的格式
+      // 转换为 API 需要的格式（分类名称 -> categoryId）
+      const nameToId = new Map(categories.map(c => [c.name, c.id]));
       const wordsToCreate = importedData.map(item => ({
         word: item.word,
-        definitions: [{
-          partOfSpeech: item.partOfSpeech,
-          meaning: item.meaning
-        }]
+        categoryId: item.categoryName ? (nameToId.get(item.categoryName) || '') : '',
+        definitions: [{ partOfSpeech: item.partOfSpeech, meaning: item.meaning }]
       }));
 
       // 批量创建单词
@@ -253,14 +266,15 @@ function Words() {
   const handleDownloadTemplate = () => {
     const headers = [
       { key: 'word', label: '单词', example: 'abandon' },
+      { key: 'categoryName', label: '分类', example: 'CET-6' },
       { key: 'partOfSpeech', label: '词性', example: 'v.' },
       { key: 'meaning', label: '释义', example: '放弃；抛弃' }
     ];
 
     const sampleData = [
-      { '单词': 'abandon', '词性': 'v.', '释义': '放弃；抛弃' },
-      { '单词': 'ability', '词性': 'n.', '释义': '能力；才能' },
-      { '单词': 'abroad', '词性': 'adv.', '释义': '在国外；到海外' }
+      { '单词': 'abandon', '分类': 'CET-6', '词性': 'v.', '释义': '放弃；抛弃' },
+      { '单词': 'ability', '分类': 'CET-4', '词性': 'n.', '释义': '能力；才能' },
+      { '单词': 'abroad', '分类': '其他', '词性': 'adv.', '释义': '在国外；到海外' }
     ];
 
     const success = downloadExcelTemplate('单词导入', headers, sampleData);
@@ -319,6 +333,7 @@ function Words() {
   const handleExportSelectedExcel = () => {
     const headers = [
       { key: 'word', label: '单词' },
+      { key: 'categoryName', label: '分类' },
       { 
         key: 'definitions', 
         label: '词性和释义',
@@ -363,6 +378,10 @@ function Words() {
           return word.definitions.some(def => 
             def.meaning.toLowerCase().includes(searchValue)
           );
+        }
+        if (key === 'category') {
+          const catName = categories.find(c => c.id === (word.categoryId || ''))?.name || '';
+          return catName.toLowerCase().includes(searchValue);
         }
         
         return true;
@@ -424,6 +443,7 @@ function Words() {
     setEditingWord(word);
     setFormData({
       word: word.word,
+      categoryId: word.categoryId || '',
       definitions: word.definitions
     });
     setShowModal(true);
@@ -432,6 +452,7 @@ function Words() {
   const resetForm = () => {
     setFormData({
       word: '',
+      categoryId: '',
       definitions: [{ partOfSpeech: '', meaning: '' }]
     });
     setEditingWord(null);
@@ -523,7 +544,8 @@ function Words() {
           filterFields={[
             { key: 'word', label: '单词', type: 'text', placeholder: '输入单词...' },
             { key: 'partOfSpeech', label: '词性', type: 'text', placeholder: '输入词性...' },
-            { key: 'meaning', label: '释义', type: 'text', placeholder: '输入释义...' }
+            { key: 'meaning', label: '释义', type: 'text', placeholder: '输入释义...' },
+            { key: 'category', label: '分类', type: 'text', placeholder: '输入分类...' }
           ]}
           onFilter={applyFilters}
           onReset={handleResetFilter}
@@ -568,6 +590,7 @@ function Words() {
                       />
                     </th>
                     <th>单词</th>
+                    <th>分类</th>
                     <th>释义</th>
                     <th>创建时间</th>
                     <th>操作</th>
@@ -584,6 +607,9 @@ function Words() {
                         />
                       </td>
                       <td><strong>{word.word}</strong></td>
+                      <td>
+                        {categories.find(c => c.id === (word.categoryId || ''))?.name || '未分类'}
+                      </td>
                       <td className="text-cell">
                         <span style={{ fontWeight: 500, color: 'var(--brand-primary)' }}>
                           {word.definitions[0]?.partOfSpeech}
@@ -705,6 +731,24 @@ function Words() {
               </div>
 
               <div className="form-group">
+                <label>分类（可选）</label>
+                <select
+                  className="filter-select"
+                  disabled={categories.length === 0}
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                >
+                  <option value="">未分类</option>
+                  {categories.map(c => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
+                {categories.length === 0 && (
+                  <small style={{ color: '#888' }}>暂无分类，请先在“分类”模块创建后再选择</small>
+                )}
+              </div>
+
+              <div className="form-group">
                 <label>释义 *</label>
                 {formData.definitions.map((def, index) => (
                   <div key={index} className="definition-item">
@@ -747,6 +791,8 @@ function Words() {
                   + 添加另一个释义
                 </button>
               </div>
+
+
 
               <div className="modal-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowModal(false); resetForm(); }}>

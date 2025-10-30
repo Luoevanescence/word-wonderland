@@ -1163,6 +1163,65 @@ tbody tr:hover {
   font-style: normal;
 }
 
+/* Themed selects specific to filter-select class (used in FilterBar/forms) */
+.filter-select,
+.modal .filter-select,
+.page-content .filter-select,
+select.filter-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: var(--surface-card, rgba(255,255,255,0.98));
+  border: 1px solid var(--line-divider, #e5e7eb);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--text-primary, #1f2937);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 4px 16px rgba(128, 90, 213, 0.06);
+}
+
+.filter-select:hover {
+  border-color: var(--brand-primary, #7c3aed);
+  background: var(--glass-bg-hover, rgba(255,255,255,0.65));
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--brand-primary, #7c3aed);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.filter-select:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: var(--glass-bg, rgba(255,255,255,0.5));
+}
+
+/* Chevron indicator */
+.filter-select {
+  background-image: linear-gradient(45deg, transparent 50%, var(--brand-primary, #7c3aed) 50%),
+                    linear-gradient(135deg, var(--brand-primary, #7c3aed) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% + 1px), calc(100% - 12px) calc(50% + 1px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+
+/* Multiple select tweaks */
+.modal .filter-select[multiple] {
+  min-height: 120px;
+  background-image: none;
+  padding-right: 12px;
+}
+.modal .filter-select[multiple]::-webkit-scrollbar {
+  width: 8px;
+}
+.modal .filter-select[multiple]::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--brand-primary, #7c3aed), var(--brand-secondary, #22d3ee));
+  border-radius: 8px;
+}
+
 /* 弹窗操作按钮区域 - 固定在底部 ✅ */
 .modal-actions {
   flex-shrink: 0;
@@ -1174,7 +1233,7 @@ tbody tr:hover {
   margin-top: 0;
   /* 移除毛玻璃效果以提升性能 */
   /* -webkit-backdrop-filter: blur(40px) saturate(120%); */
-  background: rgba(255, 255, 255, 0.98);
+  /* background: rgba(255, 255, 255, 0.98); */
   border-radius: 0 0 20px 20px;
   position: relative;
   /* z-index: 3; */

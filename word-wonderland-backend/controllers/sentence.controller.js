@@ -4,7 +4,7 @@ const sentenceService = new FileService('sentences');
 // 创建新句子
 exports.create = (req, res) => {
   try {
-    const { sentence, translation, note } = req.body;
+    const { sentence, englishName, translation, note, patternIds } = req.body;
 
     if (!sentence || !translation) {
       return res.status(400).json({
@@ -13,7 +13,13 @@ exports.create = (req, res) => {
       });
     }
 
-    const newSentence = sentenceService.create({ sentence, translation, note: note || '' });
+    const newSentence = sentenceService.create({ 
+      sentence, 
+      englishName: englishName || '',
+      translation, 
+      note: note || '',
+      patternIds: Array.isArray(patternIds) ? patternIds : []
+    });
 
     res.status(201).json({
       success: true,
@@ -77,12 +83,14 @@ exports.findById = (req, res) => {
 exports.update = (req, res) => {
   try {
     const { id } = req.params;
-    const { sentence, translation, note } = req.body;
+    const { sentence, englishName, translation, note, patternIds } = req.body;
 
     const updates = {};
     if (sentence) updates.sentence = sentence;
     if (translation) updates.translation = translation;
     if (note !== undefined) updates.note = note;
+    if (englishName !== undefined) updates.englishName = englishName;
+    if (patternIds !== undefined) updates.patternIds = Array.isArray(patternIds) ? patternIds : [];
 
     const updatedSentence = sentenceService.update(id, updates);
 

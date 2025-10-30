@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { sentencesAPI } from '../services/api';
+import { sentencesAPI, patternsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
@@ -13,6 +13,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
 import { useConfirmDialog, useToast } from '../hooks/useDialog';
 import ImportExcelModal from '../components/ImportExcelModal';
+import MultiSelect from '../components/MultiSelect';
 import { exportToExcel, importFromExcel, downloadExcelTemplate, exportSelectedToExcel } from '../utils/excelUtils';
 
 function Sentences() {
@@ -22,9 +23,12 @@ function Sentences() {
   const [editingSentence, setEditingSentence] = useState(null);
   const [formData, setFormData] = useState({
     sentence: '',
+    englishName: '',
     translation: '',
-    note: ''
+    note: '',
+    patternIds: []
   });
+  const [allPatterns, setAllPatterns] = useState([]);
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
@@ -44,7 +48,17 @@ function Sentences() {
 
   useEffect(() => {
     fetchSentences();
+    fetchPatterns();
   }, []);
+
+  const fetchPatterns = async () => {
+    try {
+      const res = await patternsAPI.getAll();
+      setAllPatterns(res.data.data || []);
+    } catch (e) {
+      // 静默失败
+    }
+  };
 
   // 初始化表格列宽拖拽（只在首次有数据时初始化）
   useEffect(() => {
@@ -137,8 +151,14 @@ function Sentences() {
   const handleExportExcel = () => {
     const headers = [
       { key: 'sentence', label: '英文句子' },
+      { key: 'englishName', label: '英文名称' },
       { key: 'translation', label: '中文翻译' },
       { key: 'note', label: '备注' },
+      {
+        key: 'patterns',
+        label: '句型',
+        transform: (ps) => Array.isArray(ps) ? ps.map(p => p.pattern || p.name || '').filter(Boolean).join(', ') : ''
+      },
       { 
         key: 'createdAt', 
         label: '创建时间',
@@ -173,6 +193,7 @@ function Sentences() {
   const handleImportExcel = async (file) => {
     const fieldMapping = [
       { excelKey: '英文句子', dataKey: 'sentence', required: true },
+      { excelKey: '英文名称', dataKey: 'englishName', required: false },
       { excelKey: '中文翻译', dataKey: 'translation', required: true },
       { excelKey: '备注', dataKey: 'note', required: false }
     ];
@@ -217,14 +238,15 @@ function Sentences() {
   const handleDownloadTemplate = () => {
     const headers = [
       { key: 'sentence', label: '英文句子', example: 'I love learning English.' },
+      { key: 'englishName', label: '英文名称', example: 'Love Learning' },
       { key: 'translation', label: '中文翻译', example: '我喜欢学习英语。' },
       { key: 'note', label: '备注', example: '简单句型' }
     ];
 
     const sampleData = [
-      { '英文句子': 'I love learning English.', '中文翻译': '我喜欢学习英语。', '备注': '简单句型' },
-      { '英文句子': 'Practice makes perfect.', '中文翻译': '熟能生巧。', '备注': '谚语' },
-      { '英文句子': 'Rome was not built in a day.', '中文翻译': '罗马不是一天建成的。', '备注': '谚语' }
+      { '英文句子': 'I love learning English.', '英文名称': 'Love Learning', '中文翻译': '我喜欢学习英语。', '备注': '简单句型' },
+      { '英文句子': 'Practice makes perfect.', '英文名称': 'Practice Perfect', '中文翻译': '熟能生巧。', '备注': '谚语' },
+      { '英文句子': 'Rome was not built in a day.', '英文名称': 'Rome Not Built In A Day', '中文翻译': '罗马不是一天建成的。', '备注': '谚语' }
     ];
 
     const success = downloadExcelTemplate('句子导入', headers, sampleData);
@@ -293,8 +315,10 @@ function Sentences() {
     setEditingSentence(sentence);
     setFormData({
       sentence: sentence.sentence,
+      englishName: sentence.englishName || '',
       translation: sentence.translation,
-      note: sentence.note || ''
+      note: sentence.note || '',
+      patternIds: Array.isArray(sentence.patterns) ? sentence.patterns.map(p => p.id) : (sentence.patternIds || [])
     });
     setShowModal(true);
   };
@@ -302,8 +326,10 @@ function Sentences() {
   const resetForm = () => {
     setFormData({
       sentence: '',
+      englishName: '',
       translation: '',
-      note: ''
+      note: '',
+      patternIds: []
     });
     setEditingSentence(null);
   };
@@ -545,12 +571,32 @@ function Sentences() {
               </div>
 
               <div className="form-group">
+                <label>英文名称（可选）</label>
+                <input
+                  type="text"
+                  value={formData.englishName}
+                  onChange={(e) => setFormData({ ...formData, englishName: e.target.value })}
+                  placeholder="简短英文名，便于检索"
+                />
+              </div>
+
+              <div className="form-group">
                 <label>翻译 *</label>
                 <textarea
                   value={formData.translation}
                   onChange={(e) => setFormData({ ...formData, translation: e.target.value })}
                   required
                   placeholder="敏捷的棕色狐狸跳过懒狗。"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>关联句型（可选）</label>
+                <MultiSelect
+                  options={allPatterns.map(p => ({ value: p.id, label: p.pattern || p.name }))}
+                  value={formData.patternIds}
+                  onChange={(vals) => setFormData({ ...formData, patternIds: vals })}
+                  placeholder="搜索句型…"
                 />
               </div>
 

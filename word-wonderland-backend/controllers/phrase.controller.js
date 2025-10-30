@@ -4,7 +4,7 @@ const phraseService = new FileService('phrases');
 // 创建新短语
 exports.create = (req, res) => {
   try {
-    const { phrase, meaning, example } = req.body;
+    const { phrase, meaning, example, wordIds } = req.body;
 
     if (!phrase || !meaning) {
       return res.status(400).json({
@@ -13,7 +13,12 @@ exports.create = (req, res) => {
       });
     }
 
-    const newPhrase = phraseService.create({ phrase, meaning, example: example || '' });
+    const newPhrase = phraseService.create({ 
+      phrase, 
+      meaning, 
+      example: example || '',
+      wordIds: Array.isArray(wordIds) ? wordIds : []
+    });
 
     res.status(201).json({
       success: true,
@@ -77,12 +82,13 @@ exports.findById = (req, res) => {
 exports.update = (req, res) => {
   try {
     const { id } = req.params;
-    const { phrase, meaning, example } = req.body;
+    const { phrase, meaning, example, wordIds } = req.body;
 
     const updates = {};
     if (phrase) updates.phrase = phrase;
     if (meaning) updates.meaning = meaning;
     if (example !== undefined) updates.example = example;
+    if (wordIds !== undefined) updates.wordIds = Array.isArray(wordIds) ? wordIds : [];
 
     const updatedPhrase = phraseService.update(id, updates);
 

@@ -217,13 +217,15 @@
 .translation-text {
   font-size: 16px;
   color: var(--text-secondary);
+  
   padding: 14px 18px;
   background: linear-gradient(135deg, 
-    rgba(16, 185, 129, 0.08) 0%, 
-    rgba(16, 185, 129, 0.03) 100%);
+    rgba(194, 255, 231, 0.08) 0%, 
+    rgba(16, 185, 129, 0.08) 100%);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-radius: 14px;
+  margin-top: 20px;
   margin-bottom: 10px;
   border: 1px solid rgba(16, 185, 129, 0.15);
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.05);

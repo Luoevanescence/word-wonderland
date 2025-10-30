@@ -4,7 +4,7 @@ const wordService = new FileService('words');
 // 创建新单词
 exports.create = (req, res) => {
   try {
-    const { word, definitions } = req.body;
+    const { word, category, categoryId, definitions } = req.body;
 
     if (!word || !definitions || !Array.isArray(definitions) || definitions.length === 0) {
       return res.status(400).json({
@@ -23,7 +23,12 @@ exports.create = (req, res) => {
       }
     }
 
-    const newWord = wordService.create({ word, definitions });
+    const newWord = wordService.create({ 
+      word, 
+      category: category || '', // backward compatibility
+      categoryId: categoryId || '',
+      definitions 
+    });
 
     res.status(201).json({
       success: true,
@@ -87,7 +92,7 @@ exports.findById = (req, res) => {
 exports.update = (req, res) => {
   try {
     const { id } = req.params;
-    const { word, definitions } = req.body;
+    const { word, category, categoryId, definitions } = req.body;
 
     const updates = {};
     if (word) updates.word = word;
@@ -109,6 +114,8 @@ exports.update = (req, res) => {
       }
       updates.definitions = definitions;
     }
+    if (category !== undefined) updates.category = category; // backward compatibility
+    if (categoryId !== undefined) updates.categoryId = categoryId;
 
     const updatedWord = wordService.update(id, updates);
 

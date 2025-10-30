@@ -122,5 +122,15 @@ export const componentsAPI = {
   bulkDelete: (ids) => api.post('/components/bulk/delete', { ids })
 };
 
+// Categories API (Words Categories)
+export const categoriesAPI = {
+  getAll: () => api.get('/categories'),
+  getById: (id) => api.get(`/categories/${id}`),
+  create: (data) => api.post('/categories', data),
+  update: (id, data) => api.put(`/categories/${id}`, data),
+  delete: (id) => api.delete(`/categories/${id}`),
+  bulkDelete: (ids) => api.post('/categories/bulk/delete', { ids })
+};
+
 export default api;
 

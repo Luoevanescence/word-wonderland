@@ -6,6 +6,7 @@ import Sentences from './pages/Sentences';
 import Patterns from './pages/Patterns';
 import Topics from './pages/Topics';
 import PartsOfSpeech from './pages/PartsOfSpeech';
+import Categories from './pages/Categories';
 import Components from './pages/Components';
 import Login from './pages/Login';
 import PrivateRoute from './components/PrivateRoute';
@@ -67,6 +68,9 @@ function MainLayout() {
             <NavLink to="/" end onClick={closeSidebar}>单词</NavLink>
           </li>
           <li>
+            <NavLink to="/categories" onClick={closeSidebar}>分类</NavLink>
+          </li>
+          <li>
             <NavLink to="/parts-of-speech" onClick={closeSidebar}>词性</NavLink>
           </li>
           <li>
@@ -102,6 +106,7 @@ function MainLayout() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Words />} />
+          <Route path="/categories" element={<Categories />} />
           <Route path="/parts-of-speech" element={<PartsOfSpeech />} />
           <Route path="/phrases" element={<Phrases />} />
           <Route path="/sentences" element={<Sentences />} />

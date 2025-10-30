@@ -24,6 +24,7 @@ const patternRoutes = require('./routes/pattern.routes');
 const topicRoutes = require('./routes/topic.routes');
 const partOfSpeechRoutes = require('./routes/partOfSpeech.routes');
 const componentRoutes = require('./routes/component.routes');
+const categoryRoutes = require('./routes/category.routes');
 
 // 认证路由（公开）
 app.use(`${config.apiPrefix}/auth`, authRoutes);
@@ -37,6 +38,7 @@ app.use(`${config.apiPrefix}/patterns`, patternRoutes);
 app.use(`${config.apiPrefix}/topics`, topicRoutes);
 app.use(`${config.apiPrefix}/parts-of-speech`, partOfSpeechRoutes);
 app.use(`${config.apiPrefix}/components`, componentRoutes);
+app.use(`${config.apiPrefix}/categories`, categoryRoutes);
 
 // Swagger 文档
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -55,7 +57,8 @@ app.get('/', (req, res) => {
       patterns: `${config.apiPrefix}/patterns`,
       topics: `${config.apiPrefix}/topics`,
       partsOfSpeech: `${config.apiPrefix}/parts-of-speech`,
-      components: `${config.apiPrefix}/components`
+      components: `${config.apiPrefix}/components`,
+      categories: `${config.apiPrefix}/categories`
     }
   });
 });

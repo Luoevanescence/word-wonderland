@@ -46,7 +46,7 @@ const getComponentById = (req, res) => {
 // 创建成分
 const createComponent = (req, res) => {
   try {
-    const { name, description, example } = req.body;
+    const { name, englishName, description, example } = req.body;
     
     if (!name) {
       return res.status(400).json({
@@ -57,6 +57,7 @@ const createComponent = (req, res) => {
     
     const newComponent = componentService.create({
       name,
+      englishName: englishName || '',
       description: description || '',
       example: example || ''
     });
@@ -78,7 +79,7 @@ const createComponent = (req, res) => {
 // 更新成分
 const updateComponent = (req, res) => {
   try {
-    const { name, description, example } = req.body;
+    const { name, englishName, description, example } = req.body;
     
     if (!name) {
       return res.status(400).json({
@@ -89,6 +90,7 @@ const updateComponent = (req, res) => {
     
     const updatedComponent = componentService.update(req.params.id, {
       name,
+      englishName: englishName || '',
       description: description || '',
       example: example || ''
     });

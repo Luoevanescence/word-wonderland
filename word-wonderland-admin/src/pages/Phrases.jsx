@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { phrasesAPI } from '../services/api';
+import { phrasesAPI, wordsAPI } from '../services/api';
+import MultiSelect from '../components/MultiSelect';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
@@ -23,8 +24,10 @@ function Phrases() {
   const [formData, setFormData] = useState({
     phrase: '',
     meaning: '',
-    example: ''
+    example: '',
+    wordIds: []
   });
+  const [allWords, setAllWords] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
@@ -44,7 +47,17 @@ function Phrases() {
 
   useEffect(() => {
     fetchPhrases();
+    fetchWords();
   }, []);
+
+  const fetchWords = async () => {
+    try {
+      const res = await wordsAPI.getAll();
+      setAllWords(res.data.data || []);
+    } catch (e) {
+      // ignore
+    }
+  };
 
   // 初始化表格列宽拖拽（只在首次有数据时初始化）
   useEffect(() => {
@@ -337,7 +350,8 @@ function Phrases() {
     setFormData({
       phrase: phrase.phrase,
       meaning: phrase.meaning,
-      example: phrase.example || ''
+      example: phrase.example || '',
+      wordIds: Array.isArray(phrase.words) ? phrase.words.map(w => w.id) : (phrase.wordIds || [])
     });
     setShowModal(true);
   };
@@ -346,7 +360,8 @@ function Phrases() {
     setFormData({
       phrase: '',
       meaning: '',
-      example: ''
+      example: '',
+      wordIds: []
     });
     setEditingPhrase(null);
   };
@@ -562,6 +577,16 @@ function Phrases() {
                   value={formData.example}
                   onChange={(e) => setFormData({ ...formData, example: e.target.value })}
                   placeholder="He told a joke to break the ice at the meeting."
+                />
+              </div>
+
+              <div className="form-group">
+                <label>关联单词（可选）</label>
+                <MultiSelect
+                  options={allWords.map(w => ({ value: w.id, label: w.word, code: (w.categoryId ? '•' : '') }))}
+                  value={formData.wordIds}
+                  onChange={(ids) => setFormData({ ...formData, wordIds: ids })}
+                  placeholder="搜索单词…"
                 />
               </div>
 

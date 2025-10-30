@@ -17,6 +17,7 @@ function Components() {
   const [editingComponent, setEditingComponent] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
+    englishName: '',
     description: '',
     example: ''
   });
@@ -105,6 +106,7 @@ function Components() {
     setEditingComponent(component);
     setFormData({
       name: component.name,
+      englishName: component.englishName || '',
       description: component.description || '',
       example: component.example || ''
     });
@@ -115,6 +117,7 @@ function Components() {
     setEditingComponent(null);
     setFormData({
       name: '',
+      englishName: '',
       description: '',
       example: ''
     });
@@ -223,6 +226,7 @@ function Components() {
                     />
                   </th>
                   <th>成分名称</th>
+                  <th>英文名称</th>
                   <th>说明</th>
                   <th>示例</th>
                   <th>创建时间</th>
@@ -240,6 +244,7 @@ function Components() {
                       />
                     </td>
                     <td><strong>{component.name}</strong></td>
+                    <td className="text-cell">{component.englishName}</td>
                     <td className="text-cell">{component.description}</td>
                     <td className="text-cell" style={{ fontStyle: 'italic', color: '#666' }}>{component.example}</td>
                     <td>{new Date(component.createdAt).toLocaleDateString()}</td>
@@ -335,6 +340,16 @@ function Components() {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="例如：主语、谓语、宾语、定语..."
                   required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>英文名称（可选）</label>
+                <input
+                  type="text"
+                  value={formData.englishName}
+                  onChange={(e) => setFormData({ ...formData, englishName: e.target.value })}
+                  placeholder="Subject / Predicate / Object ..."
                 />
               </div>
 
