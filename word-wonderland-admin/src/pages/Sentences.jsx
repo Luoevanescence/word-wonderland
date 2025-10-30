@@ -3,12 +3,17 @@ import { sentencesAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
+import ImportExportDropdown from '../components/ImportExportDropdown';
+import ImportJSONModal from '../components/ImportJSONModal';
+import FilterBar from '../components/FilterBar';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
 import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
 import { useConfirmDialog, useToast } from '../hooks/useDialog';
+import ImportExcelModal from '../components/ImportExcelModal';
+import { exportToExcel, importFromExcel, downloadExcelTemplate, exportSelectedToExcel } from '../utils/excelUtils';
 
 function Sentences() {
   const [sentences, setSentences] = useState([]);
@@ -23,13 +28,19 @@ function Sentences() {
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
+  const [showImportModal, setShowImportModal] = useState(false); // Excel 导入弹窗
+  const [showImportJSONModal, setShowImportJSONModal] = useState(false);
+  const [filteredSentences, setFilteredSentences] = useState([]);
+  const [activeFilters, setActiveFilters] = useState({});
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
   const { toasts, showToast, removeToast } = useToast();
 
-  // 使用分页 hook
-  const { currentData, renderPagination } = usePagination(sentences, 5);
+  // 计算显示数据（筛选后优先）
+  const displayData = filteredSentences.length > 0 ? filteredSentences : sentences;
+  // 使用分页 hook（基于显示数据）
+  const { currentData, renderPagination } = usePagination(displayData, 5);
 
   useEffect(() => {
     fetchSentences();
@@ -103,7 +114,7 @@ function Sentences() {
     });
   };
 
-  // 导出功能
+  // JSON 导出功能
   const handleExportAll = () => {
     const success = downloadJSONWithMeta(sentences, 'sentences');
     if (success) {
@@ -111,6 +122,171 @@ function Sentences() {
     } else {
       showToast('导出失败，请重试', 'error');
     }
+  };
+
+  const handleExportSelected = () => {
+    const success = downloadSelectedJSON(sentences, selectedIds, 'sentences');
+    if (success) {
+      showToast(`成功导出 ${selectedIds.length} 个句子！`, 'success');
+    } else {
+      showToast('导出失败，请重试', 'error');
+    }
+  };
+
+  // Excel 导出功能
+  const handleExportExcel = () => {
+    const headers = [
+      { key: 'sentence', label: '英文句子' },
+      { key: 'translation', label: '中文翻译' },
+      { key: 'note', label: '备注' },
+      { 
+        key: 'createdAt', 
+        label: '创建时间',
+        transform: (date) => new Date(date).toLocaleString('zh-CN')
+      }
+    ];
+
+    const success = exportToExcel(sentences, '句子数据', headers);
+    if (success) {
+      showToast('Excel 导出成功！', 'success');
+    } else {
+      showToast('Excel 导出失败', 'error');
+    }
+  };
+
+  // 导出选中项为 Excel
+  const handleExportSelectedExcel = () => {
+    const headers = [
+      { key: 'sentence', label: '英文句子' },
+      { key: 'translation', label: '中文翻译' },
+      { key: 'note', label: '备注' }
+    ];
+    const ok = exportSelectedToExcel(sentences, selectedIds, '句子数据', headers);
+    if (ok) {
+      showToast(`成功导出 ${selectedIds.length} 项到 Excel！`, 'success');
+    } else {
+      showToast('导出失败，请检查选中项', 'error');
+    }
+  };
+
+  // Excel 导入功能
+  const handleImportExcel = async (file) => {
+    const fieldMapping = [
+      { excelKey: '英文句子', dataKey: 'sentence', required: true },
+      { excelKey: '中文翻译', dataKey: 'translation', required: true },
+      { excelKey: '备注', dataKey: 'note', required: false }
+    ];
+
+    try {
+      const importedData = await importFromExcel(file, fieldMapping);
+      
+      // 批量创建句子
+      let successCount = 0;
+      let failCount = 0;
+      const errors = [];
+
+      for (const sentenceData of importedData) {
+        try {
+          await sentencesAPI.create(sentenceData);
+          successCount++;
+        } catch (error) {
+          failCount++;
+          errors.push(`"${sentenceData.sentence.substring(0, 30)}..." 导入失败：${error.response?.data?.message || error.message}`);
+        }
+      }
+
+      // 刷新列表
+      await fetchSentences();
+      setShowImportModal(false);
+
+      // 显示结果
+      if (failCount === 0) {
+        showToast(`成功导入 ${successCount} 个句子！`, 'success');
+      } else {
+        showToast(
+          `导入完成：成功 ${successCount} 个，失败 ${failCount} 个\n${errors.slice(0, 3).join('\n')}${errors.length > 3 ? '\n...' : ''}`,
+          'warning'
+        );
+      }
+    } catch (error) {
+      throw new Error(error.message || 'Excel 文件解析失败');
+    }
+  };
+
+  // 下载 Excel 模板
+  const handleDownloadTemplate = () => {
+    const headers = [
+      { key: 'sentence', label: '英文句子', example: 'I love learning English.' },
+      { key: 'translation', label: '中文翻译', example: '我喜欢学习英语。' },
+      { key: 'note', label: '备注', example: '简单句型' }
+    ];
+
+    const sampleData = [
+      { '英文句子': 'I love learning English.', '中文翻译': '我喜欢学习英语。', '备注': '简单句型' },
+      { '英文句子': 'Practice makes perfect.', '中文翻译': '熟能生巧。', '备注': '谚语' },
+      { '英文句子': 'Rome was not built in a day.', '中文翻译': '罗马不是一天建成的。', '备注': '谚语' }
+    ];
+
+    const success = downloadExcelTemplate('句子导入', headers, sampleData);
+    if (success) {
+      showToast('模板下载成功！', 'success');
+    } else {
+      showToast('模板下载失败', 'error');
+    }
+  };
+
+  // JSON 导入
+  const handleImportJSON = async (jsonArray) => {
+    try {
+      let successCount = 0;
+      let failCount = 0;
+      const errors = [];
+
+      for (const item of jsonArray) {
+        try {
+          await sentencesAPI.create({
+            sentence: item.sentence,
+            translation: item.translation,
+            note: item.note || ''
+          });
+          successCount++;
+        } catch (e) {
+          failCount++;
+          errors.push('导入失败');
+        }
+      }
+
+      await fetchSentences();
+      setShowImportJSONModal(false);
+      if (failCount === 0) {
+        showToast(`成功导入 ${successCount} 个句子！`, 'success');
+      } else {
+        showToast(`导入完成：成功 ${successCount}，失败 ${failCount}`,'warning');
+      }
+    } catch (e) {
+      showToast('JSON 导入失败','error');
+    }
+  };
+
+  // 筛选逻辑
+  const applyFilters = (filters) => {
+    setActiveFilters(filters);
+    const filtered = sentences.filter(item => {
+      return Object.entries(filters).every(([key, val]) => {
+        if (!val) return true;
+        const v = String(val).toLowerCase();
+        if (key === 'sentence') return (item.sentence||'').toLowerCase().includes(v);
+        if (key === 'translation') return (item.translation||'').toLowerCase().includes(v);
+        if (key === 'note') return (item.note||'').toLowerCase().includes(v);
+        return true;
+      });
+    });
+    setFilteredSentences(filtered);
+  };
+
+  const handleResetFilter = () => {
+    setActiveFilters({});
+    setFilteredSentences([]);
   };
 
   const handleEdit = (sentence) => {
@@ -190,13 +366,29 @@ function Sentences() {
           <button className="btn btn-primary" onClick={() => setShowModal(true)}>
             + 添加新句子
           </button>
-          
-          <ExportButton
-            onExport={handleExportAll}
-            disabled={loading || sentences.length === 0}
-            label="导出句子"
+
+          <ImportExportDropdown
+            type="import"
+            handlers={{
+              onExcelImport: () => setShowImportModal(true),
+              onJSONImport: () => setShowImportJSONModal(true),
+              onDownloadTemplate: handleDownloadTemplate
+            }}
+            disabled={loading}
           />
-          
+
+          <ImportExportDropdown
+            type="export"
+            handlers={{
+              onExportAllExcel: handleExportExcel,
+              onExportAllJSON: handleExportAll,
+              onExportSelectedExcel: handleExportSelectedExcel,
+              onExportSelectedJSON: handleExportSelected
+            }}
+            disabled={loading || displayData.length === 0}
+            selectedCount={selectedIds.length}
+          />
+
           {selectedIds.length > 0 && (
             <div className="bulk-actions">
               <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
@@ -206,6 +398,16 @@ function Sentences() {
             </div>
           )}
         </div>
+
+        <FilterBar
+          filterFields={[
+            { key: 'sentence', label: '句子', type: 'text', placeholder: '输入英文句子...' },
+            { key: 'translation', label: '翻译', type: 'text', placeholder: '输入中文翻译...' },
+            { key: 'note', label: '备注', type: 'text', placeholder: '输入备注...' }
+          ]}
+          onFilter={applyFilters}
+          onReset={handleResetFilter}
+        />
 
       {loading ? (
         <div className="loading">加载中...</div>
@@ -395,6 +597,25 @@ function Sentences() {
 
       {/* Toast通知 */}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
+
+      {/* Excel 导入弹窗 */}
+      <ImportExcelModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImport={handleImportExcel}
+        onDownloadTemplate={handleDownloadTemplate}
+        title="批量导入句子"
+        moduleName="句子"
+      />
+
+      {/* JSON 导入弹窗 */}
+      <ImportJSONModal
+        show={showImportJSONModal}
+        onClose={() => setShowImportJSONModal(false)}
+        onImport={handleImportJSON}
+        title="JSON 导入句子"
+        moduleName="句子"
+      />
     </div>
   );
 }

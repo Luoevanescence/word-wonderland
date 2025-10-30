@@ -17,20 +17,32 @@ from pathlib import Path
 DOCX_FILE = '大学英语六级词汇表(全)含音标.docx'
 OUT_FILE  = 'cet6.json'
 
-# 词性拆分正则
-RE_DEF = re.compile(r'\s*(?P<pos>[a-z]{1,3}\.)\s*(?P<meaning>[^|]+)', re.I)
+# 优化词性拆分正则：支持匹配多个词性（如 vi. ... vt. ...）
+RE_DEF = re.compile(r'([a-z]+\.)\s*([^a-z]+)', re.I)
 
 # ------------------------------------------------------------------
 def parse_meanings(raw: str):
     raw = raw.strip()
     if not raw:
         return []
-    matches = list(RE_DEF.finditer(raw))
-    if not matches:                      # 兜底：整段当动词
-        return [{'partOfSpeech': 'v.', 'meaning': raw}]
-    return [{'partOfSpeech': m.group('pos').strip(),
-             'meaning': m.group('meaning').strip()}
-            for m in matches]
+    
+    # 用正则拆分所有词性和释义
+    parts = RE_DEF.findall(raw)
+    if not parts:
+        return [{'partOfSpeech': 'unknown', 'meaning': raw}]
+    
+    # 处理每个匹配项，清理多余空格和标点
+    definitions = []
+    for pos, meaning in parts:
+        # 清理释义中的多余空格和分隔符
+        clean_meaning = re.sub(r'\s+', ' ', meaning).strip(';；,， ')
+        if clean_meaning:  # 只保留有实际内容的释义
+            definitions.append({
+                'partOfSpeech': pos.strip(),
+                'meaning': clean_meaning
+            })
+    
+    return definitions
 
 # ------------------------------------------------------------------
 def main():

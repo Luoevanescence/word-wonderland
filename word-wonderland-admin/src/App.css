@@ -599,6 +599,10 @@ input[type="checkbox"]:checked::after {
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-button);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn-secondary:hover {
@@ -630,6 +634,54 @@ input[type="checkbox"]:checked::after {
 }
 
 .btn-danger:active {
+  transform: translateY(0px);
+}
+
+.btn-success {
+  background: var(--glass-bg);
+  color: #10B981;
+  /* 绿色文字 - Tailwind Green-500 */
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-button);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-success:hover {
+  background: var(--glass-bg-hover);
+  color: #059669;
+  /* 深绿色 - Tailwind Green-600 */
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-success:active {
+  transform: translateY(0px);
+}
+
+.btn-info {
+  background: var(--glass-bg);
+  color: #3B82F6;
+  /* 蓝色文字 - Tailwind Blue-500 */
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-button);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-info:hover {
+  background: var(--glass-bg-hover);
+  color: #2563EB;
+  /* 深蓝色 - Tailwind Blue-600 */
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-info:active {
   transform: translateY(0px);
 }
 

@@ -1,0 +1,348 @@
+.import-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  animation: fadeIn 0.2s ease;
+}
+
+.import-modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease;
+}
+
+.import-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.import-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--brand-primary);
+}
+
+.import-modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.import-modal-close:hover:not(:disabled) {
+  background: #f0f0f0;
+  color: var(--brand-primary);
+}
+
+.import-modal-close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.import-modal-body {
+  padding: 28px;
+  max-height: calc(90vh - 200px);
+  overflow-y: auto;
+}
+
+.import-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.import-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.import-modal-body::-webkit-scrollbar-thumb {
+  background: var(--line-divider);
+  border-radius: 3px;
+}
+
+.import-modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+.import-instructions {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border: 1px solid var(--line-divider);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.import-instructions h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.import-instructions ol {
+  margin: 0 0 16px 0;
+  padding-left: 24px;
+  counter-reset: step-counter;
+  list-style: none;
+}
+
+.import-instructions li {
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  position: relative;
+  padding-left: 12px;
+  counter-increment: step-counter;
+}
+
+.import-instructions li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: -24px;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.import-tip {
+  background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+  border: 1px solid #ffe8a3;
+  border-left: 4px solid #ffc107;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: #856404;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.import-actions {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.import-actions .btn {
+  min-width: 140px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.import-file-selector {
+  margin-bottom: 20px;
+  background: var(--glass-bg);
+  border: 2px dashed var(--line-divider);
+  border-radius: 12px;
+  padding: 32px 24px;
+  transition: all 0.3s ease;
+}
+
+.import-file-selector:hover {
+  border-color: var(--brand-primary);
+  background: var(--glass-bg-hover);
+}
+
+.file-input-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.file-input-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+  color: #000000;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(128, 90, 213, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.file-input-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.file-input-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(128, 90, 213, 0.35);
+}
+
+.file-input-button:hover::before {
+  left: 100%;
+}
+
+.file-input-button:active {
+  transform: translateY(0);
+}
+
+.file-input-label:has(input:disabled) .file-input-button {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.file-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+  border: 1px solid #a5d6a7;
+  border-radius: 8px;
+  color: #2e7d32;
+  font-size: 0.9rem;
+  font-weight: 500;
+  max-width: 100%;
+  word-break: break-all;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.1);
+}
+
+.file-name::before {
+  content: '📄';
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.import-error-message {
+  background: linear-gradient(135deg, #ffebee 0%, #fff5f5 100%);
+  border: 1px solid #ffcdd2;
+  border-left: 4px solid #f44336;
+  padding: 14px 16px;
+  border-radius: 8px;
+  color: #c62828;
+  font-size: 0.9rem;
+  margin-top: 16px;
+  white-space: pre-line;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.1);
+  animation: errorSlideIn 0.3s ease;
+}
+
+@keyframes errorSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.import-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .import-modal-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .import-modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .import-instructions h3 {
+    font-size: 1rem;
+  }
+
+  .import-instructions li {
+    font-size: 0.9rem;
+  }
+
+  .file-input-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+

@@ -1,1 +1,51 @@
-[]
+[
+  {
+    "id": "814a530d-0cfc-42ba-80ab-69aa84db760b",
+    "name": "日常购物",
+    "description": "核心场景：超市选品、服装店砍价、电商平台咨询（如退换货、尺寸确认）。\n关键表达：询问价格（“How much is this?”）、表达需求（“Do you have this in size M?”）。",
+    "createdAt": "2025-10-30T16:55:02.754Z",
+    "updatedAt": "2025-10-30T16:55:02.754Z"
+  },
+  {
+    "id": "a72a8806-2a22-48dc-96de-e0e3969d283f",
+    "name": "餐饮点餐",
+    "description": "核心场景：餐厅点餐、咖啡馆点单、外卖备注（如忌口、送餐地址确认）。\n关键表达：推荐菜品（“What’s your signature dish?”）、特殊要求（“I’d like it without garlic.”）。",
+    "createdAt": "2025-10-30T16:55:15.199Z",
+    "updatedAt": "2025-10-30T16:55:15.205Z"
+  },
+  {
+    "id": "2fbd52e9-19c5-49bb-b040-7238e221f7b1",
+    "name": "交通出行",
+    "description": "核心场景：打车沟通目的地、公交 / 地铁问路、机场值机 / 行李托运。\n关键表达：问路（“How do I get to the subway station?”）、值机确认（“Is this bag within the weight limit?”）。",
+    "createdAt": "2025-10-30T16:55:32.985Z",
+    "updatedAt": "2025-10-30T16:55:32.987Z"
+  },
+  {
+    "id": "02e23c9a-9c65-4b42-ae9f-943816ce0790",
+    "name": "日常社交",
+    "description": "核心场景：和外国朋友闲聊、邻里打招呼、线上社群互动（如朋友圈评论、聊天群对话）。\n关键表达：问候（“How’s your weekend going?”）、分享日常（“I just tried a new coffee shop nearby.”）。",
+    "createdAt": "2025-10-30T16:55:49.611Z",
+    "updatedAt": "2025-10-30T16:55:49.615Z"
+  },
+  {
+    "id": "548ddf80-ddff-4372-b530-000d7497491d",
+    "name": "学术场景",
+    "description": "核心场景：课堂发言（回答老师问题、小组讨论）、论文写作（引用文献、致谢信）、学术会议提问。\n关键表达：观点陈述（“From my research, I think…”）、请求澄清（“Could you explain that theory again?”）。",
+    "createdAt": "2025-10-30T16:56:02.003Z",
+    "updatedAt": "2025-10-30T16:56:02.007Z"
+  },
+  {
+    "id": "aa9b0f82-f639-4da8-8559-7c6f0ae4f6d1",
+    "name": "职场沟通",
+    "description": "核心场景：英文会议（开场白、汇报工作进度）、邮件往来（写邀约邮件、回复客户需求）、跨部门协作（同步项目信息）。\n关键表达：会议开场（“Let’s start with the first agenda item.”）、邮件结尾（“Looking forward to your reply.”）。\n",
+    "createdAt": "2025-10-30T16:56:14.105Z",
+    "updatedAt": "2025-10-30T16:56:14.111Z"
+  },
+  {
+    "id": "e958cb7c-7b7c-4a44-9ae9-6017e3004655",
+    "name": "求职面试",
+    "description": "核心场景：英文自我介绍、回答面试问题（如 “Describe your teamwork experience”）、询问薪资福利。\n关键表达：能力展示（“I’m proficient in using Excel and English for data analysis.”）、提问环节（“What’s the team’s work rhythm like?”）。",
+    "createdAt": "2025-10-30T16:56:25.443Z",
+    "updatedAt": "2025-10-30T16:56:25.448Z"
+  }
+]

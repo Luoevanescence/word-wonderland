@@ -1,1 +1,74 @@
-[]
+[
+  {
+    "id": "c080cc65-0f0c-442d-9289-cf62e5225632",
+    "name": "主语",
+    "description": "是一个句子所叙述的主体，说明动作是“谁，什么”发出的，一般位于句首。",
+    "example": "",
+    "createdAt": "2025-10-30T07:12:44.554Z",
+    "updatedAt": "2025-10-30T07:17:55.720Z"
+  },
+  {
+    "id": "47ba6b7b-9665-4d88-9576-327b980fa095",
+    "name": "谓语",
+    "description": "是对主语加以陈述，说明（表述）主语的动作、状态和特征，一般由V.充当,放在主语之后",
+    "example": "",
+    "createdAt": "2025-10-30T07:19:34.530Z",
+    "updatedAt": "2025-10-30T07:19:34.530Z"
+  },
+  {
+    "id": "8dcba940-e904-45dc-b393-39220a819a71",
+    "name": "宾语",
+    "description": "动作的承受者，通常跟在及物动词后，由名词、代词等充当。\n",
+    "example": "She reads books (宾语).",
+    "createdAt": "2025-10-30T07:35:17.797Z",
+    "updatedAt": "2025-10-30T07:38:48.640Z"
+  },
+  {
+    "id": "ec31dc73-f99a-4023-aea5-88bb9ad89b43",
+    "name": "表语",
+    "description": "跟在系动词（如 be, become）后，说明主语的性质、身份等。\n",
+    "example": "He is a teacher (表语).",
+    "createdAt": "2025-10-30T07:37:44.904Z",
+    "updatedAt": "2025-10-30T07:39:01.455Z"
+  },
+  {
+    "id": "5b321eb6-8630-41d9-accf-fd2109d5c8ea",
+    "name": "定语",
+    "description": "修饰名词或代词，限定其范围或特征，由形容词、代词等充当。\n",
+    "example": "This is a beautiful (定语) flower.",
+    "createdAt": "2025-10-30T07:38:15.708Z",
+    "updatedAt": "2025-10-30T07:39:06.155Z"
+  },
+  {
+    "id": "3799bbf0-a051-46d5-8489-2a2fef093230",
+    "name": "状语",
+    "description": "修饰动词、形容词或句子，表时间、地点、方式等，由副词、介词短语等充当。",
+    "example": "She runs quickly (状语). / He studies in the library (状语).",
+    "createdAt": "2025-10-30T16:45:25.234Z",
+    "updatedAt": "2025-10-30T16:45:25.235Z"
+  },
+  {
+    "id": "32a39d5b-f9b1-4876-a993-68a34a2e5908",
+    "name": "补语",
+    "description": "补充说明宾语或主语的状态，分为宾语补足语和主语补足语。",
+    "example": "We call him Tom (宾语补足语).",
+    "createdAt": "2025-10-30T16:45:48.601Z",
+    "updatedAt": "2025-10-30T16:45:48.605Z"
+  },
+  {
+    "id": "3670b072-0484-44f5-9fbb-3ee67f673507",
+    "name": "同位语",
+    "description": "对前面的名词或代词进行解释、补充，内容与前者等价。",
+    "example": "My friend, Tom (同位语), is a student.",
+    "createdAt": "2025-10-30T16:46:10.272Z",
+    "updatedAt": "2025-10-30T16:46:10.276Z"
+  },
+  {
+    "id": "d27b3532-14b4-4b24-b706-4ffecfb0d7df",
+    "name": "宾语补足语",
+    "description": "补充说明 “宾语” 的身份、状态或动作结果，若去掉则句子意思不完整，仅用于 S+V+O+C 句型。",
+    "example": "",
+    "createdAt": "2025-10-30T16:58:14.053Z",
+    "updatedAt": "2025-10-30T16:58:14.053Z"
+  }
+]

@@ -78,5 +78,21 @@
     "description": "无需接宾语就能表达完整意思，若接宾语需搭配介词。\n例：He runs fast.（run 是 vi，无宾语）；He runs to the park.（接宾语 the park 时，需加介词 to）",
     "createdAt": "2025-10-26T08:11:44.176Z",
     "updatedAt": "2025-10-26T08:11:44.176Z"
+  },
+  {
+    "id": "d9dfdc75-d0d5-4105-a11e-834ab06aad28",
+    "code": "num.",
+    "name": "数词",
+    "description": "表示人或事物数目多少（基数词）或顺序先后（序数词）在句中做宾语 定语等。\ne.g. I want two apples，please.做宾语 Forty thousand people watched the game.做定语",
+    "createdAt": "2025-10-30T07:10:15.334Z",
+    "updatedAt": "2025-10-30T07:10:15.334Z"
+  },
+  {
+    "id": "7d512131-7a68-4a3e-8173-88b870433b13",
+    "code": "art.",
+    "name": "冠词",
+    "description": "用在名词前，帮助说明名词所指范围的词，主要有a an the 在句子中主要修饰名词 。\ne.g. The dog is very cute.",
+    "createdAt": "2025-10-30T07:10:49.506Z",
+    "updatedAt": "2025-10-30T07:10:49.509Z"
   }
 ]

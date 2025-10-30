@@ -3,7 +3,10 @@ import { patternsAPI, componentsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import { Link } from 'react-router-dom';
 import ExportButton from '../components/ExportButton';
-import { downloadJSONWithMeta } from '../utils/exportUtils';
+import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
+import ImportExportDropdown from '../components/ImportExportDropdown';
+import ImportJSONModal from '../components/ImportJSONModal';
+import FilterBar from '../components/FilterBar';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
 import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
@@ -11,6 +14,8 @@ import PatternBuilder from '../components/PatternBuilder';
 import { useConfirmDialog, useToast } from '../hooks/useDialog';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
+import ImportExcelModal from '../components/ImportExcelModal';
+import { exportToExcel, importFromExcel, downloadExcelTemplate, exportSelectedToExcel } from '../utils/excelUtils';
 
 function Patterns() {
   const [patterns, setPatterns] = useState([]);
@@ -28,13 +33,19 @@ function Patterns() {
   const [submitting, setSubmitting] = useState(false);
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' });
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
+  const [showImportModal, setShowImportModal] = useState(false); // Excel 导入弹窗
+  const [showImportJSONModal, setShowImportJSONModal] = useState(false);
+  const [filteredPatterns, setFilteredPatterns] = useState([]);
+  const [activeFilters, setActiveFilters] = useState({});
   
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
   const { toasts, showToast, removeToast } = useToast();
 
-  // 使用分页 hook
-  const { currentData, renderPagination } = usePagination(patterns, 5);
+  // 计算显示数据（筛选后优先）
+  const displayData = filteredPatterns.length > 0 ? filteredPatterns : patterns;
+  // 使用分页 hook（基于显示数据）
+  const { currentData, renderPagination } = usePagination(displayData, 5);
 
   useEffect(() => {
     fetchPatterns();
@@ -118,7 +129,7 @@ function Patterns() {
     });
   };
 
-  // 导出功能
+  // JSON 导出功能
   const handleExportAll = () => {
     const success = downloadJSONWithMeta(patterns, 'patterns');
     if (success) {
@@ -126,6 +137,183 @@ function Patterns() {
     } else {
       showToast('导出失败，请重试', 'error');
     }
+  };
+
+  const handleExportSelected = () => {
+    const success = downloadSelectedJSON(patterns, selectedIds, 'patterns');
+    if (success) {
+      showToast(`成功导出 ${selectedIds.length} 个句型！`, 'success');
+    } else {
+      showToast('导出失败，请重试', 'error');
+    }
+  };
+
+  // Excel 导出功能
+  const handleExportExcel = () => {
+    const headers = [
+      { key: 'pattern', label: '句型' },
+      { 
+        key: 'components', 
+        label: '组件',
+        transform: (comps) => comps.map(c => c.name).join(', ')
+      },
+      { key: 'description', label: '描述' },
+      { key: 'example', label: '例句' },
+      { key: 'translation', label: '翻译' },
+      { 
+        key: 'createdAt', 
+        label: '创建时间',
+        transform: (date) => new Date(date).toLocaleString('zh-CN')
+      }
+    ];
+
+    const success = exportToExcel(patterns, '句型数据', headers);
+    if (success) {
+      showToast('Excel 导出成功！', 'success');
+    } else {
+      showToast('Excel 导出失败', 'error');
+    }
+  };
+
+  // 导出选中项为 Excel
+  const handleExportSelectedExcel = () => {
+    const headers = [
+      { key: 'pattern', label: '句型' },
+      { key: 'description', label: '描述' },
+      { key: 'example', label: '例句' },
+      { key: 'translation', label: '翻译' }
+    ];
+    const ok = exportSelectedToExcel(patterns, selectedIds, '句型数据', headers);
+    if (ok) {
+      showToast(`成功导出 ${selectedIds.length} 项到 Excel！`, 'success');
+    } else {
+      showToast('导出失败，请检查选中项', 'error');
+    }
+  };
+
+  // Excel 导入功能 (句型较复杂，导入时只导入基础信息，不包含组件)
+  const handleImportExcel = async (file) => {
+    const fieldMapping = [
+      { excelKey: '句型', dataKey: 'pattern', required: true },
+      { excelKey: '描述', dataKey: 'description', required: true },
+      { excelKey: '例句', dataKey: 'example', required: false },
+      { excelKey: '翻译', dataKey: 'translation', required: false }
+    ];
+
+    try {
+      const importedData = await importFromExcel(file, fieldMapping);
+      
+      // 批量创建句型（不包含组件，需要后续手动添加）
+      let successCount = 0;
+      let failCount = 0;
+      const errors = [];
+
+      for (const patternData of importedData) {
+        try {
+          await patternsAPI.create({ ...patternData, components: [] });
+          successCount++;
+        } catch (error) {
+          failCount++;
+          errors.push(`"${patternData.pattern}" 导入失败：${error.response?.data?.message || error.message}`);
+        }
+      }
+
+      // 刷新列表
+      await fetchPatterns();
+      setShowImportModal(false);
+
+      // 显示结果
+      if (failCount === 0) {
+        showToast(`成功导入 ${successCount} 个句型！\n💡 提示：请手动为句型添加组件。`, 'success');
+      } else {
+        showToast(
+          `导入完成：成功 ${successCount} 个，失败 ${failCount} 个\n${errors.slice(0, 3).join('\n')}${errors.length > 3 ? '\n...' : ''}`,
+          'warning'
+        );
+      }
+    } catch (error) {
+      throw new Error(error.message || 'Excel 文件解析失败');
+    }
+  };
+
+  // 下载 Excel 模板
+  const handleDownloadTemplate = () => {
+    const headers = [
+      { key: 'pattern', label: '句型', example: 'Subject + Verb + Object' },
+      { key: 'description', label: '描述', example: '主谓宾结构' },
+      { key: 'example', label: '例句', example: 'I love English.' },
+      { key: 'translation', label: '翻译', example: '我喜欢英语。' }
+    ];
+
+    const sampleData = [
+      { '句型': 'Subject + Verb + Object', '描述': '主谓宾结构', '例句': 'I love English.', '翻译': '我喜欢英语。' },
+      { '句型': 'There + be + Subject', '描述': 'There be 句型', '例句': 'There is a book on the desk.', '翻译': '桌子上有一本书。' },
+      { '句型': 'Subject + be + Adjective', '描述': '主系表结构', '例句': 'She is beautiful.', '翻译': '她很漂亮。' }
+    ];
+
+    const success = downloadExcelTemplate('句型导入', headers, sampleData);
+    if (success) {
+      showToast('模板下载成功！\n💡 注意：导入后需要手动为句型添加组件。', 'success');
+    } else {
+      showToast('模板下载失败', 'error');
+    }
+  };
+
+  // JSON 导入（只导入基础信息，不含 components）
+  const handleImportJSON = async (jsonArray) => {
+    try {
+      let successCount = 0;
+      let failCount = 0;
+      const errors = [];
+
+      for (const item of jsonArray) {
+        try {
+          await patternsAPI.create({
+            pattern: item.pattern,
+            description: item.description,
+            example: item.example || '',
+            translation: item.translation || '',
+            components: []
+          });
+          successCount++;
+        } catch (e) {
+          failCount++;
+          errors.push(item.pattern || '未命名');
+        }
+      }
+
+      await fetchPatterns();
+      setShowImportJSONModal(false);
+      if (failCount === 0) {
+        showToast(`成功导入 ${successCount} 个句型！`, 'success');
+      } else {
+        showToast(`导入完成：成功 ${successCount}，失败 ${failCount}`,'warning');
+      }
+    } catch (e) {
+      showToast('JSON 导入失败','error');
+    }
+  };
+
+  // 筛选逻辑
+  const applyFilters = (filters) => {
+    setActiveFilters(filters);
+    const filtered = patterns.filter(item => {
+      return Object.entries(filters).every(([key, val]) => {
+        if (!val) return true;
+        const v = String(val).toLowerCase();
+        if (key === 'pattern') return (item.pattern||'').toLowerCase().includes(v);
+        if (key === 'description') return (item.description||'').toLowerCase().includes(v);
+        if (key === 'example') return (item.example||'').toLowerCase().includes(v);
+        if (key === 'translation') return (item.translation||'').toLowerCase().includes(v);
+        return true;
+      });
+    });
+    setFilteredPatterns(filtered);
+  };
+
+  const handleResetFilter = () => {
+    setActiveFilters({});
+    setFilteredPatterns([]);
   };
 
   const handleEdit = (pattern) => {
@@ -224,13 +412,29 @@ function Patterns() {
           <button className="btn btn-primary" onClick={openAddModal}>
             + 添加新句型
           </button>
-          
-          <ExportButton
-            onExport={handleExportAll}
-            disabled={loading || patterns.length === 0}
-            label="导出句型"
+
+          <ImportExportDropdown
+            type="import"
+            handlers={{
+              onExcelImport: () => setShowImportModal(true),
+              onJSONImport: () => setShowImportJSONModal(true),
+              onDownloadTemplate: handleDownloadTemplate
+            }}
+            disabled={loading}
           />
-          
+
+          <ImportExportDropdown
+            type="export"
+            handlers={{
+              onExportAllExcel: handleExportExcel,
+              onExportAllJSON: handleExportAll,
+              onExportSelectedExcel: handleExportSelectedExcel,
+              onExportSelectedJSON: handleExportSelected
+            }}
+            disabled={loading || displayData.length === 0}
+            selectedCount={selectedIds.length}
+          />
+
           {selectedIds.length > 0 && (
             <div className="bulk-actions">
               <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
@@ -240,6 +444,17 @@ function Patterns() {
             </div>
           )}
         </div>
+
+        <FilterBar
+          filterFields={[
+            { key: 'pattern', label: '句型', type: 'text', placeholder: '输入句型...' },
+            { key: 'description', label: '描述', type: 'text', placeholder: '输入描述...' },
+            { key: 'example', label: '例句', type: 'text', placeholder: '输入例句...' },
+            { key: 'translation', label: '翻译', type: 'text', placeholder: '输入翻译...' }
+          ]}
+          onFilter={applyFilters}
+          onReset={handleResetFilter}
+        />
 
         {components.length === 0 && (
           <div style={{
@@ -487,6 +702,25 @@ function Patterns() {
 
       {/* Toast通知 */}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
+
+      {/* Excel 导入弹窗 */}
+      <ImportExcelModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImport={handleImportExcel}
+        onDownloadTemplate={handleDownloadTemplate}
+        title="批量导入句型"
+        moduleName="句型"
+      />
+
+      {/* JSON 导入弹窗 */}
+      <ImportJSONModal
+        show={showImportJSONModal}
+        onClose={() => setShowImportJSONModal(false)}
+        onImport={handleImportJSON}
+        title="JSON 导入句型"
+        moduleName="句型"
+      />
     </div>
   );
 }

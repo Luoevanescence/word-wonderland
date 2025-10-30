@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "d3b03978-b266-401f-a867-769a6d53a9cd",
+    "pattern": "主谓结构",
+    "description": "主语 + 不及物动词（无需宾语）",
+    "example": "The sun rises.",
+    "translation": "太阳升起。",
+    "createdAt": "2025-10-30T16:48:16.744Z",
+    "updatedAt": "2025-10-30T16:48:16.744Z"
+  },
+  {
+    "id": "7e9781dd-3fb9-4c59-87aa-b1330dc556bc",
+    "pattern": "主谓宾结构",
+    "description": "主语 + 及物动词 + 宾语",
+    "example": "She eats an apple.",
+    "translation": "她吃一个苹果。",
+    "createdAt": "2025-10-30T16:52:58.852Z",
+    "updatedAt": "2025-10-30T16:52:58.852Z"
+  }
+]

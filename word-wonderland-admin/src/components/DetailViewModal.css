@@ -71,7 +71,7 @@
   font-size: 20px;
   color: rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  line-height: 1;
+  /* line-height: 1; */
   padding: 0;
   width: 28px;
   height: 28px;
@@ -85,7 +85,7 @@
 .detail-modal-close:hover {
   background: rgba(0, 0, 0, 0.04);
   color: rgba(0, 0, 0, 0.6);
-  transform: rotate(90deg);
+  /* transform: rotate(90deg); */
   border-color: rgba(0, 0, 0, 0.15);
 }
 

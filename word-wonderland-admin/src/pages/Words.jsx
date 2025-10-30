@@ -6,11 +6,15 @@ import CustomSelect from '../components/CustomSelect';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
 import { useConfirmDialog, useToast } from '../hooks/useDialog';
-import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
 import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
+import ImportExcelModal from '../components/ImportExcelModal';
+import ImportJSONModal from '../components/ImportJSONModal';
+import ImportExportDropdown from '../components/ImportExportDropdown';
+import FilterBar from '../components/FilterBar';
+import { exportToExcel, importFromExcel, downloadExcelTemplate, exportSelectedToExcel } from '../utils/excelUtils';
 
 function Words() {
   const [words, setWords] = useState([]);
@@ -25,18 +29,30 @@ function Words() {
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除：选中的ID列表
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
+  const [showImportExcelModal, setShowImportExcelModal] = useState(false); // Excel 导入弹窗
+  const [showImportJSONModal, setShowImportJSONModal] = useState(false); // JSON 导入弹窗
+  const [filteredWords, setFilteredWords] = useState([]); // 筛选后的数据
+  const [activeFilters, setActiveFilters] = useState({}); // 当前激活的筛选条件
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
   const { toasts, showToast, removeToast } = useToast();
 
-  // 使用分页 hook
-  const { currentData, renderPagination } = usePagination(words, 5);
+  // 使用分页 hook - 使用筛选后的数据或全部数据
+  const displayData = Object.keys(activeFilters).length > 0 ? filteredWords : words;
+  const { currentData, renderPagination } = usePagination(displayData, 5);
 
   useEffect(() => {
     fetchWords();
     fetchPartsOfSpeech();
   }, []);
+
+  // 当单词数据变化时，重新应用筛选
+  useEffect(() => {
+    if (Object.keys(activeFilters).length > 0) {
+      applyFilters(activeFilters);
+    }
+  }, [words]);
 
   // 初始化表格列宽拖拽（只在首次有数据时初始化）
   useEffect(() => {
@@ -122,7 +138,7 @@ function Words() {
     });
   };
 
-  // 导出功能
+  // JSON 导出功能
   const handleExportAll = () => {
     const success = downloadJSONWithMeta(words, 'words');
     if (success) {
@@ -139,6 +155,226 @@ function Words() {
     } else {
       showToast('导出失败，请重试', 'error');
     }
+  };
+
+  // Excel 导出功能
+  const handleExportExcel = () => {
+    const headers = [
+      { key: 'word', label: '单词' },
+      { 
+        key: 'definitions', 
+        label: '词性和释义',
+        transform: (defs) => defs.map(d => `${d.partOfSpeech}: ${d.meaning}`).join('; ')
+      },
+      { 
+        key: 'createdAt', 
+        label: '创建时间',
+        transform: (date) => new Date(date).toLocaleString('zh-CN')
+      }
+    ];
+
+    const success = exportToExcel(words, '单词数据', headers);
+    if (success) {
+      showToast('Excel 导出成功！', 'success');
+    } else {
+      showToast('Excel 导出失败', 'error');
+    }
+  };
+
+  // Excel 导入功能
+  const handleImportExcel = async (file) => {
+    const fieldMapping = [
+      { excelKey: '单词', dataKey: 'word', required: true },
+      {
+        excelKey: '词性',
+        dataKey: 'partOfSpeech',
+        required: true,
+        transform: (value) => {
+          if (!value || value.trim() === '') {
+            throw new Error('词性不能为空');
+          }
+          // 验证词性是否存在
+          const posExists = partsOfSpeech.some(pos => pos.code === value.trim());
+          if (!posExists) {
+            throw new Error(`词性 "${value}" 不存在，请先在词性管理中添加`);
+          }
+          return value.trim();
+        }
+      },
+      { excelKey: '释义', dataKey: 'meaning', required: true }
+    ];
+
+    try {
+      const importedData = await importFromExcel(file, fieldMapping);
+      
+      // 转换为 API 需要的格式
+      const wordsToCreate = importedData.map(item => ({
+        word: item.word,
+        definitions: [{
+          partOfSpeech: item.partOfSpeech,
+          meaning: item.meaning
+        }]
+      }));
+
+      // 批量创建单词
+      let successCount = 0;
+      let failCount = 0;
+      const errors = [];
+
+      for (const wordData of wordsToCreate) {
+        try {
+          await wordsAPI.create(wordData);
+          successCount++;
+        } catch (error) {
+          failCount++;
+          errors.push(`"${wordData.word}" 导入失败：${error.response?.data?.message || error.message}`);
+        }
+      }
+
+      // 刷新列表
+      await fetchWords();
+      setShowImportModal(false);
+
+      // 显示结果
+      if (failCount === 0) {
+        showToast(`成功导入 ${successCount} 个单词！`, 'success');
+      } else {
+        showToast(
+          `导入完成：成功 ${successCount} 个，失败 ${failCount} 个\n${errors.slice(0, 3).join('\n')}${errors.length > 3 ? '\n...' : ''}`,
+          'warning'
+        );
+      }
+    } catch (error) {
+      throw new Error(error.message || 'Excel 文件解析失败');
+    }
+  };
+
+  // 下载 Excel 模板
+  const handleDownloadTemplate = () => {
+    const headers = [
+      { key: 'word', label: '单词', example: 'abandon' },
+      { key: 'partOfSpeech', label: '词性', example: 'v.' },
+      { key: 'meaning', label: '释义', example: '放弃；抛弃' }
+    ];
+
+    const sampleData = [
+      { '单词': 'abandon', '词性': 'v.', '释义': '放弃；抛弃' },
+      { '单词': 'ability', '词性': 'n.', '释义': '能力；才能' },
+      { '单词': 'abroad', '词性': 'adv.', '释义': '在国外；到海外' }
+    ];
+
+    const success = downloadExcelTemplate('单词导入', headers, sampleData);
+    if (success) {
+      showToast('模板下载成功！', 'success');
+    } else {
+      showToast('模板下载失败', 'error');
+    }
+  };
+
+  // JSON 导入功能
+  const handleImportJSON = async (jsonData) => {
+    try {
+      if (!Array.isArray(jsonData)) {
+        throw new Error('JSON 数据应该是一个数组');
+      }
+
+      let successCount = 0;
+      let failCount = 0;
+      const errors = [];
+
+      for (const wordData of jsonData) {
+        // 验证必需字段
+        if (!wordData.word || !wordData.definitions || !Array.isArray(wordData.definitions)) {
+          failCount++;
+          errors.push(`无效数据项（缺少必需字段）`);
+          continue;
+        }
+
+        try {
+          await wordsAPI.create(wordData);
+          successCount++;
+        } catch (error) {
+          failCount++;
+          errors.push(`"${wordData.word}" 导入失败：${error.response?.data?.message || error.message}`);
+        }
+      }
+
+      await fetchWords();
+      setShowImportJSONModal(false);
+
+      if (failCount === 0) {
+        showToast(`成功导入 ${successCount} 个单词！`, 'success');
+      } else {
+        showToast(
+          `导入完成：成功 ${successCount} 个，失败 ${failCount} 个\n${errors.slice(0, 3).join('\n')}${errors.length > 3 ? '\n...' : ''}`,
+          'warning'
+        );
+      }
+    } catch (error) {
+      throw new Error(error.message || 'JSON 导入失败');
+    }
+  };
+
+  // 选中导出 Excel
+  const handleExportSelectedExcel = () => {
+    const headers = [
+      { key: 'word', label: '单词' },
+      { 
+        key: 'definitions', 
+        label: '词性和释义',
+        transform: (defs) => defs.map(d => `${d.partOfSpeech}: ${d.meaning}`).join('; ')
+      },
+      { 
+        key: 'createdAt', 
+        label: '创建时间',
+        transform: (date) => new Date(date).toLocaleString('zh-CN')
+      }
+    ];
+
+    const success = exportSelectedToExcel(displayData, selectedIds, '单词数据', headers);
+    if (success) {
+      showToast(`成功导出 ${selectedIds.length} 个单词！`, 'success');
+    } else {
+      showToast('Excel 导出失败', 'error');
+    }
+  };
+
+  // 筛选功能
+  const applyFilters = (filters) => {
+    setActiveFilters(filters);
+    
+    const filtered = words.filter(word => {
+      return Object.entries(filters).every(([key, value]) => {
+        if (!value) return true;
+        
+        const searchValue = value.toLowerCase();
+        
+        if (key === 'word') {
+          return word.word.toLowerCase().includes(searchValue);
+        }
+        
+        if (key === 'partOfSpeech') {
+          return word.definitions.some(def => 
+            def.partOfSpeech.toLowerCase().includes(searchValue)
+          );
+        }
+        
+        if (key === 'meaning') {
+          return word.definitions.some(def => 
+            def.meaning.toLowerCase().includes(searchValue)
+          );
+        }
+        
+        return true;
+      });
+    });
+    
+    setFilteredWords(filtered);
+  };
+
+  const handleResetFilter = () => {
+    setActiveFilters({});
+    setFilteredWords([]);
   };
 
   // 批量删除相关函数
@@ -250,12 +486,26 @@ function Words() {
             + 添加新单词
           </button>
 
-          <ExportButton
-            onExport={handleExportAll}
-            onExportSelected={handleExportSelected}
+          <ImportExportDropdown
+            type="import"
+            handlers={{
+              onExcelImport: () => setShowImportExcelModal(true),
+              onJSONImport: () => setShowImportJSONModal(true),
+              onDownloadTemplate: handleDownloadTemplate
+            }}
+            disabled={loading}
+          />
+
+          <ImportExportDropdown
+            type="export"
+            handlers={{
+              onExportAllExcel: handleExportExcel,
+              onExportAllJSON: handleExportAll,
+              onExportSelectedExcel: handleExportSelectedExcel,
+              onExportSelectedJSON: handleExportSelected
+            }}
+            disabled={loading || displayData.length === 0}
             selectedCount={selectedIds.length}
-            disabled={loading || words.length === 0}
-            label="导出单词"
           />
 
           {selectedIds.length > 0 && (
@@ -267,6 +517,17 @@ function Words() {
             </div>
           )}
         </div>
+
+        {/* 筛选条 */}
+        <FilterBar
+          filterFields={[
+            { key: 'word', label: '单词', type: 'text', placeholder: '输入单词...' },
+            { key: 'partOfSpeech', label: '词性', type: 'text', placeholder: '输入词性...' },
+            { key: 'meaning', label: '释义', type: 'text', placeholder: '输入释义...' }
+          ]}
+          onFilter={applyFilters}
+          onReset={handleResetFilter}
+        />
 
         {partsOfSpeech.length === 0 && (
           <div style={{
@@ -520,6 +781,25 @@ function Words() {
 
       {/* Toast通知 */}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
+
+      {/* Excel 导入弹窗 */}
+      <ImportExcelModal
+        show={showImportExcelModal}
+        onClose={() => setShowImportExcelModal(false)}
+        onImport={handleImportExcel}
+        onDownloadTemplate={handleDownloadTemplate}
+        title="批量导入单词"
+        moduleName="单词"
+      />
+
+      {/* JSON 导入弹窗 */}
+      <ImportJSONModal
+        show={showImportJSONModal}
+        onClose={() => setShowImportJSONModal(false)}
+        onImport={handleImportJSON}
+        title="JSON 导入单词"
+        moduleName="单词"
+      />
     </div>
   );
 }
