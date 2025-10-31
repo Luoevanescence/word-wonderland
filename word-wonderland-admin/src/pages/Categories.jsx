@@ -224,7 +224,7 @@ ${category.description ? `描述：${category.description}` : ''}
                     <th>名称</th>
                     <th>代码</th>
                     <th>描述</th>
-                    <th>创建时间</th>
+                    {/* <th>创建时间</th> */}
                     <th>操作</th>
                   </tr>
                 </thead>
@@ -237,7 +237,7 @@ ${category.description ? `描述：${category.description}` : ''}
                       <td><strong>{row.name}</strong></td>
                       <td>{row.code}</td>
                       <td className="text-cell">{row.description}</td>
-                      <td>{new Date(row.createdAt).toLocaleDateString()}</td>
+                      {/* <td>{new Date(row.createdAt).toLocaleDateString()}</td> */}
                       <td>
                         <div className="actions-cell">
                           <button 

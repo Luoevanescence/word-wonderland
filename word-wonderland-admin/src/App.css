@@ -751,6 +751,10 @@ td {
 
 td:last-child {
   border-right: none;
+  /* 操作栏单元格 - 允许正常显示，不限制宽度 */
+  max-width: none;
+  overflow: visible;
+  white-space: normal;
 }
 
 /* 长文本单元格样式 - 单行显示，溢出隐藏 */
@@ -833,11 +837,20 @@ tbody tr:hover {
 
 .actions-cell {
   display: flex;
-  gap: 6px;
-  /* 减小按钮间距 */
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 200px;
+  /* 减小按钮间距，允许换行，设置最小宽度 */
 }
 
 .actions-cell .btn-small {
+  padding: 4px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: auto;
   /* 防止手机端长按时出现选择菜单 */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -846,6 +859,14 @@ tbody tr:hover {
   user-select: none;
   /* 改善触摸响应 */
   touch-action: manipulation;
+}
+
+.actions-cell .btn-view-detail {
+  padding: 4px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: auto;
 }
 
 .modal-overlay {

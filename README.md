@@ -292,7 +292,7 @@ npm install vite-plugin-pwa -D
 - [ ]  学习统计和分析
 - [ ]  单词卡片记忆功能
 - [ ]  发音功能
-- [ ]  导入导出Excel
+- [X]  导入导出Excel
 - [X]  Docker部署支持
 - [ ]  移动端 APP（PWA/Capacitor）
 
