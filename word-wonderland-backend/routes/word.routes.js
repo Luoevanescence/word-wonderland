@@ -70,11 +70,11 @@ const authMiddleware = require('../middleware/auth.middleware');
  */
 // 公开路由（不需要认证）
 router.get('/random', wordController.getRandom);
+router.get('/:id', wordController.findById);
 
 // 需要认证的路由
 router.post('/', authMiddleware, wordController.create);
 router.get('/', authMiddleware, wordController.findAll);
-router.get('/:id', authMiddleware, wordController.findById);
 router.put('/:id', authMiddleware, wordController.update);
 router.delete('/:id', authMiddleware, wordController.delete);
 router.post('/bulk/delete', authMiddleware, wordController.bulkDelete);

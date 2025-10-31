@@ -4,7 +4,7 @@ const sentenceService = new FileService('sentences');
 // 创建新句子
 exports.create = (req, res) => {
   try {
-    const { sentence, englishName, translation, note, patternIds } = req.body;
+    const { sentence, englishName, translation, note, patternIds, wordIds, phraseIds } = req.body;
 
     if (!sentence || !translation) {
       return res.status(400).json({
@@ -18,7 +18,9 @@ exports.create = (req, res) => {
       englishName: englishName || '',
       translation, 
       note: note || '',
-      patternIds: Array.isArray(patternIds) ? patternIds : []
+      patternIds: Array.isArray(patternIds) ? patternIds : [],
+      wordIds: Array.isArray(wordIds) ? wordIds : [],
+      phraseIds: Array.isArray(phraseIds) ? phraseIds : []
     });
 
     res.status(201).json({
@@ -83,7 +85,7 @@ exports.findById = (req, res) => {
 exports.update = (req, res) => {
   try {
     const { id } = req.params;
-    const { sentence, englishName, translation, note, patternIds } = req.body;
+    const { sentence, englishName, translation, note, patternIds, wordIds, phraseIds } = req.body;
 
     const updates = {};
     if (sentence) updates.sentence = sentence;
@@ -91,6 +93,8 @@ exports.update = (req, res) => {
     if (note !== undefined) updates.note = note;
     if (englishName !== undefined) updates.englishName = englishName;
     if (patternIds !== undefined) updates.patternIds = Array.isArray(patternIds) ? patternIds : [];
+    if (wordIds !== undefined) updates.wordIds = Array.isArray(wordIds) ? wordIds : [];
+    if (phraseIds !== undefined) updates.phraseIds = Array.isArray(phraseIds) ? phraseIds : [];
 
     const updatedSentence = sentenceService.update(id, updates);
 

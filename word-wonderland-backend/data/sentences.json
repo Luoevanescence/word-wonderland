@@ -5,6 +5,19 @@
     "translation": "实际情况要复杂的多。",
     "note": "",
     "createdAt": "2025-10-26T08:28:12.101Z",
-    "updatedAt": "2025-10-26T08:28:12.101Z"
+    "updatedAt": "2025-10-31T14:17:59.941Z",
+    "patternIds": [
+      "d3b03978-b266-401f-a867-769a6d53a9cd",
+      "7e9781dd-3fb9-4c59-87aa-b1330dc556bc"
+    ],
+    "wordIds": [
+      "9021230e-bba7-41e9-a749-c46388c0bcb3",
+      "3f646b3a-fd6e-49d8-a8a5-552b94eeb54b"
+    ],
+    "phraseIds": [
+      "98c717e3-e313-4dd1-94fe-abc3e002edaf",
+      "c3c82996-64c4-4214-8e52-e2b9a9250785",
+      "57bea04f-b427-43c7-b822-2c20e4b6a50b"
+    ]
   }
 ]

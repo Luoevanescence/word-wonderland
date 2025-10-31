@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Statistics.css';
+import { StackIcon, ClockIcon, CycleCalendarIcon, FireIcon } from './icons/Icons';
 
 function Statistics() {
   const [stats, setStats] = useState({
@@ -31,11 +32,7 @@ function Statistics() {
     <div className="statistics-container">
       <div className="stat-card stat-card-primary">
         <div className="stat-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <StackIcon color="currentColor" />
         </div>
         <div className="stat-content">
           <div className="stat-label">总学习量</div>
@@ -51,10 +48,7 @@ function Statistics() {
 
       <div className="stat-card stat-card-secondary">
         <div className="stat-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-            <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
+          <ClockIcon color="currentColor" />
         </div>
         <div className="stat-content">
           <div className="stat-label">今日学习</div>
@@ -65,14 +59,14 @@ function Statistics() {
 
       <div className="stat-card stat-card-accent">
         <div className="stat-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/>
-          </svg>
+          <CycleCalendarIcon color="currentColor" />
         </div>
         <div className="stat-content">
           <div className="stat-label">连续天数</div>
           <div className="stat-value">{stats.streak} 天</div>
-          <div className="stat-subtitle">继续保持 🔥</div>
+          <div className="stat-subtitle">
+            继续保持 <FireIcon color="#F59E0B" />
+          </div>
         </div>
       </div>
     </div>

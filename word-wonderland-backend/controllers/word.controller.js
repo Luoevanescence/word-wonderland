@@ -4,7 +4,7 @@ const wordService = new FileService('words');
 // 创建新单词
 exports.create = (req, res) => {
   try {
-    const { word, category, categoryId, definitions } = req.body;
+    const { word, category, categoryId, categoryIds, definitions } = req.body;
 
     if (!word || !definitions || !Array.isArray(definitions) || definitions.length === 0) {
       return res.status(400).json({
@@ -23,10 +23,19 @@ exports.create = (req, res) => {
       }
     }
 
+    // 处理分类：优先使用 categoryIds（数组），否则使用 categoryId（单个），向后兼容
+    let finalCategoryIds = [];
+    if (categoryIds !== undefined) {
+      finalCategoryIds = Array.isArray(categoryIds) ? categoryIds.filter(id => id) : [];
+    } else if (categoryId !== undefined && categoryId) {
+      finalCategoryIds = [categoryId];
+    }
+
     const newWord = wordService.create({ 
       word, 
       category: category || '', // backward compatibility
-      categoryId: categoryId || '',
+      categoryId: finalCategoryIds.length > 0 ? finalCategoryIds[0] : '', // 保持向后兼容
+      categoryIds: finalCategoryIds, // 新的多选支持
       definitions 
     });
 
@@ -92,7 +101,7 @@ exports.findById = (req, res) => {
 exports.update = (req, res) => {
   try {
     const { id } = req.params;
-    const { word, category, categoryId, definitions } = req.body;
+    const { word, category, categoryId, categoryIds, definitions } = req.body;
 
     const updates = {};
     if (word) updates.word = word;
@@ -115,7 +124,17 @@ exports.update = (req, res) => {
       updates.definitions = definitions;
     }
     if (category !== undefined) updates.category = category; // backward compatibility
-    if (categoryId !== undefined) updates.categoryId = categoryId;
+    
+    // 处理分类：优先使用 categoryIds（数组），否则使用 categoryId（单个），向后兼容
+    if (categoryIds !== undefined) {
+      updates.categoryIds = Array.isArray(categoryIds) ? categoryIds.filter(id => id) : [];
+      // 为了向后兼容，也设置 categoryId 为第一个值
+      updates.categoryId = updates.categoryIds.length > 0 ? updates.categoryIds[0] : '';
+    } else if (categoryId !== undefined) {
+      updates.categoryId = categoryId;
+      // 如果提供了单个 categoryId，将其转换为数组
+      updates.categoryIds = categoryId ? [categoryId] : [];
+    }
 
     const updatedWord = wordService.update(id, updates);
 

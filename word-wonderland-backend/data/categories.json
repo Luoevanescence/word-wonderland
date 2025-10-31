@@ -6,5 +6,13 @@
     "description": "六级词汇",
     "createdAt": "2025-10-30T17:32:07.245Z",
     "updatedAt": "2025-10-30T17:39:35.373Z"
+  },
+  {
+    "id": "90fb5d65-1cb0-4ad8-a665-e7a5f0b0f729",
+    "name": "CET-4",
+    "code": "cet-4",
+    "description": "四级词汇",
+    "createdAt": "2025-10-31T02:36:41.226Z",
+    "updatedAt": "2025-10-31T02:36:41.226Z"
   }
 ]

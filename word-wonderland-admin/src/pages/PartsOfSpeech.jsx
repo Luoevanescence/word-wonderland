@@ -32,11 +32,11 @@ function PartsOfSpeech() {
   const [showImportJSONModal, setShowImportJSONModal] = useState(false);
   const [filteredPOS, setFilteredPOS] = useState([]);
   const [activeFilters, setActiveFilters] = useState({});
-  
+
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
   const { toasts, showToast, removeToast } = useToast();
-  
+
   // 计算显示数据（筛选后优先）
   const displayData = filteredPOS.length > 0 ? filteredPOS : partsOfSpeech;
   // 使用分页 hook（基于显示数据）
@@ -52,7 +52,7 @@ function PartsOfSpeech() {
       const timer = setTimeout(() => {
         initTableResize();
       }, 100);
-      
+
       return () => {
         clearTimeout(timer);
         cleanupTableResize();
@@ -76,7 +76,7 @@ function PartsOfSpeech() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return; // 防止重复提交
-    
+
     setSubmitting(true);
     try {
       if (editingPos) {
@@ -102,12 +102,12 @@ function PartsOfSpeech() {
       event.preventDefault();
       event.stopPropagation();
     }
-    
+
     const posToDelete = partsOfSpeech.find(p => p.id === id);
     if (posToDelete && posToDelete.isSystem) {
       return; // 系统预设词性不允许删除
     }
-    
+
     showConfirm({
       title: '确认删除',
       message: '确定要删除这个词性吗？此操作无法撤销。',
@@ -150,8 +150,8 @@ function PartsOfSpeech() {
       { key: 'code', label: '词性代码' },
       { key: 'name', label: '词性名称' },
       { key: 'description', label: '描述' },
-      { 
-        key: 'createdAt', 
+      {
+        key: 'createdAt',
         label: '创建时间',
         transform: (date) => new Date(date).toLocaleString('zh-CN')
       }
@@ -180,9 +180,9 @@ function PartsOfSpeech() {
   // Excel 导入功能
   const handleImportExcel = async (file) => {
     const fieldMapping = [
-      { 
-        excelKey: '词性代码', 
-        dataKey: 'code', 
+      {
+        excelKey: '词性代码',
+        dataKey: 'code',
         required: true,
         transform: (value) => {
           if (!value || value.trim() === '') {
@@ -197,7 +197,7 @@ function PartsOfSpeech() {
 
     try {
       const importedData = await importFromExcel(file, fieldMapping);
-      
+
       // 批量创建词性
       let successCount = 0;
       let failCount = 0;
@@ -266,8 +266,8 @@ function PartsOfSpeech() {
       await fetchPartsOfSpeech();
       setShowImportJSONModal(false);
       if (failCount === 0) showToast(`成功导入 ${successCount} 个词性！`, 'success');
-      else showToast(`导入完成：成功 ${successCount}，失败 ${failCount}`,'warning');
-    } catch { showToast('JSON 导入失败','error'); }
+      else showToast(`导入完成：成功 ${successCount}，失败 ${failCount}`, 'warning');
+    } catch { showToast('JSON 导入失败', 'error'); }
   };
 
   // 筛选
@@ -277,9 +277,9 @@ function PartsOfSpeech() {
       return Object.entries(filters).every(([key, val]) => {
         if (!val) return true;
         const v = String(val).toLowerCase();
-        if (key === 'code') return (item.code||'').toLowerCase().includes(v);
-        if (key === 'name') return (item.name||'').toLowerCase().includes(v);
-        if (key === 'description') return (item.description||'').toLowerCase().includes(v);
+        if (key === 'code') return (item.code || '').toLowerCase().includes(v);
+        if (key === 'name') return (item.name || '').toLowerCase().includes(v);
+        if (key === 'description') return (item.description || '').toLowerCase().includes(v);
         return true;
       });
     });
@@ -359,7 +359,7 @@ ${pos.description ? `描述：${pos.description}` : ''}
 创建时间：${new Date(pos.createdAt).toLocaleString()}
 更新时间：${new Date(pos.updatedAt).toLocaleString()}
     `.trim();
-    
+
     setDetailView({
       show: true,
       title: `词性详情 - ${pos.name}`,
@@ -425,140 +425,140 @@ ${pos.description ? `描述：${pos.description}` : ''}
           onReset={handleResetFilter}
         />
 
-      {loading ? (
-        <div className="loading">加载中...</div>
-      ) : partsOfSpeech.length === 0 ? (
-        <div className="empty-state">
-          <h3>还没有词性</h3>
-          <p>开始添加您的第一个词性吧！建议添加常用词性如：n（名词）、v（动词）、adj（形容词）、adv（副词）等</p>
-        </div>
-      ) : (
-        <>
-          {/* 桌面端表格视图 */}
-          <div className="data-table">
-            <table>
-              <thead>
-                <tr>
-                  <th className="checkbox-cell">
-                    <input
-                      type="checkbox"
-                      className="select-all-checkbox"
-                      checked={selectedIds.length === currentData.length && currentData.length > 0}
-                      onChange={handleSelectAll}
-                    />
-                  </th>
-                  <th>代码</th>
-                  <th>名称</th>
-                  <th>描述</th>
-                  <th>创建时间</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentData.map((pos) => (
-                  <tr key={pos.id}>
-                    <td className="checkbox-cell">
+        {loading ? (
+          <div className="loading">加载中...</div>
+        ) : partsOfSpeech.length === 0 ? (
+          <div className="empty-state">
+            <h3>还没有词性</h3>
+            <p>开始添加您的第一个词性吧！建议添加常用词性如：n（名词）、v（动词）、adj（形容词）、adv（副词）等</p>
+          </div>
+        ) : (
+          <>
+            {/* 桌面端表格视图 */}
+            <div className="data-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th className="checkbox-cell">
                       <input
                         type="checkbox"
-                        checked={selectedIds.includes(pos.id)}
-                        onChange={() => handleSelectOne(pos.id)}
+                        className="select-all-checkbox"
+                        checked={selectedIds.length === currentData.length && currentData.length > 0}
+                        onChange={handleSelectAll}
                       />
-                    </td>
-                    <td><strong style={{ color: 'var(--brand-primary)' }}>{pos.code}</strong></td>
-                    <td>{pos.name}</td>
-                    <td style={{ color: '#666' }}>{pos.description}</td>
-                    <td>{new Date(pos.createdAt).toLocaleDateString()}</td>
-                    <td>
-                    <div className="actions-cell">
-                      <button 
-                        className="btn btn-view-detail btn-small" 
-                        onClick={() => handleViewDetail(pos)}
-                      >
-                        查看
-                      </button>
-                      <button 
-                        className="btn btn-secondary btn-small" 
-                        onClick={() => handleEdit(pos)}
-                        onContextMenu={(e) => e.preventDefault()}
-                      >
-                        编辑
-                      </button>
-                      <button 
-                        className="btn btn-danger btn-small" 
-                        onClick={(e) => handleDelete(pos.id, e)}
-                        onContextMenu={(e) => e.preventDefault()}
-                      >
-                        删除
-                      </button>
-                    </div>
-                    </td>
+                    </th>
+                    <th>代码</th>
+                    <th>名称</th>
+                    <th>描述</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {currentData.map((pos) => (
+                    <tr key={pos.id}>
+                      <td className="checkbox-cell">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(pos.id)}
+                          onChange={() => handleSelectOne(pos.id)}
+                        />
+                      </td>
+                      <td><strong style={{ color: 'var(--brand-primary)' }}>{pos.code}</strong></td>
+                      <td>{pos.name}</td>
+                      <td style={{ color: '#666' }}>{pos.description}</td>
+                      <td>{new Date(pos.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <div className="actions-cell">
+                          <button
+                            className="btn btn-view-detail btn-small"
+                            onClick={() => handleViewDetail(pos)}
+                          >
+                            查看
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-small"
+                            onClick={() => handleEdit(pos)}
+                            onContextMenu={(e) => e.preventDefault()}
+                          >
+                            编辑
+                          </button>
+                          <button
+                            className="btn btn-danger btn-small"
+                            onClick={(e) => handleDelete(pos.id, e)}
+                            onContextMenu={(e) => e.preventDefault()}
+                          >
+                            删除
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {/* 移动端卡片视图 - 使用分页数据 */}
-          <div className="mobile-card-view">
-            {currentData.map((pos) => (
-              <div key={pos.id} className="mobile-card">
-                <div className="mobile-card-header">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(pos.id)}
-                    onChange={() => handleSelectOne(pos.id)}
-                    style={{ marginRight: '10px' }}
-                  />
-                  <div className="mobile-card-title" style={{ color: 'var(--brand-primary)' }}>
-                    {pos.code} - {pos.name}
+            {/* 移动端卡片视图 - 使用分页数据 */}
+            <div className="mobile-card-view">
+              {currentData.map((pos) => (
+                <div key={pos.id} className="mobile-card">
+                  <div className="mobile-card-header">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(pos.id)}
+                      onChange={() => handleSelectOne(pos.id)}
+                      style={{ marginRight: '10px' }}
+                    />
+                    <div className="mobile-card-title" style={{ color: 'var(--brand-primary)' }}>
+                      {pos.code} - {pos.name}
+                    </div>
                   </div>
-                </div>
-                <div className="mobile-card-content">
-                  {pos.description && (
+                  <div className="mobile-card-content">
+                    {pos.description && (
+                      <div className="mobile-card-row">
+                        <div className="mobile-card-label">描述</div>
+                        <div className="mobile-card-value" style={{ color: '#666' }}>
+                          {pos.description}
+                        </div>
+                      </div>
+                    )}
                     <div className="mobile-card-row">
-                      <div className="mobile-card-label">描述</div>
-                      <div className="mobile-card-value" style={{ color: '#666' }}>
-                        {pos.description}
+                      <div className="mobile-card-label">创建时间</div>
+                      <div className="mobile-card-value">
+                        {new Date(pos.createdAt).toLocaleDateString()}
                       </div>
                     </div>
-                  )}
-                  <div className="mobile-card-row">
-                    <div className="mobile-card-label">创建时间</div>
-                    <div className="mobile-card-value">
-                      {new Date(pos.createdAt).toLocaleDateString()}
-                    </div>
+                  </div>
+                  <div className="mobile-card-actions">
+                    <button
+                      className="btn btn-view-detail btn-small"
+                      onClick={() => handleViewDetail(pos)}
+                    >
+                      查看
+                    </button>
+                    <button
+                      className="btn btn-secondary btn-small"
+                      onClick={() => handleEdit(pos)}
+                      onContextMenu={(e) => e.preventDefault()}
+                    >
+                      编辑
+                    </button>
+                    <button
+                      className="btn btn-danger btn-small"
+                      onClick={(e) => handleDelete(pos.id, e)}
+                      onContextMenu={(e) => e.preventDefault()}
+                    >
+                      删除
+                    </button>
                   </div>
                 </div>
-                <div className="mobile-card-actions">
-                  <button 
-                    className="btn btn-view-detail btn-small" 
-                    onClick={() => handleViewDetail(pos)}
-                  >
-                    查看
-                  </button>
-                  <button 
-                    className="btn btn-secondary btn-small" 
-                    onClick={() => handleEdit(pos)}
-                    onContextMenu={(e) => e.preventDefault()}
-                  >
-                    编辑
-                  </button>
-                  <button 
-                    className="btn btn-danger btn-small" 
-                    onClick={(e) => handleDelete(pos.id, e)}
-                    onContextMenu={(e) => e.preventDefault()}
-                  >
-                    删除
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* 分页组件 */}
-          {renderPagination()}
-        </>
-      )}
+            {/* 分页组件 */}
+            {renderPagination()}
+          </>
+        )}
       </div>
 
       {showModal && (
@@ -592,7 +592,7 @@ ${pos.description ? `描述：${pos.description}` : ''}
               </div>
 
               <div className="form-group">
-                <label>描述（可选）</label>
+                <label>描述</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -625,7 +625,7 @@ ${pos.description ? `描述：${pos.description}` : ''}
 
       {/* Toast通知 */}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
-      
+
       {/* 详情查看弹窗 */}
       <DetailViewModal
         show={detailView.show}

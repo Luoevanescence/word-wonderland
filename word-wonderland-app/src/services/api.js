@@ -17,5 +17,10 @@ export const getRandomSentences = (count = 10) => api.get(`/sentences/random?cou
 export const getRandomPatterns = (count = 10) => api.get(`/patterns/random?count=${count}`);
 export const getRandomTopics = (count = 10) => api.get(`/topics/random?count=${count}`);
 
+// Get by ID APIs
+export const getWordById = (id) => api.get(`/words/${id}`);
+export const getPhraseById = (id) => api.get(`/phrases/${id}`);
+export const getPatternById = (id) => api.get(`/patterns/${id}`);
+
 export default api;
 

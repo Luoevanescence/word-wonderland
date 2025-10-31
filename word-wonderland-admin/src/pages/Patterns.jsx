@@ -629,7 +629,7 @@ function Patterns() {
               />
 
               <div className="form-group">
-                <label>句型名称（自动生成或手动修改） *</label>
+                <label>句型名称 *</label>
                 <input
                   type="text"
                   value={formData.pattern}

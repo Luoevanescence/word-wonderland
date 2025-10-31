@@ -47,12 +47,13 @@ const authMiddleware = require('../middleware/auth.middleware');
  *       201:
  *         description: Phrase created successfully
  */
+// 公开路由（不需要认证）
 router.get('/random', phraseController.getRandom);
+router.get('/:id', phraseController.findById);
 
 // 需要认证的路由
 router.post('/', authMiddleware, phraseController.create);
 router.get('/', authMiddleware, phraseController.findAll);
-router.get('/:id', authMiddleware, phraseController.findById);
 router.put('/:id', authMiddleware, phraseController.update);
 router.delete('/:id', authMiddleware, phraseController.delete);
 router.post('/bulk/delete', authMiddleware, phraseController.bulkDelete);

@@ -10,6 +10,7 @@
   /* Emerald-500 清新薄荷绿 */
   --brand-accent: #FAD15A;
   /* Amber-500 温暖琥珀黄 */
+  --brand-accent-text: #ff9720;
   
   /* 装饰元素辅助颜色 */
   --brand-light-primary: rgb(108, 255, 206);
@@ -34,7 +35,7 @@
   --btn-warm-shadow: 0 6px 24px rgba(255, 167, 38, 0.18);
 
   /* 按钮选中颜色 */
-  --button-checked: #feeda7;
+  --button-checked: #fff4d6;
 
   /* 中性色系统 - 温暖基调 */
   --surface-ground: #FDFBF8;

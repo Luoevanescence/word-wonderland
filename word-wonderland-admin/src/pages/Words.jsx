@@ -3,6 +3,8 @@ import { wordsAPI, partsOfSpeechAPI, categoriesAPI } from '../services/api';
 import { Link } from 'react-router-dom';
 import { usePagination } from '../hooks/usePagination.jsx';
 import CustomSelect from '../components/CustomSelect';
+import MultiSelect from '../components/MultiSelect';
+import CategoryTags from '../components/CategoryTags';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
 import { useConfirmDialog, useToast } from '../hooks/useDialog';
@@ -25,12 +27,12 @@ function Words() {
   const [editingWord, setEditingWord] = useState(null);
   const [formData, setFormData] = useState({
     word: '',
-    categoryId: '',
+    categoryIds: [],
     definitions: [{ partOfSpeech: '', meaning: '' }]
   });
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除：选中的ID列表
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
-  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '', categoryIds: [] }); // 详情查看
   const [showImportExcelModal, setShowImportExcelModal] = useState(false); // Excel 导入弹窗
   const [showImportJSONModal, setShowImportJSONModal] = useState(false); // JSON 导入弹窗
   const [filteredWords, setFilteredWords] = useState([]); // 筛选后的数据
@@ -173,7 +175,20 @@ function Words() {
   const handleExportExcel = () => {
     const headers = [
       { key: 'word', label: '单词' },
-      { key: 'categoryName', label: '分类' },
+      { 
+        key: 'categoryIds', 
+        label: '分类',
+        transform: (categoryIds, word) => {
+          const wordCategoryIds = categoryIds 
+            ? (Array.isArray(categoryIds) ? categoryIds : [categoryIds])
+            : (word.categoryId ? [word.categoryId] : []);
+          if (wordCategoryIds.length === 0) return '未分类';
+          const categoryNames = wordCategoryIds
+            .map(id => categories.find(c => c.id === id)?.name)
+            .filter(Boolean);
+          return categoryNames.length > 0 ? categoryNames.join('、') : '未分类';
+        }
+      },
       { 
         key: 'definitions', 
         label: '词性和释义',
@@ -221,11 +236,11 @@ function Words() {
     try {
       const importedData = await importFromExcel(file, fieldMapping);
       
-      // 转换为 API 需要的格式（分类名称 -> categoryId）
+      // 转换为 API 需要的格式（分类名称 -> categoryIds）
       const nameToId = new Map(categories.map(c => [c.name, c.id]));
       const wordsToCreate = importedData.map(item => ({
         word: item.word,
-        categoryId: item.categoryName ? (nameToId.get(item.categoryName) || '') : '',
+        categoryIds: item.categoryName ? (nameToId.get(item.categoryName) ? [nameToId.get(item.categoryName)] : []) : [],
         definitions: [{ partOfSpeech: item.partOfSpeech, meaning: item.meaning }]
       }));
 
@@ -333,7 +348,20 @@ function Words() {
   const handleExportSelectedExcel = () => {
     const headers = [
       { key: 'word', label: '单词' },
-      { key: 'categoryName', label: '分类' },
+      { 
+        key: 'categoryIds', 
+        label: '分类',
+        transform: (categoryIds, word) => {
+          const wordCategoryIds = categoryIds 
+            ? (Array.isArray(categoryIds) ? categoryIds : [categoryIds])
+            : (word.categoryId ? [word.categoryId] : []);
+          if (wordCategoryIds.length === 0) return '未分类';
+          const categoryNames = wordCategoryIds
+            .map(id => categories.find(c => c.id === id)?.name)
+            .filter(Boolean);
+          return categoryNames.length > 0 ? categoryNames.join('、') : '未分类';
+        }
+      },
       { 
         key: 'definitions', 
         label: '词性和释义',
@@ -380,8 +408,13 @@ function Words() {
           );
         }
         if (key === 'category') {
-          const catName = categories.find(c => c.id === (word.categoryId || ''))?.name || '';
-          return catName.toLowerCase().includes(searchValue);
+          const wordCategoryIds = word.categoryIds 
+            ? (Array.isArray(word.categoryIds) ? word.categoryIds : [word.categoryIds])
+            : (word.categoryId ? [word.categoryId] : []);
+          const categoryNames = wordCategoryIds
+            .map(id => categories.find(c => c.id === id)?.name)
+            .filter(Boolean);
+          return categoryNames.some(name => name.toLowerCase().includes(searchValue));
         }
         
         return true;
@@ -441,9 +474,13 @@ function Words() {
 
   const handleEdit = (word) => {
     setEditingWord(word);
+    // 处理分类：如果 word 有 categoryIds（数组），使用它；否则如果有 categoryId（单个），转换为数组
+    const categoryIds = word.categoryIds 
+      ? (Array.isArray(word.categoryIds) ? word.categoryIds : [word.categoryIds])
+      : (word.categoryId ? [word.categoryId] : []);
     setFormData({
       word: word.word,
-      categoryId: word.categoryId || '',
+      categoryIds: categoryIds,
       definitions: word.definitions
     });
     setShowModal(true);
@@ -452,7 +489,7 @@ function Words() {
   const resetForm = () => {
     setFormData({
       word: '',
-      categoryId: '',
+      categoryIds: [],
       definitions: [{ partOfSpeech: '', meaning: '' }]
     });
     setEditingWord(null);
@@ -607,8 +644,12 @@ function Words() {
                         />
                       </td>
                       <td><strong>{word.word}</strong></td>
-                      <td>
-                        {categories.find(c => c.id === (word.categoryId || ''))?.name || '未分类'}
+                      <td style={{ maxWidth: '200px' }}>
+                        <CategoryTags
+                          categoryIds={word.categoryIds || (word.categoryId ? [word.categoryId] : [])}
+                          categories={categories}
+                          showAll={false}
+                        />
                       </td>
                       <td className="text-cell">
                         <span style={{ fontWeight: 500, color: 'var(--brand-primary)' }}>
@@ -621,13 +662,19 @@ function Words() {
                         <div className="actions-cell">
                           <button
                             className="btn-view-detail"
-                            onClick={() => setDetailView({
-                              show: true,
-                              title: `单词释义：${word.word}`,
-                              content: word.definitions.map((def, idx) =>
-                                `${def.partOfSpeech} ${def.meaning}`
-                              ).join('\n\n')
-                            })}
+                            onClick={() => {
+                              const wordCategoryIds = word.categoryIds 
+                                ? (Array.isArray(word.categoryIds) ? word.categoryIds : [word.categoryIds])
+                                : (word.categoryId ? [word.categoryId] : []);
+                              setDetailView({
+                                show: true,
+                                title: `单词释义：${word.word}`,
+                                content: word.definitions.map((def, idx) =>
+                                  `${def.partOfSpeech} ${def.meaning}`
+                                ).join('\n\n'),
+                                categoryIds: wordCategoryIds
+                              });
+                            }}
                             onContextMenu={(e) => e.preventDefault()}
                           >
                             详情
@@ -668,6 +715,16 @@ function Words() {
                     <div className="mobile-card-title">{word.word}</div>
                   </div>
                   <div className="mobile-card-content">
+                    <div className="mobile-card-row">
+                      <div className="mobile-card-label">分类</div>
+                      <div className="mobile-card-value">
+                        <CategoryTags
+                          categoryIds={word.categoryIds || (word.categoryId ? [word.categoryId] : [])}
+                          categories={categories}
+                          showAll={false}
+                        />
+                      </div>
+                    </div>
                     <div className="mobile-card-row">
                       <div className="mobile-card-label">释义</div>
                       <div className="mobile-card-value">
@@ -731,20 +788,16 @@ function Words() {
               </div>
 
               <div className="form-group">
-                <label>分类（可选）</label>
-                <select
-                  className="filter-select"
+                <label>分类</label>
+                <MultiSelect
+                  options={categories.map(c => ({ value: c.id, label: c.name }))}
+                  value={formData.categoryIds}
+                  onChange={(ids) => setFormData({ ...formData, categoryIds: ids })}
+                  placeholder="搜索分类…"
                   disabled={categories.length === 0}
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                >
-                  <option value="">未分类</option>
-                  {categories.map(c => (
-                    <option key={c.id} value={c.name}>{c.name}</option>
-                  ))}
-                </select>
+                />
                 {categories.length === 0 && (
-                  <small style={{ color: '#888' }}>暂无分类，请先在“分类”模块创建后再选择</small>
+                  <small style={{ color: '#888', display: 'block', marginTop: '5px' }}>暂无分类，请先在"分类"模块创建后再选择</small>
                 )}
               </div>
 
@@ -822,7 +875,9 @@ function Words() {
         show={detailView.show}
         title={detailView.title}
         content={detailView.content}
-        onClose={() => setDetailView({ show: false, title: '', content: '' })}
+        categoryIds={detailView.categoryIds}
+        categories={categories}
+        onClose={() => setDetailView({ show: false, title: '', content: '', categoryIds: [] })}
       />
 
       {/* Toast通知 */}

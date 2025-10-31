@@ -34,23 +34,26 @@
 }
 
 .component-chip {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, rgba(27, 255, 179, 0.15) 0%, rgba(166, 255, 227, 0.15) 100%);
+  color: var(--brand-primary);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .component-chip:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.25) 100%);
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .pattern-chip {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #ffc96d 0%, #ffa53f 100%);
   color: white;
 }
 
 .pattern-chip:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
 .empty-hint {
@@ -65,17 +68,25 @@
   background: white;
   border-radius: 8px;
   margin-bottom: 15px;
-  border: 2px dashed #667eea;
+  border: 2px dashed var(--brand-primary);
 }
 
 .generated-pattern strong {
-  color: #667eea;
+  color: var(--brand-primary);
   margin-right: 10px;
 }
 
 .generated-pattern span {
   color: #333;
   font-size: 16px;
+}
+
+.generated-pattern-name {
+  color: #333;
+}
+
+.generated-pattern-name.pattern-placeholder {
+  color: #999;
 }
 
 .selected-items {
@@ -98,14 +109,14 @@
 }
 
 .selected-item:hover {
-  border-color: #667eea;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  border-color: var(--brand-primary);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 .selected-item.dragging {
   opacity: 0.5;
-  border-color: #667eea;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  border-color: var(--brand-primary);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   cursor: grabbing;
 }
 
@@ -125,13 +136,13 @@
 }
 
 .component-item .item-type-badge {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  background: rgba(16, 185, 129, 0.05);
+  color: var(--brand-primary);
 }
 
 .pattern-item .item-type-badge {
-  background: rgba(245, 87, 108, 0.1);
-  color: #f5576c;
+  background: rgba(245, 158, 11, 0.05);
+  color: var(--brand-accent);
 }
 
 .item-name {

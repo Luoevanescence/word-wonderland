@@ -448,6 +448,7 @@ function Phrases() {
                   </th>
                   <th>短语</th>
                   <th>含义</th>
+                  <th>关联单词</th>
                   <th>例句</th>
                   <th>创建时间</th>
                   <th>操作</th>
@@ -465,6 +466,19 @@ function Phrases() {
                     </td>
                     <td><strong>{phrase.phrase}</strong></td>
                     <td className="text-cell">{phrase.meaning}</td>
+                    <td className="text-cell">
+                      {(() => {
+                        const wordIds = phrase.wordIds || (Array.isArray(phrase.words) ? phrase.words.map(w => w.id || w) : []);
+                        if (!wordIds || wordIds.length === 0) return '无';
+                        const wordNames = wordIds
+                          .map(id => {
+                            const word = allWords.find(w => w.id === id);
+                            return word ? word.word : null;
+                          })
+                          .filter(Boolean);
+                        return wordNames.length > 0 ? wordNames.join(' ; ') : '无';
+                      })()}
+                    </td>
                     <td className="text-cell" style={{ fontStyle: 'italic', color: '#666' }}>{phrase.example}</td>
                     <td>{new Date(phrase.createdAt).toLocaleDateString()}</td>
                     <td>
@@ -511,6 +525,23 @@ function Phrases() {
                     <div className="mobile-card-label">含义</div>
                     <div className="mobile-card-value">{phrase.meaning}</div>
                   </div>
+                  {(() => {
+                    const wordIds = phrase.wordIds || (Array.isArray(phrase.words) ? phrase.words.map(w => w.id || w) : []);
+                    const wordNames = wordIds
+                      .map(id => {
+                        const word = allWords.find(w => w.id === id);
+                        return word ? word.word : null;
+                      })
+                      .filter(Boolean);
+                    return wordNames.length > 0 ? (
+                      <div className="mobile-card-row">
+                        <div className="mobile-card-label">关联单词</div>
+                        <div className="mobile-card-value">
+                          {wordNames.join(' ; ')}
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
                   {phrase.example && (
                     <div className="mobile-card-row">
                       <div className="mobile-card-label">例句</div>
@@ -561,6 +592,16 @@ function Phrases() {
               </div>
 
               <div className="form-group">
+                <label>关联单词</label>
+                <MultiSelect
+                  options={allWords.map(w => ({ value: w.id, label: w.word, code: (w.categoryId ? '•' : '') }))}
+                  value={formData.wordIds}
+                  onChange={(ids) => setFormData({ ...formData, wordIds: ids })}
+                  placeholder="搜索单词…"
+                />
+              </div>
+
+              <div className="form-group">
                 <label>含义 *</label>
                 <input
                   type="text"
@@ -580,15 +621,7 @@ function Phrases() {
                 />
               </div>
 
-              <div className="form-group">
-                <label>关联单词（可选）</label>
-                <MultiSelect
-                  options={allWords.map(w => ({ value: w.id, label: w.word, code: (w.categoryId ? '•' : '') }))}
-                  value={formData.wordIds}
-                  onChange={(ids) => setFormData({ ...formData, wordIds: ids })}
-                  placeholder="搜索单词…"
-                />
-              </div>
+
 
               <div className="modal-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowModal(false); resetForm(); }}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { sentencesAPI, patternsAPI } from '../services/api';
+import { sentencesAPI, patternsAPI, wordsAPI, phrasesAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import ExportButton from '../components/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
@@ -23,12 +23,15 @@ function Sentences() {
   const [editingSentence, setEditingSentence] = useState(null);
   const [formData, setFormData] = useState({
     sentence: '',
-    englishName: '',
     translation: '',
     note: '',
-    patternIds: []
+    patternIds: [],
+    wordIds: [],
+    phraseIds: []
   });
   const [allPatterns, setAllPatterns] = useState([]);
+  const [allWords, setAllWords] = useState([]);
+  const [allPhrases, setAllPhrases] = useState([]);
   const [submitting, setSubmitting] = useState(false); // 表单提交状态
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
   const [selectedIds, setSelectedIds] = useState([]); // 批量删除
@@ -49,12 +52,32 @@ function Sentences() {
   useEffect(() => {
     fetchSentences();
     fetchPatterns();
+    fetchWords();
+    fetchPhrases();
   }, []);
 
   const fetchPatterns = async () => {
     try {
       const res = await patternsAPI.getAll();
       setAllPatterns(res.data.data || []);
+    } catch (e) {
+      // 静默失败
+    }
+  };
+
+  const fetchWords = async () => {
+    try {
+      const res = await wordsAPI.getAll();
+      setAllWords(res.data.data || []);
+    } catch (e) {
+      // 静默失败
+    }
+  };
+
+  const fetchPhrases = async () => {
+    try {
+      const res = await phrasesAPI.getAll();
+      setAllPhrases(res.data.data || []);
     } catch (e) {
       // 静默失败
     }
@@ -151,7 +174,6 @@ function Sentences() {
   const handleExportExcel = () => {
     const headers = [
       { key: 'sentence', label: '英文句子' },
-      { key: 'englishName', label: '英文名称' },
       { key: 'translation', label: '中文翻译' },
       { key: 'note', label: '备注' },
       {
@@ -193,7 +215,6 @@ function Sentences() {
   const handleImportExcel = async (file) => {
     const fieldMapping = [
       { excelKey: '英文句子', dataKey: 'sentence', required: true },
-      { excelKey: '英文名称', dataKey: 'englishName', required: false },
       { excelKey: '中文翻译', dataKey: 'translation', required: true },
       { excelKey: '备注', dataKey: 'note', required: false }
     ];
@@ -238,15 +259,14 @@ function Sentences() {
   const handleDownloadTemplate = () => {
     const headers = [
       { key: 'sentence', label: '英文句子', example: 'I love learning English.' },
-      { key: 'englishName', label: '英文名称', example: 'Love Learning' },
       { key: 'translation', label: '中文翻译', example: '我喜欢学习英语。' },
       { key: 'note', label: '备注', example: '简单句型' }
     ];
 
     const sampleData = [
-      { '英文句子': 'I love learning English.', '英文名称': 'Love Learning', '中文翻译': '我喜欢学习英语。', '备注': '简单句型' },
-      { '英文句子': 'Practice makes perfect.', '英文名称': 'Practice Perfect', '中文翻译': '熟能生巧。', '备注': '谚语' },
-      { '英文句子': 'Rome was not built in a day.', '英文名称': 'Rome Not Built In A Day', '中文翻译': '罗马不是一天建成的。', '备注': '谚语' }
+      { '英文句子': 'I love learning English.', '中文翻译': '我喜欢学习英语。', '备注': '简单句型' },
+      { '英文句子': 'Practice makes perfect.', '中文翻译': '熟能生巧。', '备注': '谚语' },
+      { '英文句子': 'Rome was not built in a day.', '中文翻译': '罗马不是一天建成的。', '备注': '谚语' }
     ];
 
     const success = downloadExcelTemplate('句子导入', headers, sampleData);
@@ -315,10 +335,11 @@ function Sentences() {
     setEditingSentence(sentence);
     setFormData({
       sentence: sentence.sentence,
-      englishName: sentence.englishName || '',
       translation: sentence.translation,
       note: sentence.note || '',
-      patternIds: Array.isArray(sentence.patterns) ? sentence.patterns.map(p => p.id) : (sentence.patternIds || [])
+      patternIds: Array.isArray(sentence.patterns) ? sentence.patterns.map(p => p.id) : (sentence.patternIds || []),
+      wordIds: sentence.wordIds || (Array.isArray(sentence.words) ? sentence.words.map(w => w.id || w) : []),
+      phraseIds: sentence.phraseIds || (Array.isArray(sentence.phrases) ? sentence.phrases.map(p => p.id || p) : [])
     });
     setShowModal(true);
   };
@@ -326,10 +347,11 @@ function Sentences() {
   const resetForm = () => {
     setFormData({
       sentence: '',
-      englishName: '',
       translation: '',
       note: '',
-      patternIds: []
+      patternIds: [],
+      wordIds: [],
+      phraseIds: []
     });
     setEditingSentence(null);
   };
@@ -459,6 +481,9 @@ function Sentences() {
                   </th>
                   <th>句子</th>
                   <th>翻译</th>
+                  <th>关联句型</th>
+                  <th>关联单词</th>
+                  <th>关联短语</th>
                   <th>备注</th>
                   <th>创建时间</th>
                   <th>操作</th>
@@ -476,17 +501,85 @@ function Sentences() {
                     </td>
                     <td className="text-cell"><strong>{sentence.sentence}</strong></td>
                     <td className="text-cell">{sentence.translation}</td>
+                    <td className="text-cell">
+                      {(() => {
+                        const patternIds = sentence.patternIds || (Array.isArray(sentence.patterns) ? sentence.patterns.map(p => p.id || p) : []);
+                        if (!patternIds || patternIds.length === 0) return '';
+                        const patternNames = patternIds
+                          .map(id => {
+                            const pattern = allPatterns.find(p => p.id === id);
+                            return pattern ? (pattern.pattern || pattern.name) : null;
+                          })
+                          .filter(Boolean);
+                        return patternNames.length > 0 ? patternNames.join(' ; ') : '';
+                      })()}
+                    </td>
+                    <td className="text-cell">
+                      {(() => {
+                        const wordIds = sentence.wordIds || (Array.isArray(sentence.words) ? sentence.words.map(w => w.id || w) : []);
+                        if (!wordIds || wordIds.length === 0) return '';
+                        const wordNames = wordIds
+                          .map(id => {
+                            const word = allWords.find(w => w.id === id);
+                            return word ? word.word : null;
+                          })
+                          .filter(Boolean);
+                        return wordNames.length > 0 ? wordNames.join(' ; ') : '';
+                      })()}
+                    </td>
+                    <td className="text-cell">
+                      {(() => {
+                        const phraseIds = sentence.phraseIds || (Array.isArray(sentence.phrases) ? sentence.phrases.map(p => p.id || p) : []);
+                        if (!phraseIds || phraseIds.length === 0) return '';
+                        const phraseNames = phraseIds
+                          .map(id => {
+                            const phrase = allPhrases.find(p => p.id === id);
+                            return phrase ? phrase.phrase : null;
+                          })
+                          .filter(Boolean);
+                        return phraseNames.length > 0 ? phraseNames.join(' ; ') : '';
+                      })()}
+                    </td>
                     <td className="text-cell" style={{ color: '#666' }}>{sentence.note}</td>
                     <td>{new Date(sentence.createdAt).toLocaleDateString()}</td>
                     <td>
                       <div className="actions-cell">
                         <button 
                           className="btn-view-detail" 
-                          onClick={() => setDetailView({
-                            show: true,
-                            title: '句子详情',
-                            content: `句子：${sentence.sentence}\n\n翻译：${sentence.translation}\n\n备注：${sentence.note || '无'}`
-                          })}
+                          onClick={() => {
+                            // 获取关联句型
+                            const patternIds = sentence.patternIds || (Array.isArray(sentence.patterns) ? sentence.patterns.map(p => p.id || p) : []);
+                            const patternNames = patternIds
+                              .map(id => {
+                                const pattern = allPatterns.find(p => p.id === id);
+                                return pattern ? (pattern.pattern || pattern.name) : null;
+                              })
+                              .filter(Boolean);
+                            
+                            // 获取关联单词
+                            const wordIds = sentence.wordIds || (Array.isArray(sentence.words) ? sentence.words.map(w => w.id || w) : []);
+                            const wordNames = wordIds
+                              .map(id => {
+                                const word = allWords.find(w => w.id === id);
+                                return word ? word.word : null;
+                              })
+                              .filter(Boolean);
+                            
+                            // 获取关联短语
+                            const phraseIds = sentence.phraseIds || (Array.isArray(sentence.phrases) ? sentence.phrases.map(p => p.id || p) : []);
+                            const phraseNames = phraseIds
+                              .map(id => {
+                                const phrase = allPhrases.find(p => p.id === id);
+                                return phrase ? phrase.phrase : null;
+                              })
+                              .filter(Boolean);
+                            
+                            setDetailView({
+                              show: true,
+                              title: '句子详情',
+                              content: `句子：${sentence.sentence}\n\n翻译：${sentence.translation}\n\n关联句型：${patternNames.length > 0 ? patternNames.join(' ; ') : '无'}\n\n关联单词：${wordNames.length > 0 ? wordNames.join(' ; ') : '无'}\n\n关联短语：${phraseNames.length > 0 ? phraseNames.join(' ; ') : '无'}\n\n备注：${sentence.note || '无'}`
+                            });
+                          }}
                         >
                           详情
                         </button>
@@ -522,6 +615,57 @@ function Sentences() {
                     <div className="mobile-card-label">翻译</div>
                     <div className="mobile-card-value">{sentence.translation}</div>
                   </div>
+                  {(() => {
+                    const patternIds = sentence.patternIds || (Array.isArray(sentence.patterns) ? sentence.patterns.map(p => p.id || p) : []);
+                    const patternNames = patternIds
+                      .map(id => {
+                        const pattern = allPatterns.find(p => p.id === id);
+                        return pattern ? (pattern.pattern || pattern.name) : null;
+                      })
+                      .filter(Boolean);
+                    return patternNames.length > 0 ? (
+                      <div className="mobile-card-row">
+                        <div className="mobile-card-label">关联句型</div>
+                        <div className="mobile-card-value">
+                          {patternNames.join(' ; ')}
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+                  {(() => {
+                    const wordIds = sentence.wordIds || (Array.isArray(sentence.words) ? sentence.words.map(w => w.id || w) : []);
+                    const wordNames = wordIds
+                      .map(id => {
+                        const word = allWords.find(w => w.id === id);
+                        return word ? word.word : null;
+                      })
+                      .filter(Boolean);
+                    return wordNames.length > 0 ? (
+                      <div className="mobile-card-row">
+                        <div className="mobile-card-label">关联单词</div>
+                        <div className="mobile-card-value">
+                          {wordNames.join(' ; ')}
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+                  {(() => {
+                    const phraseIds = sentence.phraseIds || (Array.isArray(sentence.phrases) ? sentence.phrases.map(p => p.id || p) : []);
+                    const phraseNames = phraseIds
+                      .map(id => {
+                        const phrase = allPhrases.find(p => p.id === id);
+                        return phrase ? phrase.phrase : null;
+                      })
+                      .filter(Boolean);
+                    return phraseNames.length > 0 ? (
+                      <div className="mobile-card-row">
+                        <div className="mobile-card-label">关联短语</div>
+                        <div className="mobile-card-value">
+                          {phraseNames.join(' ; ')}
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
                   {sentence.note && (
                     <div className="mobile-card-row">
                       <div className="mobile-card-label">备注</div>
@@ -571,16 +715,6 @@ function Sentences() {
               </div>
 
               <div className="form-group">
-                <label>英文名称（可选）</label>
-                <input
-                  type="text"
-                  value={formData.englishName}
-                  onChange={(e) => setFormData({ ...formData, englishName: e.target.value })}
-                  placeholder="简短英文名，便于检索"
-                />
-              </div>
-
-              <div className="form-group">
                 <label>翻译 *</label>
                 <textarea
                   value={formData.translation}
@@ -591,7 +725,7 @@ function Sentences() {
               </div>
 
               <div className="form-group">
-                <label>关联句型（可选）</label>
+                <label>关联句型</label>
                 <MultiSelect
                   options={allPatterns.map(p => ({ value: p.id, label: p.pattern || p.name }))}
                   value={formData.patternIds}
@@ -601,7 +735,27 @@ function Sentences() {
               </div>
 
               <div className="form-group">
-                <label>备注（可选）</label>
+                <label>关联单词</label>
+                <MultiSelect
+                  options={allWords.map(w => ({ value: w.id, label: w.word }))}
+                  value={formData.wordIds}
+                  onChange={(vals) => setFormData({ ...formData, wordIds: vals })}
+                  placeholder="搜索单词…"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>关联短语</label>
+                <MultiSelect
+                  options={allPhrases.map(p => ({ value: p.id, label: p.phrase }))}
+                  value={formData.phraseIds}
+                  onChange={(vals) => setFormData({ ...formData, phraseIds: vals })}
+                  placeholder="搜索短语…"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>备注</label>
                 <input
                   type="text"
                   value={formData.note}

@@ -17,7 +17,12 @@
       }
     ],
     "createdAt": "2025-10-30T06:53:21.567+00:00",
-    "updatedAt": "2025-10-30T07:16:47.368Z"
+    "updatedAt": "2025-10-31T02:51:26.137Z",
+    "categoryIds": [
+      "aae814be-3bb2-4caf-b42e-6e4f58ba74e7",
+      "90fb5d65-1cb0-4ad8-a665-e7a5f0b0f729"
+    ],
+    "categoryId": "aae814be-3bb2-4caf-b42e-6e4f58ba74e7"
   },
   {
     "id": "de3eaecd-6cc4-452c-8b8a-e6ba5959f17a",
@@ -7602,14 +7607,12 @@
       {
         "partOfSpeech": "adj.",
         "meaning": "十亿的"
-      },
-      {
-        "partOfSpeech": "n.",
-        "meaning": "（"
       }
     ],
     "createdAt": "2025-10-30T06:53:21.567+00:00",
-    "updatedAt": "2025-10-30T06:57:19.955+00:00"
+    "updatedAt": "2025-10-31T03:47:04.235Z",
+    "categoryIds": [],
+    "categoryId": ""
   },
   {
     "id": "3045c2f6-bcad-401f-903e-d139d8309d12",
@@ -44610,14 +44613,12 @@
       {
         "partOfSpeech": "vi.",
         "meaning": "生小羊，产羔羊"
-      },
-      {
-        "partOfSpeech": "n.",
-        "meaning": "("
       }
     ],
     "createdAt": "2025-10-30T06:53:21.567+00:00",
-    "updatedAt": "2025-10-30T06:57:19.960+00:00"
+    "updatedAt": "2025-10-31T14:33:02.509Z",
+    "categoryIds": [],
+    "categoryId": ""
   },
   {
     "id": "7bd098fb-f563-4519-904e-8046f0b6fffe",

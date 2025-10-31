@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { categoriesAPI, wordsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
+import FilterBar from '../components/FilterBar';
+import DetailViewModal from '../components/DetailViewModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
 import { useConfirmDialog, useToast } from '../hooks/useDialog';
@@ -16,13 +18,25 @@ function Categories() {
   const [allWords, setAllWords] = useState([]);
   const [selectedWordIds, setSelectedWordIds] = useState([]);
   const [wordSearch, setWordSearch] = useState('');
+  const [filteredCategories, setFilteredCategories] = useState([]); // 筛选后的数据
+  const [activeFilters, setActiveFilters] = useState({}); // 当前激活的筛选条件
+  const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
   const { toasts, showToast, removeToast } = useToast();
 
-  const { currentData, renderPagination } = usePagination(categories, 8);
+  // 使用分页 hook - 使用筛选后的数据或全部数据
+  const displayData = Object.keys(activeFilters).length > 0 ? filteredCategories : categories;
+  const { currentData, renderPagination } = usePagination(displayData, 8);
 
   useEffect(() => { fetchAll(); }, []);
+
+  // 当分类数据变化时，重新应用筛选
+  useEffect(() => {
+    if (Object.keys(activeFilters).length > 0) {
+      applyFilters(activeFilters);
+    }
+  }, [categories]);
 
   const fetchAll = async () => {
     try {
@@ -116,6 +130,55 @@ function Categories() {
     });
   };
 
+  // 筛选功能
+  const applyFilters = (filters) => {
+    setActiveFilters(filters);
+    
+    const filtered = categories.filter(category => {
+      return Object.entries(filters).every(([key, value]) => {
+        if (!value) return true;
+        
+        const searchValue = value.toLowerCase();
+        
+        if (key === 'name') {
+          return (category.name || '').toLowerCase().includes(searchValue);
+        }
+        
+        if (key === 'code') {
+          return (category.code || '').toLowerCase().includes(searchValue);
+        }
+        
+        if (key === 'description') {
+          return (category.description || '').toLowerCase().includes(searchValue);
+        }
+        
+        return true;
+      });
+    });
+    
+    setFilteredCategories(filtered);
+  };
+
+  const handleResetFilter = () => {
+    setActiveFilters({});
+    setFilteredCategories([]);
+  };
+
+  // 查看详情
+  const handleViewDetail = (category) => {
+    const content = `
+代码：${category.code || '无'}
+名称：${category.name}
+${category.description ? `描述：${category.description}` : ''}
+    `.trim();
+    
+    setDetailView({
+      show: true,
+      title: `分类详情 - ${category.name}`,
+      content: content
+    });
+  };
+
   return (
     <div className="page-wrapper">
       <div className="page-header">
@@ -133,6 +196,17 @@ function Categories() {
             </div>
           )}
         </div>
+
+        {/* 筛选条 */}
+        <FilterBar
+          filterFields={[
+            { key: 'name', label: '名称', type: 'text', placeholder: '输入分类名称...' },
+            { key: 'code', label: '代码', type: 'text', placeholder: '输入分类代码...' },
+            { key: 'description', label: '描述', type: 'text', placeholder: '输入描述...' }
+          ]}
+          onFilter={applyFilters}
+          onReset={handleResetFilter}
+        />
 
         {loading ? (
           <div className="loading">加载中...</div>
@@ -166,8 +240,14 @@ function Categories() {
                       <td>{new Date(row.createdAt).toLocaleDateString()}</td>
                       <td>
                         <div className="actions-cell">
-                        <button className="btn btn-secondary btn-small" onClick={() => openEdit(row)}>编辑</button>
-                        <button className="btn btn-info btn-small" onClick={() => openManageWords(row)}>管理单词</button>
+                          <button 
+                            className="btn-view-detail" 
+                            onClick={() => handleViewDetail(row)}
+                          >
+                            详情
+                          </button>
+                          <button className="btn btn-secondary btn-small" onClick={() => openEdit(row)}>编辑</button>
+                          <button className="btn btn-info btn-small" onClick={() => openManageWords(row)}>管理单词</button>
                           <button className="btn btn-danger btn-small" onClick={() => handleDelete(row.id)}>删除</button>
                         </div>
                       </td>
@@ -191,11 +271,11 @@ function Categories() {
                 <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required placeholder="例如：CET-6" />
               </div>
               <div className="form-group">
-                <label>代码（可选）</label>
+                <label>代码</label>
                 <input type="text" value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value })} placeholder="例如：cet6" />
               </div>
               <div className="form-group">
-                <label>描述（可选）</label>
+                <label>描述</label>
                 <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="说明此分类用途" />
               </div>
               <div className="modal-actions">
@@ -209,6 +289,14 @@ function Categories() {
 
       <ConfirmDialog isOpen={dialogState.isOpen} title={dialogState.title} message={dialogState.message} type={dialogState.type} onConfirm={dialogState.onConfirm} onCancel={closeDialog} />
       <ToastContainer toasts={toasts} removeToast={removeToast} />
+
+      {/* 详情查看弹窗 */}
+      <DetailViewModal
+        show={detailView.show}
+        title={detailView.title}
+        content={detailView.content}
+        onClose={() => setDetailView({ show: false, title: '', content: '' })}
+      />
 
       {manageWordsFor && (
         <div className="modal-overlay" onClick={() => setManageWordsFor(null)}>

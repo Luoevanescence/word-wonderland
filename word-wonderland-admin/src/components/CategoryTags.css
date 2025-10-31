@@ -1,0 +1,72 @@
+.category-tags-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  width: 100%;
+}
+
+.category-tags-inline {
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.category-tags-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.category-tags-inline .category-tags-wrapper {
+  display: inline-flex;
+}
+
+.category-tags-ellipsis {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-left: 2px;
+  white-space: nowrap;
+}
+
+.category-tags-show-all {
+  flex-wrap: wrap;
+  white-space: normal;
+}
+
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.category-tag-empty {
+  background-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.category-tag-more {
+  background-color: #9ca3af;
+  color: white;
+}
+
+/* 表格单元格中的标签容器 */
+.data-table td .category-tags-container {
+  max-width: 100%;
+}
+
+/* 移动端卡片中的标签容器 */
+.mobile-card-value .category-tags-container {
+  flex-wrap: wrap;
+}
+

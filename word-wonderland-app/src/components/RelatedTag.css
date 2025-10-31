@@ -1,0 +1,83 @@
+.related-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 4px 4px 0 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid;
+  white-space: nowrap;
+  user-select: none;
+}
+/* 句型标签 - 暖黄橙半透明 */
+.related-tag-pattern {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.18) 0%,   /* amber-400 低不透明度 */
+    rgba(245, 158, 11, 0.15) 100%  /* amber-500 低不透明度 */
+  );
+  color: var(--brand-accent-text);   /* amber-600 主文字 */
+  border: 1px solid rgba(251, 191, 36, 0.30);
+  box-shadow: 0 2px 6px rgba(251, 191, 36, 0.12);
+  transition: all 0.25s ease;
+}
+
+.related-tag-pattern:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(254, 232, 176, 0.28) 0%,
+    rgba(255, 194, 89, 0.443) 100%
+  );
+  border-color: rgba(251, 191, 36, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.22);
+}
+/* 单词标签 - 浅绿色半透明 */
+.related-tag-word {
+  background: linear-gradient(135deg, 
+    rgba(46, 244, 178, 0.15) 0%, 
+    rgba(10, 255, 178, 0.12) 100%);
+  color: rgba(16, 185, 129, 0.9);
+  border-color: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.1);
+}
+
+.related-tag-word:hover {
+  background: linear-gradient(135deg, 
+    rgba(183, 247, 226, 0.25) 0%, 
+    rgba(0, 255, 174, 0.2) 100%);
+  border-color: rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+
+
+/* 短语标签 - 蓝天浅蓝半透明 */
+.related-tag-phrase {
+  background: linear-gradient(
+    135deg,
+    rgba(107, 211, 255, 0.18) 0%,   /* sky-400 */
+    rgba(37, 186, 255, 0.15) 100%  /* sky-500 */
+  );
+  color: rgba(2, 132, 199, 0.92);   /* sky-600 文字 */
+  border: 1px solid rgba(56, 189, 248, 0.30);
+  box-shadow: 0 2px 6px rgba(56, 189, 248, 0.12);
+  transition: all 0.25s ease;
+}
+
+.related-tag-phrase:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(186, 234, 255, 0.28) 0%,
+    rgba(63, 194, 255, 0.25) 100%
+  );
+  border-color: rgba(56, 189, 248, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.22);
+}
+
