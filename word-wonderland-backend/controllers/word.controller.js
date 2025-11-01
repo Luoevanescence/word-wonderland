@@ -34,7 +34,6 @@ exports.create = (req, res) => {
     const newWord = wordService.create({ 
       word, 
       category: category || '', // backward compatibility
-      categoryId: finalCategoryIds.length > 0 ? finalCategoryIds[0] : '', // 保持向后兼容
       categoryIds: finalCategoryIds, // 新的多选支持
       definitions 
     });
@@ -128,10 +127,7 @@ exports.update = (req, res) => {
     // 处理分类：优先使用 categoryIds（数组），否则使用 categoryId（单个），向后兼容
     if (categoryIds !== undefined) {
       updates.categoryIds = Array.isArray(categoryIds) ? categoryIds.filter(id => id) : [];
-      // 为了向后兼容，也设置 categoryId 为第一个值
-      updates.categoryId = updates.categoryIds.length > 0 ? updates.categoryIds[0] : '';
     } else if (categoryId !== undefined) {
-      updates.categoryId = categoryId;
       // 如果提供了单个 categoryId，将其转换为数组
       updates.categoryIds = categoryId ? [categoryId] : [];
     }
@@ -229,6 +225,7 @@ exports.bulkDelete = (req, res) => {
 exports.getRandom = (req, res) => {
   try {
     const count = parseInt(req.query.count) || 10;
+    const categoryId = req.query.categoryId || null; // 支持分类筛选
 
     if (count < 1) {
       return res.status(400).json({
@@ -237,13 +234,14 @@ exports.getRandom = (req, res) => {
       });
     }
 
-    const randomWords = wordService.getRandom(count);
+    const randomWords = wordService.getRandom(count, categoryId);
 
     res.status(200).json({
       success: true,
       data: randomWords,
       count: randomWords.length,
-      requested: count
+      requested: count,
+      categoryId: categoryId || null
     });
   } catch (error) {
     res.status(500).json({

@@ -80,4 +80,29 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(56, 189, 248, 0.22);
 }
+/* 分类标签 - 柔和的蓝绿色半透明 */
+.related-tag-category {
+  background: linear-gradient(
+    135deg,
+    rgba(173, 234, 222, 0.2) 0%,   /* 浅蓝绿色 低不透明度 */
+    rgba(122, 205, 190, 0.16) 100%  /* 中度蓝绿色 低不透明度 */
+  );
+  color: rgba(34, 97, 92, 0.9);   /* 深蓝绿色 主文字 */
+  border-color: rgba(173, 234, 222, 0.35);
+  box-shadow: 0 2px 6px rgba(173, 234, 222, 0.15);
+  transition: all 0.25s ease;
+  cursor: default; /* 分类标签不可点击 */
+}
+
+.related-tag-category:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(188, 242, 222, 0.28) 0%,   /* 浅蓝绿色 轻微提高透明度 */
+    rgba(173, 234, 222, 0.24) 100%  /* 中度蓝绿色 轻微提高透明度 */
+  );
+  border-color: rgba(173, 234, 222, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(173, 234, 222, 0.2);
+}
+
 

@@ -296,31 +296,31 @@ function SentenceCard({ sentence, index }) {
 
   return (
     <>
-      <div 
-        className={`card ${isExpanded ? 'expanded' : 'collapsed'}`} 
-        style={{ animationDelay: `${index * 0.1}s` }}
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <div className="card-header">
-          <h3 className="card-title sentence-title">{sentence.sentence}</h3>
-          <span className="expand-icon">
-            {isExpanded ? (
+    <div 
+      className={`card ${isExpanded ? 'expanded' : 'collapsed'}`} 
+      style={{ animationDelay: `${index * 0.1}s` }}
+      onClick={() => setIsExpanded(!isExpanded)}
+    >
+      <div className="card-header">
+        <h3 className="card-title sentence-title">{sentence.sentence}</h3>
+        <span className="expand-icon">
+          {isExpanded ? (
               <ChevronUpIcon
                 bookColor="#059669"  // 深薄荷绿（Emerald-600，与折叠状态呼应）
                 pageColor="#D1FAE5"  // 浅薄荷绿（Emerald-100，柔和清新）
                 bookmarkColor="#D97706"  // 深琥珀色（Amber-600，温暖且与浅色书页形成对比）
               />
-            ) : (
+          ) : (
               <ChevronDownIcon
                 bookColor="#10B981"   // 薄荷绿主体
                 bookmarkColor="#FAD15A" // 暖黄书签
               />
-            )}
-          </span>
-        </div>
-        {isExpanded && (
-          <div className="card-content">
-            <div className="translation-text">{formatText(sentence.translation)}</div>
+          )}
+        </span>
+      </div>
+      {isExpanded && (
+        <div className="card-content">
+          <div className="translation-text">{formatText(sentence.translation)}</div>
             
             {/* 关联标签区域 */}
             {(patternIds.length > 0 || wordIds.length > 0 || phraseIds.length > 0) && (
@@ -376,14 +376,14 @@ function SentenceCard({ sentence, index }) {
               </div>
             )}
             
-            {sentence.note && (
-              <div className="note-text">
-                <strong>备注：</strong> {formatText(sentence.note)}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+          {sentence.note && (
+            <div className="note-text">
+              <strong>备注：</strong> {formatText(sentence.note)}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
 
       {/* 详情弹窗 */}
       <DetailModal

@@ -16,6 +16,7 @@ import LiquidButton from './LiquidButton';
 import LoadingSpinner from './LoadingSpinner';
 import Masonry from 'react-masonry-css';
 import { useInView } from 'react-intersection-observer';
+import CategoryDropdown from './CategoryDropdown';
 import './ContentDisplay.css';
 import { RefreshIcon, DiceIcon, HintStrip } from './icons/Icons';
 
@@ -24,6 +25,7 @@ function ContentDisplay({ category, count, setCount }) {
   const [displayedItems, setDisplayedItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputCount, setInputCount] = useState(count);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // 选择的分类ID
 
   // 懒加载观察器
   const { ref: loadMoreRef, inView } = useInView({
@@ -31,11 +33,20 @@ function ContentDisplay({ category, count, setCount }) {
     triggerOnce: false
   });
 
+  // 切换分类时重置分类选择并清空数据
   useEffect(() => {
     setItems([]); // 立即清空旧数据，避免类型不匹配
     setDisplayedItems([]); // 清空已显示的项
-    fetchItems();
+    setSelectedCategoryId(null); // 切换分类时重置分类选择
   }, [category]);
+
+  // 获取数据：当分类改变或选择的分类ID改变时（仅限单词分类）
+  useEffect(() => {
+    setItems([]);
+    setDisplayedItems([]);
+    fetchItems(count);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, selectedCategoryId]);
 
   // 懒加载：每次显示一部分数据
   useEffect(() => {
@@ -59,7 +70,8 @@ function ContentDisplay({ category, count, setCount }) {
       let response;
       switch (category) {
         case 'words':
-          response = await getRandomWords(requestCount);
+          // 传递分类ID参数，如果为null则获取随机数据
+          response = await getRandomWords(requestCount, selectedCategoryId);
           break;
         case 'phrases':
           response = await getRandomPhrases(requestCount);
@@ -140,6 +152,13 @@ function ContentDisplay({ category, count, setCount }) {
   return (
     <div className="content-display">
       <div className="controls">
+        {/* 仅在单词分类时显示分类下拉选择 */}
+        {category === 'words' && (
+          <CategoryDropdown
+            selectedCategoryId={selectedCategoryId}
+            onCategoryChange={setSelectedCategoryId}
+          />
+        )}
         <div className="count-control">
           <label htmlFor="count">随机数量：</label>
           <input

@@ -103,8 +103,21 @@ class FileService {
   }
 
   // 获取随机项目
-  getRandom(count = 10) {
-    const data = this.readData();
+  getRandom(count = 10, categoryId = null) {
+    let data = this.readData();
+    
+    // 如果提供了 categoryId，先筛选数据
+    if (categoryId) {
+      // 支持 categoryId 或 categoryIds 字段
+      data = data.filter(item => {
+        // 检查 categoryId（单个）
+        if (item.categoryId === categoryId) return true;
+        // 检查 categoryIds（数组）
+        if (Array.isArray(item.categoryIds) && item.categoryIds.includes(categoryId)) return true;
+        return false;
+      });
+    }
+
     const total = data.length;
 
     if (total === 0) {

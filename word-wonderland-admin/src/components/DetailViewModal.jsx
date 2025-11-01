@@ -54,10 +54,10 @@ function DetailViewModal({ show, onClose, title, content, categoryIds = [], cate
       
       // 其他行正常显示
       return (
-        <React.Fragment key={index}>
-          {line}
+      <React.Fragment key={index}>
+        {line}
           {index < lines.length - 1 && <br />}
-        </React.Fragment>
+      </React.Fragment>
       );
     });
   };

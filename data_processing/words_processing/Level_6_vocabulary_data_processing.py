@@ -56,6 +56,7 @@ def main():
                 'id': str(uuid.uuid4()),
                 'word': word,
                 'definitions': definitions,
+                'categoryIds': ['aae814be-3bb2-4caf-b42e-6e4f58ba74e7'],
                 'createdAt': now,
                 'updatedAt': now
             })

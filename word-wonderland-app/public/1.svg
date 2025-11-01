@@ -1,0 +1,7 @@
+# 1. 强制删除旧镜像、旧容器、旧构建缓存（三选一即可）
+docker compose -f docker-compose.github.yml down --rmi all   # 删除镜像
+# 或 docker builder prune -a -f                           # 只清缓存
+
+# 2. 重新拉取仓库最新代码并全新构建
+docker compose -f docker-compose.github.yml build --no-cache --pull
+docker compose -f docker-compose.github.yml up -d

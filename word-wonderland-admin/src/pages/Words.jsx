@@ -667,10 +667,10 @@ function Words() {
                                 ? (Array.isArray(word.categoryIds) ? word.categoryIds : [word.categoryIds])
                                 : (word.categoryId ? [word.categoryId] : []);
                               setDetailView({
-                                show: true,
-                                title: `单词释义：${word.word}`,
-                                content: word.definitions.map((def, idx) =>
-                                  `${def.partOfSpeech} ${def.meaning}`
+                              show: true,
+                              title: `单词释义：${word.word}`,
+                              content: word.definitions.map((def, idx) =>
+                                `${def.partOfSpeech} ${def.meaning}`
                                 ).join('\n\n'),
                                 categoryIds: wordCategoryIds
                               });

@@ -340,9 +340,11 @@
     padding: 20px 24px 24px;
   }
 
+
   .modal-actions .btn {
     width: 100%;
   }
+
 }
 
 /* 页面包装器 - 固定标题，内容可滚动 */

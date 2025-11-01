@@ -17,7 +17,8 @@
   box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   border: 1px solid var(--glass-border);
   position: relative;
-  overflow: hidden;
+  z-index: 100; /* 确保控制栏在下拉框打开时在上层 */
+  /* overflow: hidden; */
 }
 
 .controls::before {

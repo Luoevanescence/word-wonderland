@@ -143,31 +143,31 @@ function PhraseCard({ phrase, index }) {
 
   return (
     <>
-      <div 
-        className={`card ${isExpanded ? 'expanded' : 'collapsed'}`} 
-        style={{ animationDelay: `${index * 0.1}s` }}
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <div className="card-header">
-          <h3 className="card-title">{phrase.phrase}</h3>
-          <span className="expand-icon">
-            {isExpanded ? (
+    <div 
+      className={`card ${isExpanded ? 'expanded' : 'collapsed'}`} 
+      style={{ animationDelay: `${index * 0.1}s` }}
+      onClick={() => setIsExpanded(!isExpanded)}
+    >
+      <div className="card-header">
+        <h3 className="card-title">{phrase.phrase}</h3>
+        <span className="expand-icon">
+          {isExpanded ? (
               <ChevronUpIcon
                 bookColor="#059669"  // 深薄荷绿（Emerald-600，与折叠状态呼应）
                 pageColor="#D1FAE5"  // 浅薄荷绿（Emerald-100，柔和清新）
                 bookmarkColor="#D97706"  // 深琥珀色（Amber-600，温暖且与浅色书页形成对比）
               />
-            ) : (
+          ) : (
               <ChevronDownIcon
                 bookColor="#10B981"   // 薄荷绿主体
                 bookmarkColor="#FAD15A" // 暖黄书签
               />
-            )}
-          </span>
-        </div>
-        {isExpanded && (
-          <div className="card-content">
-            <div className="meaning-text">{formatText(phrase.meaning)}</div>
+          )}
+        </span>
+      </div>
+      {isExpanded && (
+        <div className="card-content">
+          <div className="meaning-text">{formatText(phrase.meaning)}</div>
             
             {/* 关联单词标签区域 */}
             {wordIds.length > 0 && (
@@ -190,14 +190,14 @@ function PhraseCard({ phrase, index }) {
               </div>
             )}
             
-            {phrase.example && (
-              <div className="example-text">
-                <strong>例句：</strong> {formatText(phrase.example)}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+          {phrase.example && (
+            <div className="example-text">
+              <strong>例句：</strong> {formatText(phrase.example)}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
 
       {/* 详情弹窗 */}
       <DetailModal

@@ -1,0 +1,272 @@
+.category-dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.category-dropdown-wrapper label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.category-select {
+  position: relative;
+  min-width: 180px;
+  user-select: none;
+  z-index: 10001; /* 确保下拉框容器也在上层 */
+}
+
+.category-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border: 1.5px solid rgba(229, 231, 235, 0.6);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 44px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.category-select-trigger:hover:not(.disabled) {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+}
+
+.category-select-trigger.open {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1), 0 8px 24px rgba(16, 185, 129, 0.12);
+}
+
+.category-select-trigger.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.category-select-value {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(17, 24, 39, 0.85);
+  transition: color 0.3s;
+  letter-spacing: -0.01em;
+}
+
+.category-select-trigger.placeholder .category-select-value {
+  color: rgba(107, 114, 128, 0.7);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.category-select-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
+  color: rgba(16, 185, 129, 0.7);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-select-trigger:hover:not(.disabled) .category-select-arrow {
+  color: var(--brand-primary);
+}
+
+.category-select-trigger.open .category-select-arrow {
+  transform: rotate(180deg);
+}
+
+.category-select-trigger.disabled .category-select-arrow {
+  color: #9CA3AF;
+}
+
+.category-select-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 10000; /* 大幅提高 z-index，确保在所有卡片之上 */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-radius: 14px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(16, 185, 129, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  overflow: hidden;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.category-select-options {
+  padding: 8px 4px 8px 8px;
+}
+
+.category-select-option {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  gap: 12px;
+  margin: 2px 6px;
+  color: rgba(17, 24, 39, 0.8);
+}
+
+.category-select-option:hover {
+  background: linear-gradient(135deg, 
+    rgba(16, 185, 129, 0.08) 0%, 
+    rgba(52, 211, 153, 0.06) 100%);
+  color: rgba(17, 24, 39, 0.95);
+  transform: translateX(3px);
+}
+
+.category-select-option.selected {
+  background: linear-gradient(135deg, 
+    rgba(16, 185, 129, 0.12) 0%, 
+    rgba(5, 150, 105, 0.1) 100%);
+  color: rgba(16, 185, 129, 0.95);
+  font-weight: 600;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 
+    0 2px 8px rgba(16, 185, 129, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.category-select-option.selected:hover {
+  background: linear-gradient(135deg, 
+    rgba(16, 185, 129, 0.16) 0%, 
+    rgba(5, 150, 105, 0.13) 100%);
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 
+    0 4px 12px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transform: translateX(3px);
+}
+
+.category-select-option.default-option {
+  background: linear-gradient(135deg, 
+    rgba(249, 250, 251, 0.6) 0%, 
+    rgba(243, 244, 246, 0.4) 100%);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+  margin-bottom: 6px;
+  padding-bottom: 14px;
+}
+
+.category-select-option.default-option:hover {
+  background: linear-gradient(135deg, 
+    rgba(249, 250, 251, 0.8) 0%, 
+    rgba(243, 244, 246, 0.6) 100%);
+}
+
+
+.option-label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+
+.category-select-option.selected .option-label {
+  color: rgba(16, 185, 129, 0.95);
+  font-weight: 600;
+}
+
+.option-check {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(16, 185, 129, 0.9);
+  margin-left: auto;
+  opacity: 0.9;
+  animation: checkIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes checkIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 滚动条样式 */
+.category-select-dropdown::-webkit-scrollbar {
+  width: 5px;
+}
+
+.category-select-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0;
+}
+
+.category-select-dropdown::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, 
+    rgba(16, 185, 129, 0.4) 0%, 
+    rgba(16, 185, 129, 0.3) 100%);
+  border-radius: 10px;
+  border: none;
+  transition: background 0.2s ease;
+}
+
+.category-select-dropdown::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, 
+    rgba(16, 185, 129, 0.5) 0%, 
+    rgba(16, 185, 129, 0.4) 100%);
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .category-select-trigger {
+    padding: 10px 14px;
+    min-height: 42px;
+  }
+
+  .category-select-value {
+    font-size: 13px;
+  }
+
+  .category-select-dropdown {
+    max-height: 280px;
+  }
+
+  .category-select-option {
+    padding: 14px 12px;
+  }
+}
+
