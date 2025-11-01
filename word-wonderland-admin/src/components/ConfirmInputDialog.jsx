@@ -1,5 +1,5 @@
-import React from 'react';
-import './ConfirmDialog.css';
+import React, { useState, useEffect, useRef } from 'react';
+import './ConfirmInputDialog.css';
 
 // 警告图标
 const WarningIcon = () => (
@@ -108,24 +108,52 @@ const ConfirmIcon = () => (
   </svg>
 );
 
-const ConfirmDialog = ({ 
+const ConfirmInputDialog = ({ 
   isOpen, 
   title = '确认操作', 
-  message, 
+  message,
+  inputLabel,
+  expectedValue,
   onConfirm, 
   onCancel,
   confirmText = '确定',
   cancelText = '取消',
-  type = 'confirm' // 'confirm' | 'alert' | 'danger'
+  type = 'danger' // 'confirm' | 'alert' | 'danger'
 }) => {
+  const [inputValue, setInputValue] = useState('');
+  const [error, setError] = useState('');
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+      setInputValue('');
+      setError('');
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleConfirm = () => {
+    if (inputValue.trim() !== expectedValue) {
+      setError(`请输入 "${expectedValue}" 以确认`);
+      return;
+    }
     onConfirm();
   };
 
   const handleCancel = () => {
+    setInputValue('');
+    setError('');
     onCancel();
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleConfirm();
+    } else if (e.key === 'Escape') {
+      handleCancel();
+    }
   };
 
   const getIcon = () => {
@@ -144,22 +172,38 @@ const ConfirmDialog = ({
   };
 
   return (
-    <div className="confirm-dialog-overlay" onClick={handleCancel}>
-      <div className={`confirm-dialog ${type}`} onClick={(e) => e.stopPropagation()}>
-        <div className="confirm-dialog-icon">{getIcon()}</div>
-        <div className="confirm-dialog-content">
-          <h3 className="confirm-dialog-title">{title}</h3>
-          <p className="confirm-dialog-message">{message}</p>
+    <div className="confirm-input-dialog-overlay" onClick={handleCancel}>
+      <div className={`confirm-input-dialog ${type}`} onClick={(e) => e.stopPropagation()}>
+        <div className="confirm-input-dialog-icon">{getIcon()}</div>
+        <div className="confirm-input-dialog-content">
+          <h3 className="confirm-input-dialog-title">{title}</h3>
+          <p className="confirm-input-dialog-message">{message}</p>
+          <div className="confirm-input-dialog-input-wrapper">
+            <label className="confirm-input-dialog-label">{inputLabel}</label>
+            <input
+              ref={inputRef}
+              type="text"
+              className={`confirm-input-dialog-input ${error ? 'error' : ''}`}
+              value={inputValue}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+                setError('');
+              }}
+              onKeyDown={handleKeyPress}
+              placeholder={expectedValue}
+            />
+            {error && <div className="confirm-input-dialog-error">{error}</div>}
+          </div>
         </div>
-        <div className="confirm-dialog-actions">
+        <div className="confirm-input-dialog-actions">
           <button 
-            className="confirm-dialog-btn confirm-dialog-btn-cancel" 
+            className="confirm-input-dialog-btn confirm-input-dialog-btn-cancel" 
             onClick={handleCancel}
           >
             {cancelText}
           </button>
           <button 
-            className={`confirm-dialog-btn confirm-dialog-btn-confirm ${type === 'danger' ? 'danger' : ''}`}
+            className={`confirm-input-dialog-btn confirm-input-dialog-btn-confirm ${type === 'danger' ? 'danger' : ''}`}
             onClick={handleConfirm}
           >
             {confirmText}
@@ -170,5 +214,4 @@ const ConfirmDialog = ({
   );
 };
 
-export default ConfirmDialog;
-
+export default ConfirmInputDialog;

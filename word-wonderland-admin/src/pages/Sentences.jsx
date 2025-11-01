@@ -10,8 +10,9 @@ import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
 import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ConfirmInputDialog from '../components/ConfirmInputDialog';
 import { ToastContainer } from '../components/Toast';
-import { useConfirmDialog, useToast } from '../hooks/useDialog';
+import { useConfirmDialog, useConfirmInputDialog, useToast } from '../hooks/useDialog';
 import ImportExcelModal from '../components/ImportExcelModal';
 import MultiSelect from '../components/MultiSelect';
 import { exportToExcel, importFromExcel, downloadExcelTemplate, exportSelectedToExcel } from '../utils/excelUtils';
@@ -42,6 +43,7 @@ function Sentences() {
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { dialogState: inputDialogState, showConfirmInput, closeDialog: closeInputDialog } = useConfirmInputDialog();
   const { toasts, showToast, removeToast } = useToast();
 
   // 计算显示数据（筛选后优先）
@@ -399,6 +401,40 @@ function Sentences() {
     });
   };
 
+  const handleDeleteAll = async () => {
+    if (sentences.length === 0) {
+      showToast('没有可删除的数据', 'warning');
+      return;
+    }
+
+    showConfirmInput({
+      title: '警告：删除全部数据',
+      message: `您即将删除所有 ${sentences.length} 个句子！\n\n此操作无法撤销，请谨慎操作。`,
+      inputLabel: `请输入 "DELETE ALL" 以确认删除：`,
+      expectedValue: 'DELETE ALL',
+      type: 'danger',
+      onConfirm: () => {
+        showConfirm({
+          title: '删除全部数据确认',
+          message: `确定要删除所有 ${sentences.length} 个句子吗？此操作无法撤销，请再次确认。`,
+          type: 'danger',
+          onConfirm: async () => {
+            try {
+              const allIds = sentences.map(sentence => sentence.id);
+              const response = await sentencesAPI.bulkDelete(allIds);
+              await fetchSentences();
+              setSelectedIds([]);
+              showToast(response.data.message || `成功删除所有 ${sentences.length} 个句子`, 'success');
+            } catch (error) {
+              console.error('Error deleting all sentences:', error);
+              showToast(error.response?.data?.message || '删除全部失败', 'error');
+            }
+          }
+        });
+      }
+    });
+  };
+
   // 使用全局弹窗关闭Hook
   useGlobalModalClose(showModal, setShowModal, resetForm);
 
@@ -442,6 +478,19 @@ function Sentences() {
               <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
               <button className="btn btn-danger btn-small" onClick={handleBulkDelete}>
                 批量删除
+              </button>
+            </div>
+          )}
+
+          {sentences.length > 0 && (
+            <div className="bulk-actions" style={{ marginLeft: 'auto' }}>
+              <button 
+                className="btn btn-danger btn-small" 
+                onClick={handleDeleteAll}
+                style={{ opacity: 0.8 }}
+                title="删除所有数据（危险操作）"
+              >
+                删除全部 ({sentences.length})
               </button>
             </div>
           )}
@@ -575,8 +624,8 @@ function Sentences() {
                               .filter(Boolean);
                             
                             setDetailView({
-                              show: true,
-                              title: '句子详情',
+                            show: true,
+                            title: '句子详情',
                               content: `句子：${sentence.sentence}\n\n翻译：${sentence.translation}\n\n关联句型：${patternNames.length > 0 ? patternNames.join(' ; ') : '无'}\n\n关联单词：${wordNames.length > 0 ? wordNames.join(' ; ') : '无'}\n\n关联短语：${phraseNames.length > 0 ? phraseNames.join(' ; ') : '无'}\n\n备注：${sentence.note || '无'}`
                             });
                           }}
@@ -793,6 +842,16 @@ function Sentences() {
         type={dialogState.type}
         onConfirm={dialogState.onConfirm}
         onCancel={closeDialog}
+      />
+      <ConfirmInputDialog
+        isOpen={inputDialogState.isOpen}
+        title={inputDialogState.title}
+        message={inputDialogState.message}
+        inputLabel={inputDialogState.inputLabel}
+        expectedValue={inputDialogState.expectedValue}
+        type={inputDialogState.type}
+        onConfirm={inputDialogState.onConfirm}
+        onCancel={closeInputDialog}
       />
 
       {/* Toast通知 */}

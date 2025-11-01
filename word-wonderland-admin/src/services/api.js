@@ -55,6 +55,7 @@ export const wordsAPI = {
   update: (id, data) => api.put(`/words/${id}`, data),
   delete: (id) => api.delete(`/words/${id}`),
   bulkDelete: (ids) => api.post('/words/bulk/delete', { ids }),
+  deleteAll: () => api.delete('/words/all'),
   getRandom: (count = 10) => api.get(`/words/random?count=${count}`)
 };
 
@@ -66,6 +67,7 @@ export const phrasesAPI = {
   update: (id, data) => api.put(`/phrases/${id}`, data),
   delete: (id) => api.delete(`/phrases/${id}`),
   bulkDelete: (ids) => api.post('/phrases/bulk/delete', { ids }),
+  deleteAll: () => api.delete('/phrases/all'),
   getRandom: (count = 10) => api.get(`/phrases/random?count=${count}`)
 };
 
@@ -77,6 +79,7 @@ export const sentencesAPI = {
   update: (id, data) => api.put(`/sentences/${id}`, data),
   delete: (id) => api.delete(`/sentences/${id}`),
   bulkDelete: (ids) => api.post('/sentences/bulk/delete', { ids }),
+  deleteAll: () => api.delete('/sentences/all'),
   getRandom: (count = 10) => api.get(`/sentences/random?count=${count}`)
 };
 
@@ -88,6 +91,7 @@ export const patternsAPI = {
   update: (id, data) => api.put(`/patterns/${id}`, data),
   delete: (id) => api.delete(`/patterns/${id}`),
   bulkDelete: (ids) => api.post('/patterns/bulk/delete', { ids }),
+  deleteAll: () => api.delete('/patterns/all'),
   getRandom: (count = 10) => api.get(`/patterns/random?count=${count}`)
 };
 
@@ -99,6 +103,7 @@ export const topicsAPI = {
   update: (id, data) => api.put(`/topics/${id}`, data),
   delete: (id) => api.delete(`/topics/${id}`),
   bulkDelete: (ids) => api.post('/topics/bulk/delete', { ids }),
+  deleteAll: () => api.delete('/topics/all'),
   getRandom: (count = 10) => api.get(`/topics/random?count=${count}`)
 };
 
@@ -109,7 +114,8 @@ export const partsOfSpeechAPI = {
   create: (data) => api.post('/parts-of-speech', data),
   update: (id, data) => api.put(`/parts-of-speech/${id}`, data),
   delete: (id) => api.delete(`/parts-of-speech/${id}`),
-  bulkDelete: (ids) => api.post('/parts-of-speech/bulk/delete', { ids })
+  bulkDelete: (ids) => api.post('/parts-of-speech/bulk/delete', { ids }),
+  deleteAll: () => api.delete('/parts-of-speech/all')
 };
 
 // Components API
@@ -119,7 +125,8 @@ export const componentsAPI = {
   create: (data) => api.post('/components', data),
   update: (id, data) => api.put(`/components/${id}`, data),
   delete: (id) => api.delete(`/components/${id}`),
-  bulkDelete: (ids) => api.post('/components/bulk/delete', { ids })
+  bulkDelete: (ids) => api.post('/components/bulk/delete', { ids }),
+  deleteAll: () => api.delete('/components/all')
 };
 
 // Categories API (Words Categories)
@@ -129,7 +136,8 @@ export const categoriesAPI = {
   create: (data) => api.post('/categories', data),
   update: (id, data) => api.put(`/categories/${id}`, data),
   delete: (id) => api.delete(`/categories/${id}`),
-  bulkDelete: (ids) => api.post('/categories/bulk/delete', { ids })
+  bulkDelete: (ids) => api.post('/categories/bulk/delete', { ids }),
+  deleteAll: () => api.delete('/categories/all')
 };
 
 export default api;

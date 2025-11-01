@@ -51,7 +51,7 @@ function WordCard({ word, index }) {
     >
       <div className="card-header">
         <div style={{ flex: 1 }}>
-          <h3 className="card-title">{word.word}</h3>
+        <h3 className="card-title">{word.word}</h3>
         </div>
         <span className="expand-icon">
           {isExpanded ? (

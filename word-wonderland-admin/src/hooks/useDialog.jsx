@@ -33,6 +33,43 @@ export const useConfirmDialog = () => {
   };
 };
 
+export const useConfirmInputDialog = () => {
+  const [dialogState, setDialogState] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    inputLabel: '',
+    expectedValue: '',
+    type: 'danger',
+    onConfirm: () => {},
+  });
+
+  const showConfirmInput = ({ title, message, inputLabel, expectedValue, type = 'danger', onConfirm }) => {
+    setDialogState({
+      isOpen: true,
+      title,
+      message,
+      inputLabel,
+      expectedValue,
+      type,
+      onConfirm: () => {
+        onConfirm();
+        closeDialog();
+      },
+    });
+  };
+
+  const closeDialog = () => {
+    setDialogState((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  return {
+    dialogState,
+    showConfirmInput,
+    closeDialog,
+  };
+};
+
 export const useToast = () => {
   const [toasts, setToasts] = useState([]);
 

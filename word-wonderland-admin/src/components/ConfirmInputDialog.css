@@ -1,0 +1,208 @@
+/* 确认输入对话框覆盖层 */
+.confirm-input-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 确认输入对话框主体 - 高级感玻璃态 */
+.confirm-input-dialog {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(40px) saturate(120%);
+  -webkit-backdrop-filter: blur(40px) saturate(120%);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  max-width: 480px;
+  width: 90%;
+  padding: 40px;
+  animation: fadeIn 0.2s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 对话框图标 */
+.confirm-input-dialog-icon {
+  font-size: 56px;
+  text-align: center;
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+
+/* 对话框内容 */
+.confirm-input-dialog-content {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.confirm-input-dialog-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #11181C;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.confirm-input-dialog-message {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+  font-weight: 400;
+}
+
+/* 输入框包装器 */
+.confirm-input-dialog-input-wrapper {
+  text-align: left;
+  margin-top: 20px;
+}
+
+.confirm-input-dialog-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748B;
+  margin-bottom: 8px;
+}
+
+.confirm-input-dialog-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  border: 2px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
+  font-size: 15px;
+  color: #11181C;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease-out;
+  box-sizing: border-box;
+}
+
+.confirm-input-dialog-input:focus {
+  outline: none;
+  border-color: var(--brand-primary, #10B981);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.confirm-input-dialog-input.error {
+  border-color: #EF4444;
+  background: rgba(254, 242, 242, 0.9);
+}
+
+.confirm-input-dialog-input.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.confirm-input-dialog-error {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #EF4444;
+  text-align: left;
+}
+
+/* 对话框按钮 */
+.confirm-input-dialog-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.confirm-input-dialog-btn {
+  flex: 1;
+  height: 44px;
+  padding: 0 24px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  position: relative;
+  overflow: visible;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  letter-spacing: -0.01em;
+}
+
+.confirm-input-dialog-btn:active {
+  transform: translateY(1px);
+}
+
+.confirm-input-dialog-btn-cancel {
+  background: rgba(255, 255, 255, 0.6);
+  color: #475569;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.confirm-input-dialog-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.75);
+  color: #11181C;
+}
+
+.confirm-input-dialog-btn-confirm {
+  background: rgba(255, 255, 255, 0.6);
+  color: #10B981;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.12);
+}
+
+.confirm-input-dialog-btn-confirm:hover {
+  background: rgba(255, 255, 255, 0.75);
+  color: #10B981;
+}
+
+.confirm-input-dialog-btn-confirm.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.confirm-input-dialog-btn-confirm.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .confirm-input-dialog {
+    max-width: 320px;
+    padding: 24px;
+  }
+
+  .confirm-input-dialog-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+
+  .confirm-input-dialog-title {
+    font-size: 18px;
+  }
+
+  .confirm-input-dialog-message {
+    font-size: 14px;
+  }
+
+  .confirm-input-dialog-btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}

@@ -6,8 +6,9 @@ import CustomSelect from '../components/CustomSelect';
 import MultiSelect from '../components/MultiSelect';
 import CategoryTags from '../components/CategoryTags';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ConfirmInputDialog from '../components/ConfirmInputDialog';
 import { ToastContainer } from '../components/Toast';
-import { useConfirmDialog, useToast } from '../hooks/useDialog';
+import { useConfirmDialog, useConfirmInputDialog, useToast } from '../hooks/useDialog';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
@@ -40,6 +41,7 @@ function Words() {
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { dialogState: inputDialogState, showConfirmInput, closeDialog: closeInputDialog } = useConfirmInputDialog();
   const { toasts, showToast, removeToast } = useToast();
 
   // 使用分页 hook - 使用筛选后的数据或全部数据
@@ -472,6 +474,40 @@ function Words() {
     });
   };
 
+  const handleDeleteAll = async () => {
+    if (words.length === 0) {
+      showToast('没有可删除的数据', 'warning');
+      return;
+    }
+
+    showConfirmInput({
+      title: '警告：删除全部数据',
+      message: `您即将删除所有 ${words.length} 个单词！\n\n此操作无法撤销，请谨慎操作。`,
+      inputLabel: `请输入 "DELETE ALL" 以确认删除：`,
+      expectedValue: 'DELETE ALL',
+      type: 'danger',
+      onConfirm: () => {
+        showConfirm({
+          title: '删除全部数据确认',
+          message: `确定要删除所有 ${words.length} 个单词吗？此操作无法撤销，请再次确认。`,
+          type: 'danger',
+          onConfirm: async () => {
+            try {
+              const allIds = words.map(word => word.id);
+              const response = await wordsAPI.bulkDelete(allIds);
+              await fetchWords();
+              setSelectedIds([]);
+              showToast(response.data.message || `成功删除所有 ${words.length} 个单词`, 'success');
+            } catch (error) {
+              console.error('Error deleting all words:', error);
+              showToast(error.response?.data?.message || '删除全部失败', 'error');
+            }
+          }
+        });
+      }
+    });
+  };
+
   const handleEdit = (word) => {
     setEditingWord(word);
     // 处理分类：如果 word 有 categoryIds（数组），使用它；否则如果有 categoryId（单个），转换为数组
@@ -574,6 +610,19 @@ function Words() {
               </button>
             </div>
           )}
+
+          {words.length > 0 && (
+            <div className="bulk-actions" style={{ marginLeft: 'auto' }}>
+              <button 
+                className="btn btn-danger btn-small" 
+                onClick={handleDeleteAll}
+                style={{ opacity: 0.8 }}
+                title="删除所有数据（危险操作）"
+              >
+                删除全部 ({words.length})
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 筛选条 */}
@@ -597,7 +646,7 @@ function Words() {
             marginBottom: '20px',
             color: '#856404'
           }}>
-            <strong>⚠️ 提示：</strong> 您还没有创建任何词性。
+            <strong>提示：</strong> 您还没有创建任何词性。
             <Link to="/parts-of-speech" style={{ color: 'var(--brand-primary)', marginLeft: '10px', textDecoration: 'underline' }}>
               点击前往词性管理页面
             </Link>
@@ -868,6 +917,16 @@ function Words() {
         type={dialogState.type}
         onConfirm={dialogState.onConfirm}
         onCancel={closeDialog}
+      />
+      <ConfirmInputDialog
+        isOpen={inputDialogState.isOpen}
+        title={inputDialogState.title}
+        message={inputDialogState.message}
+        inputLabel={inputDialogState.inputLabel}
+        expectedValue={inputDialogState.expectedValue}
+        type={inputDialogState.type}
+        onConfirm={inputDialogState.onConfirm}
+        onCancel={closeInputDialog}
       />
 
       {/* 详情查看弹窗 */}

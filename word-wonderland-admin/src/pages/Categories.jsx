@@ -4,8 +4,9 @@ import { usePagination } from '../hooks/usePagination.jsx';
 import FilterBar from '../components/FilterBar';
 import DetailViewModal from '../components/DetailViewModal';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ConfirmInputDialog from '../components/ConfirmInputDialog';
 import { ToastContainer } from '../components/Toast';
-import { useConfirmDialog, useToast } from '../hooks/useDialog';
+import { useConfirmDialog, useConfirmInputDialog, useToast } from '../hooks/useDialog';
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -25,6 +26,7 @@ function Categories() {
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
 
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { dialogState: inputDialogState, showConfirmInput, closeDialog: closeInputDialog } = useConfirmInputDialog();
   const { toasts, showToast, removeToast } = useToast();
 
   // 使用分页 hook - 使用筛选后的数据或全部数据
@@ -185,6 +187,40 @@ function Categories() {
     });
   };
 
+  const handleDeleteAll = async () => {
+    if (categories.length === 0) {
+      showToast('没有可删除的数据', 'warning');
+      return;
+    }
+
+    showConfirmInput({
+      title: '警告：删除全部数据',
+      message: `您即将删除所有 ${categories.length} 个分类！\n\n此操作无法撤销，请谨慎操作。`,
+      inputLabel: `请输入 "DELETE ALL" 以确认删除：`,
+      expectedValue: 'DELETE ALL',
+      type: 'danger',
+      onConfirm: () => {
+        showConfirm({
+      title: '删除全部数据确认',
+      message: `确定要删除所有 ${categories.length} 个分类吗？此操作无法撤销，请再次确认。`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const allIds = categories.map(cat => cat.id);
+          await categoriesAPI.bulkDelete(allIds);
+          setSelectedIds([]);
+          fetchAll();
+          showToast(`成功删除所有 ${categories.length} 个分类`, 'success');
+        } catch (error) {
+          console.error('Error deleting all categories:', error);
+          showToast('删除全部失败', 'error');
+        }
+      }
+        });
+      }
+    });
+  };
+
   // 筛选功能
   const applyFilters = (filters) => {
     setActiveFilters(filters);
@@ -248,6 +284,19 @@ ${category.description ? `描述：${category.description}` : ''}
             <div className="bulk-actions">
               <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
               <button className="btn btn-danger btn-small" onClick={handleBulkDelete}>批量删除</button>
+            </div>
+          )}
+
+          {categories.length > 0 && (
+            <div className="bulk-actions" style={{ marginLeft: 'auto' }}>
+              <button 
+                className="btn btn-danger btn-small" 
+                onClick={handleDeleteAll}
+                style={{ opacity: 0.8 }}
+                title="删除所有数据（危险操作）"
+              >
+                删除全部 ({categories.length})
+              </button>
             </div>
           )}
         </div>
@@ -343,6 +392,16 @@ ${category.description ? `描述：${category.description}` : ''}
       )}
 
       <ConfirmDialog isOpen={dialogState.isOpen} title={dialogState.title} message={dialogState.message} type={dialogState.type} onConfirm={dialogState.onConfirm} onCancel={closeDialog} />
+      <ConfirmInputDialog
+        isOpen={inputDialogState.isOpen}
+        title={inputDialogState.title}
+        message={inputDialogState.message}
+        inputLabel={inputDialogState.inputLabel}
+        expectedValue={inputDialogState.expectedValue}
+        type={inputDialogState.type}
+        onConfirm={inputDialogState.onConfirm}
+        onCancel={closeInputDialog}
+      />
       <ToastContainer toasts={toasts} removeToast={removeToast} />
 
       {/* 详情查看弹窗 */}

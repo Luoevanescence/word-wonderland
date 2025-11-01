@@ -11,8 +11,9 @@ import useGlobalModalClose from '../hooks/useGlobalModalClose';
 import DetailViewModal from '../components/DetailViewModal';
 import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ConfirmInputDialog from '../components/ConfirmInputDialog';
 import { ToastContainer } from '../components/Toast';
-import { useConfirmDialog, useToast } from '../hooks/useDialog';
+import { useConfirmDialog, useConfirmInputDialog, useToast } from '../hooks/useDialog';
 
 function Components() {
   const [components, setComponents] = useState([]);
@@ -35,6 +36,7 @@ function Components() {
 
   // 使用对话框和Toast hooks
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
+  const { dialogState: inputDialogState, showConfirmInput, closeDialog: closeInputDialog } = useConfirmInputDialog();
   const { toasts, showToast, removeToast } = useToast();
 
   // 使用分页 hook - 使用筛选后的数据或全部数据
@@ -396,6 +398,40 @@ function Components() {
     });
   };
 
+  const handleDeleteAll = async () => {
+    if (components.length === 0) {
+      showToast('没有可删除的数据', 'warning');
+      return;
+    }
+
+    showConfirmInput({
+      title: '警告：删除全部数据',
+      message: `您即将删除所有 ${components.length} 个成分！\n\n此操作无法撤销，请谨慎操作。`,
+      inputLabel: `请输入 "DELETE ALL" 以确认删除：`,
+      expectedValue: 'DELETE ALL',
+      type: 'danger',
+      onConfirm: () => {
+        showConfirm({
+      title: '删除全部数据确认',
+      message: `确定要删除所有 ${components.length} 个成分吗？此操作无法撤销，请再次确认。`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const allIds = components.map(component => component.id);
+          const response = await componentsAPI.bulkDelete(allIds);
+          await fetchComponents();
+          setSelectedIds([]);
+          showToast(response.data.message || `成功删除所有 ${components.length} 个成分`, 'success');
+        } catch (error) {
+          console.error('Error deleting all components:', error);
+          showToast(error.response?.data?.message || '删除全部失败', 'error');
+        }
+      }
+        });
+      }
+    });
+  };
+
   // 使用全局弹窗关闭Hook
   useGlobalModalClose(showModal, setShowModal, resetForm);
 
@@ -411,7 +447,7 @@ function Components() {
           <button className="btn btn-primary" onClick={() => setShowModal(true)}>
             + 添加新成分
           </button>
-
+          
           <ImportExportDropdown
             type="import"
             handlers={{
@@ -433,12 +469,25 @@ function Components() {
             disabled={loading || displayData.length === 0}
             selectedCount={selectedIds.length}
           />
-
+          
           {selectedIds.length > 0 && (
             <div className="bulk-actions">
               <span className="bulk-actions-label">已选择 {selectedIds.length} 项</span>
               <button className="btn btn-danger btn-small" onClick={handleBulkDelete}>
                 批量删除
+              </button>
+            </div>
+          )}
+
+          {components.length > 0 && (
+            <div className="bulk-actions" style={{ marginLeft: 'auto' }}>
+              <button 
+                className="btn btn-danger btn-small" 
+                onClick={handleDeleteAll}
+                style={{ opacity: 0.8 }}
+                title="删除所有数据（危险操作）"
+              >
+                删除全部 ({components.length})
               </button>
             </div>
           )}
@@ -655,6 +704,16 @@ function Components() {
         type={dialogState.type}
         onConfirm={dialogState.onConfirm}
         onCancel={closeDialog}
+      />
+      <ConfirmInputDialog
+        isOpen={inputDialogState.isOpen}
+        title={inputDialogState.title}
+        message={inputDialogState.message}
+        inputLabel={inputDialogState.inputLabel}
+        expectedValue={inputDialogState.expectedValue}
+        type={inputDialogState.type}
+        onConfirm={inputDialogState.onConfirm}
+        onCancel={closeInputDialog}
       />
 
       {/* Toast通知 */}
