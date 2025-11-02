@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ImportExportDropdown.css';
-import { ExcelIcon, JSONIcon, TemplateIcon, ImportIcon, ExportIcon, ChevronDownSmallIcon } from './icons/ImportExportIcons';
+import { ExcelIcon, JSONIcon, TemplateIcon, ImportIcon, ExportIcon, ChevronDownSmallIcon } from '../icons/ImportExportIcons';
 
 /**
  * 导入导出下拉菜单组件

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { categoriesAPI, wordsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
-import FilterBar from '../components/FilterBar';
-import DetailViewModal from '../components/DetailViewModal';
-import ConfirmDialog from '../components/ConfirmDialog';
-import ConfirmInputDialog from '../components/ConfirmInputDialog';
-import { ToastContainer } from '../components/Toast';
+import FilterBar from '../components/FilterBar/FilterBar';
+import DetailViewModal from '../components/DetailViewModal/DetailViewModal';
+import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialog';
+import ConfirmInputDialog from '../components/ConfirmInputDialog/ConfirmInputDialog';
+import { ToastContainer } from '../components/Toast/Toast';
 import { useConfirmDialog, useConfirmInputDialog, useToast } from '../hooks/useDialog';
 
 function Categories() {

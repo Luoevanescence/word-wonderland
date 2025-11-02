@@ -1,6 +1,6 @@
 import React from 'react';
 import './DetailViewModal.css';
-import CategoryTags from './CategoryTags';
+import CategoryTags from '../CategoryTags/CategoryTags';
 
 /**
  * 详情查看弹窗组件

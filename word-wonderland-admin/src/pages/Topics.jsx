@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { topicsAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
-import ExportButton from '../components/ExportButton';
+import ExportButton from '../components/ExportButton/ExportButton';
 import { downloadJSONWithMeta, downloadSelectedJSON } from '../utils/exportUtils';
-import ImportExportDropdown from '../components/ImportExportDropdown';
+import ImportExportDropdown from '../components/ImportExportDropdown/ImportExportDropdown';
 import ImportJSONModal from '../components/ImportJSONModal';
-import FilterBar from '../components/FilterBar';
+import FilterBar from '../components/FilterBar/FilterBar';
 import useGlobalModalClose from '../hooks/useGlobalModalClose';
-import DetailViewModal from '../components/DetailViewModal';
+import DetailViewModal from '../components/DetailViewModal/DetailViewModal';
 import { initTableResize, cleanupTableResize } from '../utils/tableResizer';
-import ConfirmDialog from '../components/ConfirmDialog';
-import ConfirmInputDialog from '../components/ConfirmInputDialog';
-import { ToastContainer } from '../components/Toast';
+import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialog';
+import ConfirmInputDialog from '../components/ConfirmInputDialog/ConfirmInputDialog';
+import { ToastContainer } from '../components/Toast/Toast';
 import { useConfirmDialog, useConfirmInputDialog, useToast } from '../hooks/useDialog';
-import ImportExcelModal from '../components/ImportExcelModal';
+import ImportExcelModal from '../components/ImportExcelModal/ImportExcelModal';
 import { exportToExcel, importFromExcel, downloadExcelTemplate, exportSelectedToExcel } from '../utils/excelUtils';
 
 function Topics() {

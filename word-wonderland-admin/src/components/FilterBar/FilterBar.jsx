@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './FilterBar.css';
-import { SearchIcon, ChevronDownSmallIcon, ChevronUpSmallIcon } from './icons/ImportExportIcons';
+import { SearchIcon, ChevronDownSmallIcon, ChevronUpSmallIcon } from '../icons/ImportExportIcons';
 
 /**
  * 筛选条件组件

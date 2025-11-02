@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './ImportExcelModal.css';
-import { InstructionIcon, TipIcon, FolderIcon, CheckIcon, WarningIcon, DownloadIcon } from './icons/ImportExportIcons';
+import { InstructionIcon, TipIcon, FolderIcon, CheckIcon, WarningIcon, DownloadIcon } from '../icons/ImportExportIcons';
 
 /**
  * Excel 导入弹窗组件
