@@ -139,3 +139,4 @@ function FilterBar({ filterFields, onFilter, onReset }) {
 
 export default FilterBar;
 
+

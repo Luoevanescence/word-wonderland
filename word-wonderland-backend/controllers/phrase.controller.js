@@ -4,7 +4,7 @@ const phraseService = new FileService('phrases');
 // 创建新短语
 exports.create = (req, res) => {
   try {
-    const { phrase, meaning, example, wordIds } = req.body;
+    const { phrase, meaning, example, wordIds, categoryId, categoryIds } = req.body;
 
     if (!phrase || !meaning) {
       return res.status(400).json({
@@ -13,11 +13,20 @@ exports.create = (req, res) => {
       });
     }
 
+    // 处理分类：优先使用 categoryIds（数组），否则使用 categoryId（单个），向后兼容
+    let finalCategoryIds = [];
+    if (categoryIds !== undefined) {
+      finalCategoryIds = Array.isArray(categoryIds) ? categoryIds.filter(id => id) : [];
+    } else if (categoryId !== undefined && categoryId) {
+      finalCategoryIds = [categoryId];
+    }
+
     const newPhrase = phraseService.create({ 
       phrase, 
       meaning, 
       example: example || '',
-      wordIds: Array.isArray(wordIds) ? wordIds : []
+      wordIds: Array.isArray(wordIds) ? wordIds : [],
+      categoryIds: finalCategoryIds
     });
 
     res.status(201).json({
@@ -82,13 +91,21 @@ exports.findById = (req, res) => {
 exports.update = (req, res) => {
   try {
     const { id } = req.params;
-    const { phrase, meaning, example, wordIds } = req.body;
+    const { phrase, meaning, example, wordIds, categoryId, categoryIds } = req.body;
 
     const updates = {};
     if (phrase) updates.phrase = phrase;
     if (meaning) updates.meaning = meaning;
     if (example !== undefined) updates.example = example;
     if (wordIds !== undefined) updates.wordIds = Array.isArray(wordIds) ? wordIds : [];
+    
+    // 处理分类：优先使用 categoryIds（数组），否则使用 categoryId（单个），向后兼容
+    if (categoryIds !== undefined) {
+      updates.categoryIds = Array.isArray(categoryIds) ? categoryIds.filter(id => id) : [];
+    } else if (categoryId !== undefined) {
+      // 如果提供了单个 categoryId，将其转换为数组
+      updates.categoryIds = categoryId ? [categoryId] : [];
+    }
 
     const updatedPhrase = phraseService.update(id, updates);
 

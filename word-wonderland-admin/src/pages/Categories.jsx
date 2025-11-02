@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { categoriesAPI, wordsAPI } from '../services/api';
+import { categoriesAPI, wordsAPI, phrasesAPI, sentencesAPI } from '../services/api';
 import { usePagination } from '../hooks/usePagination.jsx';
 import FilterBar from '../components/FilterBar/FilterBar';
 import DetailViewModal from '../components/DetailViewModal/DetailViewModal';
@@ -7,6 +7,7 @@ import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialog';
 import ConfirmInputDialog from '../components/ConfirmInputDialog/ConfirmInputDialog';
 import { ToastContainer } from '../components/Toast/Toast';
 import { useConfirmDialog, useConfirmInputDialog, useToast } from '../hooks/useDialog';
+import CustomSelect from '../components/CustomSelect/CustomSelect';
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -15,12 +16,13 @@ function Categories() {
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({ name: '', code: '', description: '' });
   const [selectedIds, setSelectedIds] = useState([]);
-  const [manageWordsFor, setManageWordsFor] = useState(null);
-  const [allWords, setAllWords] = useState([]);
-  const [selectedWordIds, setSelectedWordIds] = useState([]);
-  const [wordSearch, setWordSearch] = useState('');
-  const [wordFilter, setWordFilter] = useState('all'); // 'all' | 'categorized' | 'uncategorized'
-  const [loadingWords, setLoadingWords] = useState(false); // 单词加载状态
+  const [contentType, setContentType] = useState('words'); // 'words' | 'phrases' | 'sentences'
+  const [manageItemsFor, setManageItemsFor] = useState(null);
+  const [allItems, setAllItems] = useState([]);
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
+  const [itemSearch, setItemSearch] = useState('');
+  const [itemFilter, setItemFilter] = useState('all'); // 'all' | 'categorized' | 'uncategorized'
+  const [loadingItems, setLoadingItems] = useState(false); // 内容加载状态
   const [filteredCategories, setFilteredCategories] = useState([]); // 筛选后的数据
   const [activeFilters, setActiveFilters] = useState({}); // 当前激活的筛选条件
   const [detailView, setDetailView] = useState({ show: false, title: '', content: '' }); // 详情查看
@@ -52,91 +54,111 @@ function Categories() {
     } finally { setLoading(false); }
   };
 
-  const openManageWords = async (category) => {
-    setManageWordsFor(category);
-    setAllWords([]);
-    setSelectedWordIds([]);
-    setWordSearch('');
-    setWordFilter('all'); // 重置筛选
-    setLoadingWords(true); // 开始加载
+  // 获取API和显示名称的映射
+  const getContentTypeInfo = (type) => {
+    const info = {
+      words: { api: wordsAPI, name: '单词', namePlural: '单词', field: 'word' },
+      phrases: { api: phrasesAPI, name: '短语', namePlural: '短语', field: 'phrase' },
+      sentences: { api: sentencesAPI, name: '句子', namePlural: '句子', field: 'sentence' }
+    };
+    return info[type] || info.words;
+  };
+
+  const openManageItems = async (category, type = contentType) => {
+    setManageItemsFor({ category, type });
+    setAllItems([]);
+    setSelectedItemIds([]);
+    setItemSearch('');
+    setItemFilter('all'); // 重置筛选
+    setLoadingItems(true); // 开始加载
     try {
-      const res = await wordsAPI.getAll();
-      const words = res.data.data || [];
-      setAllWords(words);
+      const typeInfo = getContentTypeInfo(type);
+      const res = await typeInfo.api.getAll();
+      const items = res.data.data || [];
+      setAllItems(items);
       // 预选中属于该分类ID的 - 使用 categoryIds 数组
       const categoryId = category.id || '';
-      const wordsInCategory = words.filter(w => {
-        const wordCategoryIds = w.categoryIds || (w.categoryId ? [w.categoryId] : []);
-        return wordCategoryIds.includes(categoryId);
+      const itemsInCategory = items.filter(item => {
+        const itemCategoryIds = item.categoryIds || (item.categoryId ? [item.categoryId] : []);
+        return itemCategoryIds.includes(categoryId);
       });
-      setSelectedWordIds(wordsInCategory.map(w => w.id));
+      setSelectedItemIds(itemsInCategory.map(item => item.id));
     } catch (e) {
-      showToast('获取单词列表失败', 'error');
+      const typeInfo = getContentTypeInfo(type);
+      showToast(`获取${typeInfo.namePlural}列表失败`, 'error');
     } finally {
-      setLoadingWords(false); // 加载完成
+      setLoadingItems(false); // 加载完成
     }
   };
 
-  const filteredWords = allWords.filter(w => {
-    // 首先应用分类筛选（已归类/未归类）
-    const wordCategoryIds = w.categoryIds || (w.categoryId ? [w.categoryId] : []);
-    const hasCategories = wordCategoryIds.length > 0;
+  const getItemDisplayField = (item, type) => {
+    const typeInfo = getContentTypeInfo(type);
+    return item[typeInfo.field] || item.word || item.phrase || item.sentence || '';
+  };
 
-    if (wordFilter === 'categorized' && !hasCategories) return false;
-    if (wordFilter === 'uncategorized' && hasCategories) return false;
+  const filteredItems = allItems.filter(item => {
+    // 首先应用分类筛选（已归类/未归类）
+    const itemCategoryIds = item.categoryIds || (item.categoryId ? [item.categoryId] : []);
+    const hasCategories = itemCategoryIds.length > 0;
+
+    if (itemFilter === 'categorized' && !hasCategories) return false;
+    if (itemFilter === 'uncategorized' && hasCategories) return false;
 
     // 然后应用搜索筛选
-    if (!wordSearch.trim()) return true;
-    const s = wordSearch.trim().toLowerCase();
-    const wordLower = (w.word || '').toLowerCase();
-    const categoryLower = (w.category || '').toLowerCase();
-    // 同时搜索单词和分类名称
+    if (!itemSearch.trim()) return true;
+    const s = itemSearch.trim().toLowerCase();
+    const displayField = getItemDisplayField(item, manageItemsFor?.type || contentType).toLowerCase();
+    const categoryLower = (item.category || '').toLowerCase();
+    // 同时搜索内容和分类名称
     const categoryNames = categories
-      .filter(cat => wordCategoryIds.includes(cat.id))
+      .filter(cat => itemCategoryIds.includes(cat.id))
       .map(cat => cat.name.toLowerCase());
-    return wordLower.includes(s) ||
+    return displayField.includes(s) ||
       categoryLower.includes(s) ||
       categoryNames.some(name => name.includes(s));
   });
 
-  const toggleWord = (id) => {
-    setSelectedWordIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  const toggleItem = (id) => {
+    setSelectedItemIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
-  const saveManageWords = async () => {
-    if (!manageWordsFor) return;
-    const catId = manageWordsFor.id || '';
-    // 计算需要设置/清空的单词
-    const currentInCat = allWords.filter(w => {
-      const wordCategoryIds = w.categoryIds || (w.categoryId ? [w.categoryId] : []);
-      return wordCategoryIds.includes(catId);
-    }).map(w => w.id);
+  const saveManageItems = async () => {
+    if (!manageItemsFor) return;
+    const catId = manageItemsFor.category.id || '';
+    const type = manageItemsFor.type || contentType;
+    const typeInfo = getContentTypeInfo(type);
+    
+    // 计算需要设置/清空的内容
+    const currentInCat = allItems.filter(item => {
+      const itemCategoryIds = item.categoryIds || (item.categoryId ? [item.categoryId] : []);
+      return itemCategoryIds.includes(catId);
+    }).map(item => item.id);
 
-    const toAdd = selectedWordIds.filter(id => !currentInCat.includes(id));
-    const toRemove = currentInCat.filter(id => !selectedWordIds.includes(id));
+    const toAdd = selectedItemIds.filter(id => !currentInCat.includes(id));
+    const toRemove = currentInCat.filter(id => !selectedItemIds.includes(id));
 
     try {
       // 添加分类
       for (const id of toAdd) {
-        const word = allWords.find(w => w.id === id);
-        if (word) {
-          const currentCategoryIds = word.categoryIds || (word.categoryId ? [word.categoryId] : []);
+        const item = allItems.find(item => item.id === id);
+        if (item) {
+          const currentCategoryIds = item.categoryIds || (item.categoryId ? [item.categoryId] : []);
           const newCategoryIds = [...new Set([...currentCategoryIds, catId])];
-          await wordsAPI.update(id, { categoryIds: newCategoryIds });
+          await typeInfo.api.update(id, { categoryIds: newCategoryIds });
         }
       }
       // 移除分类
       for (const id of toRemove) {
-        const word = allWords.find(w => w.id === id);
-        if (word) {
-          const currentCategoryIds = word.categoryIds || (word.categoryId ? [word.categoryId] : []);
+        const item = allItems.find(item => item.id === id);
+        if (item) {
+          const currentCategoryIds = item.categoryIds || (item.categoryId ? [item.categoryId] : []);
           const newCategoryIds = currentCategoryIds.filter(cid => cid !== catId);
-          await wordsAPI.update(id, { categoryIds: newCategoryIds });
+          await typeInfo.api.update(id, { categoryIds: newCategoryIds });
         }
       }
-      showToast(`成功更新 ${toAdd.length + toRemove.length} 个单词的分类`, 'success');
+      showToast(`成功更新 ${toAdd.length + toRemove.length} 个${typeInfo.namePlural}的分类`, 'success');
       fetchAll(); // 刷新分类列表
-      setManageWordsFor(null);
+      setManageItemsFor(null);
     } catch (e) {
       showToast('更新失败', 'error');
     }
@@ -273,8 +295,40 @@ ${category.description ? `描述：${category.description}` : ''}
   return (
     <div className="page-wrapper">
       <div className="page-header">
-        <h1>单词分类</h1>
-        <p>管理单词分类（例如：CET-4、CET-6、考研、托福等）</p>
+        <h1>内容分类</h1>
+        <p>管理单词、短语和句子的分类（例如：CET-4、CET-6、考研、托福等）</p>
+        <div style={{ 
+          marginTop: '16px', 
+          display: 'flex', 
+          gap: '12px', 
+          alignItems: 'center',
+          padding: '16px',
+          background: 'var(--glass-bg)',
+          borderRadius: '12px',
+          border: '1px solid var(--line-divider)'
+        }}>
+          <label style={{ 
+            fontSize: '14px', 
+            color: 'var(--text-primary)', 
+            fontWeight: 500,
+            whiteSpace: 'nowrap'
+          }}>
+            内容类型：
+          </label>
+          <div style={{ width: '180px', flexShrink: 0 }}>
+            <CustomSelect
+              value={contentType}
+              onChange={(value) => setContentType(value)}
+              options={[
+                { value: 'words', label: '单词' },
+                { value: 'phrases', label: '短语' },
+                { value: 'sentences', label: '句子' }
+              ]}
+              placeholder="选择类型"
+              className="content-type-select"
+            />
+          </div>
+        </div>
       </div>
 
       <div className="page-content">
@@ -351,7 +405,9 @@ ${category.description ? `描述：${category.description}` : ''}
                             详情
                           </button>
                           <button className="btn btn-secondary btn-small" onClick={() => openEdit(row)}>编辑</button>
-                          <button className="btn btn-info btn-small" onClick={() => openManageWords(row)}>管理单词</button>
+                          <button className="btn btn-info btn-small" onClick={() => openManageItems(row, contentType)}>
+                            管理{getContentTypeInfo(contentType).name}
+                          </button>
                           <button className="btn btn-danger btn-small" onClick={() => handleDelete(row.id)}>删除</button>
                         </div>
                       </td>
@@ -412,10 +468,12 @@ ${category.description ? `描述：${category.description}` : ''}
         onClose={() => setDetailView({ show: false, title: '', content: '' })}
       />
 
-      {manageWordsFor && (
-        <div className="modal-overlay" onClick={() => setManageWordsFor(null)}>
+      {manageItemsFor && (() => {
+        const typeInfo = getContentTypeInfo(manageItemsFor.type);
+        return (
+        <div className="modal-overlay" onClick={() => setManageItemsFor(null)}>
           <div className="modal manage-words-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '700px', width: '90%' }}>
-            <h2 >管理分类下的单词 - {manageWordsFor.name}</h2>
+            <h2 >管理分类下的{typeInfo.namePlural} - {manageItemsFor.category.name}</h2>
 
             {/* 统计信息和筛选 - 包含加载覆盖层 */}
             <div style={{ position: 'relative' }}>
@@ -431,20 +489,20 @@ ${category.description ? `描述：${category.description}` : ''}
                 fontSize: '13px'
               }}>
                 <span style={{ color: 'var(--text-secondary)' }}>
-                  共 {filteredWords.length} 个单词，已选中 {selectedWordIds.filter(id => filteredWords.some(w => w.id === id)).length} 个
+                  共 {filteredItems.length} 个{typeInfo.namePlural}，已选中 {selectedItemIds.filter(id => filteredItems.some(item => item.id === id)).length} 个
                 </span>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button
                     type="button"
                     className="btn btn-secondary btn-small"
                     onClick={() => {
-                      const allFilteredIds = filteredWords.map(w => w.id);
-                      setSelectedWordIds(prev => {
+                      const allFilteredIds = filteredItems.map(item => item.id);
+                      setSelectedItemIds(prev => {
                         const newIds = [...new Set([...prev, ...allFilteredIds])];
                         return newIds;
                       });
                     }}
-                    disabled={loadingWords}
+                    disabled={loadingItems}
                     style={{ fontSize: '12px', padding: '4px 12px', height: '28px' }}
                   >
                     全选当前
@@ -453,10 +511,10 @@ ${category.description ? `描述：${category.description}` : ''}
                     type="button"
                     className="btn btn-secondary btn-small"
                     onClick={() => {
-                      const allFilteredIds = filteredWords.map(w => w.id);
-                      setSelectedWordIds(prev => prev.filter(id => !allFilteredIds.includes(id)));
+                      const allFilteredIds = filteredItems.map(item => item.id);
+                      setSelectedItemIds(prev => prev.filter(id => !allFilteredIds.includes(id)));
                     }}
-                    disabled={loadingWords}
+                    disabled={loadingItems}
                     style={{ fontSize: '12px', padding: '4px 12px', height: '28px' }}
                   >
                     全不选
@@ -475,18 +533,18 @@ ${category.description ? `描述：${category.description}` : ''}
                 <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
                   <input
                     type="text"
-                    value={wordSearch}
-                    onChange={(e) => setWordSearch(e.target.value)}
-                    placeholder="输入英文单词或分类名称..."
-                    disabled={loadingWords}
+                    value={itemSearch}
+                    onChange={(e) => setItemSearch(e.target.value)}
+                    placeholder={`输入${typeInfo.name}或分类名称...`}
+                    disabled={loadingItems}
                     style={{ width: '100%' }}
                   />
                 </div>
                 <div className="form-group" style={{ width: '180px', marginBottom: 0 }}>
                   <select
-                    value={wordFilter}
-                    onChange={(e) => setWordFilter(e.target.value)}
-                    disabled={loadingWords}
+                    value={itemFilter}
+                    onChange={(e) => setItemFilter(e.target.value)}
+                    disabled={loadingItems}
                   >
                     <option value="all">全部</option>
                     <option value="categorized">已归类</option>
@@ -508,7 +566,7 @@ ${category.description ? `描述：${category.description}` : ''}
                 position: 'relative',
                 margin:'16px'
               }}>
-                {loadingWords ? (
+                {loadingItems ? (
                   <div style={{
                     textAlign: 'center',
                     padding: '60px 20px',
@@ -528,24 +586,25 @@ ${category.description ? `描述：${category.description}` : ''}
                         animation: 'spin 1s linear infinite',
                         margin: '0 auto 12px'
                       }}></div>
-                      <span style={{ fontSize: '14px' }}>正在加载单词列表...</span>
+                      <span style={{ fontSize: '14px' }}>正在加载{typeInfo.namePlural}列表...</span>
                     </div>
                   </div>
-                ) : filteredWords.length === 0 ? (
+                ) : filteredItems.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
-                    {wordSearch || wordFilter !== 'all' ? '未找到匹配的单词' : '暂无单词'}
+                    {itemSearch || itemFilter !== 'all' ? `未找到匹配的${typeInfo.namePlural}` : `暂无${typeInfo.namePlural}`}
                   </div>
                 ) : (
-                  filteredWords.map(w => {
-                    const wordCategoryIds = w.categoryIds || (w.categoryId ? [w.categoryId] : []);
-                    const isInCategory = wordCategoryIds.includes(manageWordsFor.id);
+                  filteredItems.map(item => {
+                    const itemCategoryIds = item.categoryIds || (item.categoryId ? [item.categoryId] : []);
+                    const isInCategory = itemCategoryIds.includes(manageItemsFor.category.id);
                     const otherCategories = categories.filter(cat =>
-                      cat.id !== manageWordsFor.id && wordCategoryIds.includes(cat.id)
+                      cat.id !== manageItemsFor.category.id && itemCategoryIds.includes(cat.id)
                     );
+                    const displayText = getItemDisplayField(item, manageItemsFor.type);
 
                     return (
                       <label
-                        key={w.id}
+                        key={item.id}
                         className="word-manage-item"
                         style={{
                           display: 'flex',
@@ -556,32 +615,32 @@ ${category.description ? `描述：${category.description}` : ''}
                           marginBottom: '4px',
                           cursor: 'pointer',
                           transition: 'background 0.2s',
-                          background: selectedWordIds.includes(w.id)
+                          background: selectedItemIds.includes(item.id)
                             ? 'rgba(16, 185, 129, 0.08)'
                             : 'transparent'
                         }}
                         onMouseEnter={(e) => {
-                          if (!selectedWordIds.includes(w.id) && !loadingWords) {
+                          if (!selectedItemIds.includes(item.id) && !loadingItems) {
                             e.currentTarget.style.background = 'var(--glass-bg-hover)';
                           }
                         }}
                         onMouseLeave={(e) => {
-                          if (!selectedWordIds.includes(w.id) && !loadingWords) {
+                          if (!selectedItemIds.includes(item.id) && !loadingItems) {
                             e.currentTarget.style.background = 'transparent';
                           }
                         }}
                       >
                         <input
                           type="checkbox"
-                          checked={selectedWordIds.includes(w.id)}
-                          onChange={() => toggleWord(w.id)}
-                          disabled={loadingWords}
+                          checked={selectedItemIds.includes(item.id)}
+                          onChange={() => toggleItem(item.id)}
+                          disabled={loadingItems}
                           style={{ flexShrink: 0 }}
                         />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                             <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)' }}>
-                              {w.word}
+                              {displayText}
                             </span>
                             {isInCategory && (
                               <span style={{
@@ -626,7 +685,7 @@ ${category.description ? `描述：${category.description}` : ''}
               </div>
 
               {/* 加载覆盖层 - 覆盖统计、搜索和列表区域 */}
-              {loadingWords && (
+              {loadingItems && (
                 <div style={{
                   position: 'absolute',
                   top: 0,
@@ -660,22 +719,23 @@ ${category.description ? `描述：${category.description}` : ''}
             </div>
 
             <div className="modal-actions">
-              <button type="button" className="btn btn-secondary" onClick={() => setManageWordsFor(null)}>取消</button>
+              <button type="button" className="btn btn-secondary" onClick={() => setManageItemsFor(null)}>取消</button>
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={saveManageWords}
-                disabled={selectedWordIds.length === 0 && filteredWords.filter(w => {
-                  const wordCategoryIds = w.categoryIds || (w.categoryId ? [w.categoryId] : []);
-                  return wordCategoryIds.includes(manageWordsFor.id);
+                onClick={saveManageItems}
+                disabled={selectedItemIds.length === 0 && filteredItems.filter(item => {
+                  const itemCategoryIds = item.categoryIds || (item.categoryId ? [item.categoryId] : []);
+                  return itemCategoryIds.includes(manageItemsFor.category.id);
                 }).length === 0}
               >
-                保存 ({selectedWordIds.filter(id => filteredWords.some(w => w.id === id)).length})
+                保存 ({selectedItemIds.filter(id => filteredItems.some(item => item.id === id)).length})
               </button>
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

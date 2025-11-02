@@ -4,13 +4,21 @@ const sentenceService = new FileService('sentences');
 // 创建新句子
 exports.create = (req, res) => {
   try {
-    const { sentence, englishName, translation, note, patternIds, wordIds, phraseIds } = req.body;
+    const { sentence, englishName, translation, note, patternIds, wordIds, phraseIds, categoryId, categoryIds } = req.body;
 
     if (!sentence || !translation) {
       return res.status(400).json({
         success: false,
         message: 'Sentence and translation are required'
       });
+    }
+
+    // 处理分类：优先使用 categoryIds（数组），否则使用 categoryId（单个），向后兼容
+    let finalCategoryIds = [];
+    if (categoryIds !== undefined) {
+      finalCategoryIds = Array.isArray(categoryIds) ? categoryIds.filter(id => id) : [];
+    } else if (categoryId !== undefined && categoryId) {
+      finalCategoryIds = [categoryId];
     }
 
     const newSentence = sentenceService.create({ 
@@ -20,7 +28,8 @@ exports.create = (req, res) => {
       note: note || '',
       patternIds: Array.isArray(patternIds) ? patternIds : [],
       wordIds: Array.isArray(wordIds) ? wordIds : [],
-      phraseIds: Array.isArray(phraseIds) ? phraseIds : []
+      phraseIds: Array.isArray(phraseIds) ? phraseIds : [],
+      categoryIds: finalCategoryIds
     });
 
     res.status(201).json({
@@ -85,7 +94,7 @@ exports.findById = (req, res) => {
 exports.update = (req, res) => {
   try {
     const { id } = req.params;
-    const { sentence, englishName, translation, note, patternIds, wordIds, phraseIds } = req.body;
+    const { sentence, englishName, translation, note, patternIds, wordIds, phraseIds, categoryId, categoryIds } = req.body;
 
     const updates = {};
     if (sentence) updates.sentence = sentence;
@@ -95,6 +104,14 @@ exports.update = (req, res) => {
     if (patternIds !== undefined) updates.patternIds = Array.isArray(patternIds) ? patternIds : [];
     if (wordIds !== undefined) updates.wordIds = Array.isArray(wordIds) ? wordIds : [];
     if (phraseIds !== undefined) updates.phraseIds = Array.isArray(phraseIds) ? phraseIds : [];
+    
+    // 处理分类：优先使用 categoryIds（数组），否则使用 categoryId（单个），向后兼容
+    if (categoryIds !== undefined) {
+      updates.categoryIds = Array.isArray(categoryIds) ? categoryIds.filter(id => id) : [];
+    } else if (categoryId !== undefined) {
+      // 如果提供了单个 categoryId，将其转换为数组
+      updates.categoryIds = categoryId ? [categoryId] : [];
+    }
 
     const updatedSentence = sentenceService.update(id, updates);
 
