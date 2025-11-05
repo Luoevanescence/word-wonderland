@@ -105,3 +105,4 @@ function DetailViewModal({ show, onClose, title, content, categoryIds = [], cate
 export default DetailViewModal;
 
 
+
